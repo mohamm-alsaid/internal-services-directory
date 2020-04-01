@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-Rel-Pro", "API-Rel-Pro\API-Rel-Pro.csproj", "{FE394557-1B71-4D4B-B4C5-9F6DC11727A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel\DataModel.csproj", "{12EFED3A-2BFB-4248-9083-6A78D92C9D82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE394557-1B71-4D4B-B4C5-9F6DC11727A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE394557-1B71-4D4B-B4C5-9F6DC11727A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE394557-1B71-4D4B-B4C5-9F6DC11727A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE394557-1B71-4D4B-B4C5-9F6DC11727A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12EFED3A-2BFB-4248-9083-6A78D92C9D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12EFED3A-2BFB-4248-9083-6A78D92C9D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12EFED3A-2BFB-4248-9083-6A78D92C9D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12EFED3A-2BFB-4248-9083-6A78D92C9D82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8546755B-813A-4A7F-8A00-11DFDBF56BF1}
+	EndGlobalSection
+EndGlobal
