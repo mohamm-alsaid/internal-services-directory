@@ -168,6 +168,10 @@
       <Project>{936c48c2-b956-409b-ae10-cdba02b8e403}</Project>
       <Name>API-ISD</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataModelAccess\DataModelAccess.csproj">
+      <Project>{fdf0ec0d-3f26-4aca-8a1e-62f91f714b2f}</Project>
+      <Name>DataModelAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

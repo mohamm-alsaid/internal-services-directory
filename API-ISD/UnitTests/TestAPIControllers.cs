@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using DataModelAccess;
 using API_ISD.Models;
 using API_ISD.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,9 +31,8 @@ namespace UnitTests
                 using (var context = new ISDContext(options))
                 {
                     context.Database.EnsureCreated();
-                    // How to seed the data base & how to 
+                    context.SaveChanges();
                 }
-
             }
             finally
             {
