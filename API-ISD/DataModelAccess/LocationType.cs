@@ -6,6 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModelAccess
 {
@@ -20,6 +21,7 @@ namespace DataModelAccess
             this.Locations = new HashSet<Location>();
         }
     
+        [Key]
         public int locationTypeID { get; set; }
         public string locationTypeName { get; set; }
     
