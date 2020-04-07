@@ -6,6 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModelAccess
 {
@@ -20,6 +21,7 @@ namespace DataModelAccess
             this.ServiceLanguageAssociations = new HashSet<ServiceLanguageAssociation>();
         }
     
+        [Key]
         public int languageID { get; set; }
         public string languageName { get; set; }
     

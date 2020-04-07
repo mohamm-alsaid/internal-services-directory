@@ -6,7 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+using System.ComponentModel.DataAnnotations;
 namespace DataModelAccess
 {
     using System;
@@ -14,6 +14,7 @@ namespace DataModelAccess
     
     public partial class ServiceLocationAssociation
     {
+        [Key]
         public int serviceLocationAssociation1 { get; set; }
         public Nullable<int> serviceID { get; set; }
         public Nullable<int> locationID { get; set; }

@@ -6,6 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModelAccess
 {
@@ -20,6 +21,7 @@ namespace DataModelAccess
             this.Services = new HashSet<Service>();
         }
     
+        [Key]
         public int divisionID { get; set; }
         public int divisionCode { get; set; }
         public string divisionName { get; set; }

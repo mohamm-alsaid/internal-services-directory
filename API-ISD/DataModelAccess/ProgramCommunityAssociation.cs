@@ -6,6 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 
 namespace DataModelAccess
 {
@@ -14,6 +15,7 @@ namespace DataModelAccess
     
     public partial class ProgramCommunityAssociation
     {
+        [Key]
         public int programCommunityAssociationID { get; set; }
         public Nullable<int> serviceID { get; set; }
         public Nullable<int> communityID { get; set; }
