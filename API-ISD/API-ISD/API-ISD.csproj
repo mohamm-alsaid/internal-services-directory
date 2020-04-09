@@ -246,11 +246,23 @@
     <Compile Include="Controllers\ServiceLocationAssociationsController.cs" />
     <Compile Include="Controllers\ServicesController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="V1\DTO\CommunityV1DTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ISDContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="V1\DTO\ContactV1DTO.cs" />
+    <Compile Include="V1\DTO\DepartmentV1DTO.cs" />
+    <Compile Include="V1\DTO\DivisionV1DTO.cs" />
+    <Compile Include="V1\DTO\LanguageV1DTO.cs" />
+    <Compile Include="V1\DTO\LocationTypeV1DTO.cs" />
+    <Compile Include="V1\DTO\LocationV1DTO.cs" />
+    <Compile Include="V1\DTO\ProgramCommunityAssociationV1DTO.cs" />
+    <Compile Include="V1\DTO\ProgramV1DTO.cs" />
+    <Compile Include="V1\DTO\ServiceLanguageAssociationV1DTO.cs" />
+    <Compile Include="V1\DTO\ServiceLocationAssociationV1DTO.cs" />
+    <Compile Include="V1\DTO\ServiceV1DTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
