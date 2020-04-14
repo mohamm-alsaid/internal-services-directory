@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultCo_ISD_API.Models;
@@ -29,6 +29,8 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // GET: api/Services/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Service), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<Service>> GetService(int id)
         {
             var service = await _context.Service.FindAsync(id);
@@ -38,13 +40,15 @@ namespace MultCo_ISD_API.V1.Controllers
                 return NotFound();
             }
 
-            return service;
+            return Ok(service);
         }
 
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> PutService(int id, Service service)
         {
             if (id != service.ServiceId)
@@ -77,6 +81,8 @@ namespace MultCo_ISD_API.V1.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(409)]
         public async Task<ActionResult<Service>> PostService(Service service)
         {
             _context.Service.Add(service);
@@ -87,6 +93,8 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<Service>> DeleteService(int id)
         {
             var service = await _context.Service.FindAsync(id);

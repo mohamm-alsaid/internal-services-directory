@@ -75,7 +75,6 @@ namespace UnitTests
 
         /* 
          * Test Methods for Services Controller
-         *  NOTE: Cannot test failure w/out refactor to view a return code from Controller return type, this might make these tests not very helpful if we can't look at return codes
          */
         [TestMethod]
         public void TestGetServices()
@@ -131,8 +130,13 @@ namespace UnitTests
 
                     ServicesController controller = new ServicesController(context);
                     var actionResult = controller.GetService(2).Result;
+                    var result = actionResult.Result as OkObjectResult;
+                    var service = result.Value as Service;
 
-                    Assert.IsNotNull(actionResult);
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(service);
+                    Assert.AreEqual(2, service.ServiceId);
                 }
             }
             finally
@@ -162,8 +166,11 @@ namespace UnitTests
                     var serv = new Service();
                     ServicesController controller = new ServicesController(context);
                     var actionResult = controller.PostService(serv).Result;
+                    var result = actionResult.Result as CreatedAtActionResult;
 
-                    Assert.IsNotNull(actionResult);
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(201, result.StatusCode);
+                    
                 }
             }
             finally
@@ -187,14 +194,19 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
+                    Service serv = new Service();
+                    context.Service.Add(serv);
+                    context.Service.Add(new Service());
                     context.Service.Add(new Service());
                     context.SaveChanges();
 
-                    var serv = new Service { ServiceName = "Panda Adoption Society" };
+                    serv.ServiceName = "Panda Adoption Society";
                     var controller = new ServicesController(context);
                     var actionResult = controller.PutService(1, serv).Result;
+                    var result = actionResult as NoContentResult;
 
-                    Assert.IsNotNull(actionResult);
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(204, result.StatusCode);
                 }
             }
             finally
@@ -227,6 +239,7 @@ namespace UnitTests
                     var actionResult = controller.DeleteService(2).Result;
 
                     Assert.IsNotNull(actionResult);
+                    
                 }
             }
             finally
