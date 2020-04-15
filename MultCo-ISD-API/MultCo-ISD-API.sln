@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultCo-ISD-API", "MultCo-ISD-API\MultCo-ISD-API.csproj", "{0BF3E1D6-28A5-4B26-B3F4-A750415CE74D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BF3E1D6-28A5-4B26-B3F4-A750415CE74D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BF3E1D6-28A5-4B26-B3F4-A750415CE74D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BF3E1D6-28A5-4B26-B3F4-A750415CE74D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BF3E1D6-28A5-4B26-B3F4-A750415CE74D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD8E94FF-73B3-4A8D-B256-D30F4248C004}
+	EndGlobalSection
+EndGlobal

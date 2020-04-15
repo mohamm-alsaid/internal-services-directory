@@ -1,4 +1,0 @@
-1. create branches [x]
-2. create API project []
-3. create dummy schema []
-4. try to build EMF from schema []
