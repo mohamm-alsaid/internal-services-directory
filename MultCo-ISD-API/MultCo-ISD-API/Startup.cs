@@ -31,6 +31,16 @@ namespace MultCo_ISD_API
 			var connection = @"Server = localhost; Database = InternalServicesDirectoryV1; Trusted_Connection = True;";
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
+			// register generator
+			// might need to add more swagger documents for customization
+			services.AddSwaggerGen(c => {
+				c.SwaggerDoc("V1", new Microsoft.OpenApi.Models.OpenApiInfo
+				{
+					Title = "MultCo API",
+					Version = "V1",
+					Description = "Multnomah County API",
+				});
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +52,14 @@ namespace MultCo_ISD_API
 			}
 
 			app.UseHttpsRedirection();
+
+			// Swagger middleware to enable Swagger UI...
+			app.UseSwagger();
+			// specify swagger json endpoint (will need to add more).
+			app.UseSwaggerUI(c => {
+				c.SwaggerEndpoint("/swagger/V1/swagger.json", "MultCo API V1");
+				c.RoutePrefix = string.Empty;
+			});
 
 			app.UseRouting();
 
