@@ -32,7 +32,7 @@ namespace MultCo_ISD_API
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
 			// register generator
-			// might need to add more swagger documents for customization
+			// might need to add more swagger documention for customization purposes
 			services.AddSwaggerGen(c => {
 				c.SwaggerDoc("V1", new Microsoft.OpenApi.Models.OpenApiInfo
 				{
@@ -55,7 +55,7 @@ namespace MultCo_ISD_API
 
 			// Swagger middleware to enable Swagger UI...
 			app.UseSwagger();
-			// specify swagger json endpoint (will need to add more).
+			// specify swagger json endpoint.
 			app.UseSwaggerUI(c => {
 				c.SwaggerEndpoint("/swagger/V1/swagger.json", "MultCo API V1");
 				c.RoutePrefix = string.Empty;
