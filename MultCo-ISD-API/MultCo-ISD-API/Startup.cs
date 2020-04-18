@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using MultCo_ISD_API.Models;
-
+using MultCo_ISD_API.Swagger;
 namespace MultCo_ISD_API
 {
 	public class Startup
@@ -31,16 +31,8 @@ namespace MultCo_ISD_API
 			var connection = @"Server = localhost; Database = InternalServicesDirectoryV1; Trusted_Connection = True;";
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
-			// register generator
-			// might need to add more swagger documention for customization purposes
-			services.AddSwaggerGen(c => {
-				c.SwaggerDoc("V1", new Microsoft.OpenApi.Models.OpenApiInfo
-				{
-					Title = "MultCo API",
-					Version = "V1",
-					Description = "Multnomah County API",
-				});
-			});
+			
+			services.AddSwaggerService();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,13 +45,7 @@ namespace MultCo_ISD_API
 
 			app.UseHttpsRedirection();
 
-			// Swagger middleware to enable Swagger UI...
-			app.UseSwagger();
-			// specify swagger json endpoint.
-			app.UseSwaggerUI(c => {
-				c.SwaggerEndpoint("/swagger/V1/swagger.json", "MultCo API V1");
-				c.RoutePrefix = string.Empty;
-			});
+			app.UseSwaggerService();
 
 			app.UseRouting();
 
