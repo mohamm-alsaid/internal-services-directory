@@ -14,8 +14,8 @@ import PyPDF2
 import os
 import re
 
-filename = "b1.pdf"
-output_filename = "output.json"
+# https://multco.us/file/82166/download
+# https://multco.us/file/82174/download
 
 # takes in the args from the command line
 # exits if there are greater than or less than 3 args, sys.argv[0] is always the program name
@@ -122,7 +122,14 @@ for line in lines:
 def read_page(page):
     page = page.split("\n")
     data = {k: "" for k in keys}
-    data["Program Name"] = page[0]
+    temp = re.split(r'\W', page[0])
+    temp2 = []
+    for x in temp:
+        if x != '':
+            temp2.append(x)
+    print(temp2)
+    data["Program Number"] = temp2[1]
+    data["Program Name"] = ' '.join(temp2[2:])
     data["Executive Summary"] = ""
     data["Program Summary"] = ""
     data["Related Programs"] = ""
