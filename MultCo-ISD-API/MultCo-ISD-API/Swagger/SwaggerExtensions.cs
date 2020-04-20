@@ -38,9 +38,7 @@ namespace MultCo_ISD_API.Swagger
             };
             services.AddSwaggerGen(c =>
             {
-                // specify securityScheme here
                 /**/
-                // Specify 
                 c.SwaggerDoc("V1", openApiInfoV1);
             });
             return services;

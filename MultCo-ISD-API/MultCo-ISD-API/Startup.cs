@@ -31,7 +31,7 @@ namespace MultCo_ISD_API
 			var connection = @"Server = localhost; Database = InternalServicesDirectoryV1; Trusted_Connection = True;";
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
-			
+
 			services.AddSwaggerService();
 		}
 
