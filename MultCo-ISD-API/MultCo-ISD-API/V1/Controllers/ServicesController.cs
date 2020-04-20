@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
+#if AUTH
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
+#endif
     [Route("api/[controller]")]
     [ApiController]
     public class ServicesController : ControllerBase
@@ -25,6 +30,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
         public async Task<IActionResult> GetServices()
         {
             var items = await _context.Service
@@ -46,6 +54,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
         public async Task<IActionResult> GetService(int id)
         {
             var item = await _context.Service
@@ -66,6 +77,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
         public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceV1DTO)
         {
             if (serviceV1DTO == null)
@@ -99,6 +113,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(409)]
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
         public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
         {
             if (serviceV1DTO == null)
@@ -125,6 +142,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
         public async Task<IActionResult> DeleteService(int id)
         {
             var item = await _context.Service.FirstOrDefaultAsync(s => s.ServiceId == id);
