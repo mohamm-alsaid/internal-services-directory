@@ -5,10 +5,16 @@ using System.Threading.Tasks;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using MultCo_ISD_API.Models;
+using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
+#if AUTH
+    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
+#endif
     [Route("api/[controller]")]
     [ApiController]
     public class ServicesController : ControllerBase
@@ -22,25 +28,47 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // GET: api/Services
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GetService()
+        [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> GetServices()
         {
-            return await _context.Service.ToListAsync();
+            var items = await _context.Service
+                .OrderBy(s => s.ServiceName)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            if (items == null || items.Count == 0)
+            {
+                var message = "There are no services in the system!";
+                return NotFound(message);
+            }
+
+            var list = items.Select(i => i.ToServiceV1DTO());
+            return Ok(list);
         }
 
         // GET: api/Services/5
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Service), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<Service>> GetService(int id)
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> GetService(int id)
         {
-            var service = await _context.Service.FindAsync(id);
+            var item = await _context.Service
+                .FirstOrDefaultAsync(s => s.ServiceId == id)
+                .ConfigureAwait(false);
 
-            if (service == null)
+            if (item == null)
             {
-                return NotFound();
+                return NotFound(string.Format("No service found with id = {0}", id));
             }
 
-            return Ok(service);
+            return Ok(item.ToServiceV1DTO());
         }
 
         // PUT: api/Services/5
@@ -49,32 +77,34 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> PutService(int id, Service service)
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
+        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceV1DTO)
         {
-            if (id != service.ServiceId)
+            if (serviceV1DTO == null)
+            {
+                throw new ArgumentNullException(nameof(serviceV1DTO));
+            }
+
+            if (id != serviceV1DTO.ServiceId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(service).State = EntityState.Modified;
+            var item = await _context.Service
+                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
+                .ConfigureAwait(false);
 
-            try
+            if (item == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ServiceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            item.CopyFromServiceV1DTO(serviceV1DTO);
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            return NoContent(); // 204
         }
 
         // POST: api/Services
@@ -83,30 +113,50 @@ namespace MultCo_ISD_API.V1.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(409)]
-        public async Task<ActionResult<Service>> PostService(Service service)
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
+        public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
         {
-            _context.Service.Add(service);
-            await _context.SaveChangesAsync();
+            if (serviceV1DTO == null)
+            {
+                throw new ArgumentNullException(nameof(serviceV1DTO));
+            }
 
-            return CreatedAtAction("GetService", new { id = service.ServiceId }, service);
+            var item = await _context.Service
+                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
+                .ConfigureAwait(false);
+
+            if (item != null)
+            {
+                return Conflict(); // 409
+            }
+
+            _context.Service.Add(serviceV1DTO.ToService());
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            return NoContent(); // 204
         }
 
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<Service>> DeleteService(int id)
+#if AUTH
+        [Authorize(Policy = "Writer")]
+#endif
+        public async Task<IActionResult> DeleteService(int id)
         {
-            var service = await _context.Service.FindAsync(id);
-            if (service == null)
+            var item = await _context.Service.FirstOrDefaultAsync(s => s.ServiceId == id);
+
+            if (item == null)
             {
                 return NotFound();
             }
 
-            _context.Service.Remove(service);
-            await _context.SaveChangesAsync();
-
-            return service;
+            _context.Service.Remove(item);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            return NoContent(); // 204
         }
 
         private bool ServiceExists(int id)

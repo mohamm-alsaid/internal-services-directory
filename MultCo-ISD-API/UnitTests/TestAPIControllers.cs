@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.Controllers;
+using MultCo_ISD_API.V1.DTO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Data.Sqlite;
 
@@ -97,7 +98,7 @@ namespace UnitTests
                     context.SaveChanges();
 
                     ServicesController controller = new ServicesController(context);
-                    var actionResult = controller.GetService().Result;
+                    var actionResult = controller.GetServices().Result;
 
                     Assert.IsNotNull(actionResult);
                 }
@@ -130,8 +131,8 @@ namespace UnitTests
 
                     ServicesController controller = new ServicesController(context);
                     var actionResult = controller.GetService(2).Result;
-                    var result = actionResult.Result as OkObjectResult;
-                    var service = result.Value as Service;
+                    var result = actionResult as OkObjectResult;
+                    var service = result.Value as ServiceV1DTO;
 
                     Assert.IsNotNull(result);
                     Assert.AreEqual(200, result.StatusCode);
@@ -163,13 +164,13 @@ namespace UnitTests
                     context.Service.Add(new Service());
                     context.SaveChanges();
 
-                    var serv = new Service();
+                    var serv = new Service().ToServiceV1DTO();
                     ServicesController controller = new ServicesController(context);
                     var actionResult = controller.PostService(serv).Result;
-                    var result = actionResult.Result as CreatedAtActionResult;
+                    var result = actionResult as NoContentResult;
 
                     Assert.IsNotNull(result);
-                    Assert.AreEqual(201, result.StatusCode);
+                    Assert.AreEqual(204, result.StatusCode);
                     
                 }
             }
@@ -202,7 +203,7 @@ namespace UnitTests
 
                     serv.ServiceName = "Panda Adoption Society";
                     var controller = new ServicesController(context);
-                    var actionResult = controller.PutService(1, serv).Result;
+                    var actionResult = controller.PutService(1, serv.ToServiceV1DTO()).Result;
                     var result = actionResult as NoContentResult;
 
                     Assert.IsNotNull(result);
