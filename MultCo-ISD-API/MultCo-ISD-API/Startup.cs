@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.AccessTokenValidation;
 using MultCo_ISD_API.Models;
-
+using MultCo_ISD_API.Swagger;
 namespace MultCo_ISD_API
 {
 	public class Startup
@@ -34,6 +34,10 @@ namespace MultCo_ISD_API
 			var connection = @"Server = localhost; Database = InternalServicesDirectoryV1; Trusted_Connection = True;";
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
+
+
+			services.AddSwaggerService();
+
 #if AUTH
 			// JWT Token Auth with IdentityServer4
 			services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
@@ -76,6 +80,8 @@ namespace MultCo_ISD_API
 			}
 
 			app.UseHttpsRedirection();
+
+			app.UseSwaggerService();
 
 			app.UseRouting();
 
