@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultCo_ISD_API.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,5 +20,15 @@ namespace MultCo_ISD_API.V1.DTO
         public string EmployeeConnectMethod { get; set; }
         public string CustomerConnectMethod { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+
+        public ContactV1DTO ContactDTO { get; set; }
+        public DepartmentV1DTO DepartmentDTO { get; set; }
+        public DivisionV1DTO DivisionDTO { get; set; }
+        public ProgramV1DTO ProgramDTO { get; set; }
+
+        //public virtual ICollection<ProgramCommunityAssociationV1DTO> ProgramCommunityAssociationDTO { get; set; }
+        //public virtual ICollection<ServiceLanguageAssociationV1DTO> ServiceLanguageAssociationDTO { get; set; }
+        //public virtual ICollection<ServiceLocationAssociationV1DTO> ServiceLocationAssociationDTO { get; set; }
     }
+
 }

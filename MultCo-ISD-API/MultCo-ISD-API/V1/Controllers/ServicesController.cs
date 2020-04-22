@@ -63,6 +63,22 @@ namespace MultCo_ISD_API.V1.Controllers
                 .FirstOrDefaultAsync(s => s.ServiceId == id)
                 .ConfigureAwait(false);
 
+            item.Contact = await _context.Contact
+                .FirstOrDefaultAsync(c => c.ContactId == item.ContactId)
+                .ConfigureAwait(false);
+
+            item.Department = await _context.Department
+                .FirstOrDefaultAsync(c => c.DepartmentId == item.DepartmentId)
+                .ConfigureAwait(false);
+
+            item.Division = await _context.Division
+                .FirstOrDefaultAsync(c => c.DivisionId == item.DivisionId)
+                .ConfigureAwait(false);
+
+            item.Program = await _context.Program
+                .FirstOrDefaultAsync(c => c.ProgramId == item.ProgramId)
+                .ConfigureAwait(false);
+
             if (item == null)
             {
                 return NotFound(string.Format("No service found with id = {0}", id));
