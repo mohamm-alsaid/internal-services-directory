@@ -178,6 +178,10 @@ namespace MultCo_ISD_API.Models
                 entity.Property(e => e.SponsorName)
                     .HasColumnName("sponsorName")
                     .HasMaxLength(255);
+
+                entity.Property(e => e.ProgramName)
+                    .HasColumnName("programName")
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<ProgramCommunityAssociation>(entity =>
@@ -224,6 +228,10 @@ namespace MultCo_ISD_API.Models
                 entity.Property(e => e.ExpirationDate)
                     .HasColumnName("expirationDate")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Active)
+                    .HasColumnName("active")
+                    .HasColumnType("bit");
 
                 entity.Property(e => e.ProgramId).HasColumnName("programID");
 

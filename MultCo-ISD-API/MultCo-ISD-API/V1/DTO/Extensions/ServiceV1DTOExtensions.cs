@@ -46,6 +46,7 @@ namespace MultCo_ISD_API.V1.DTO
             to.EmployeeConnectMethod = from.EmployeeConnectMethod;
             to.CustomerConnectMethod = from.CustomerConnectMethod;
             to.ExpirationDate = from.ExpirationDate;
+            to.Active = from.Active;
         }
 
         public static void CopyFromService(this ServiceV1DTO to,  Service from)
@@ -62,6 +63,7 @@ namespace MultCo_ISD_API.V1.DTO
             to.EmployeeConnectMethod = from.EmployeeConnectMethod;
             to.CustomerConnectMethod = from.CustomerConnectMethod;
             to.ExpirationDate = from.ExpirationDate;
+            to.Active = from.Active;
         }
     }
 }
