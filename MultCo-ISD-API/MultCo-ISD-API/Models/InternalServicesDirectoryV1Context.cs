@@ -21,7 +21,7 @@ namespace MultCo_ISD_API.Models
         public virtual DbSet<Division> Division { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Location> Location { get; set; }
-        public virtual DbSet<LocationType> LocationType { get; set; }
+        public virtual DbSet<LocationTypeV1DTOValidator> LocationType { get; set; }
         public virtual DbSet<Program> Program { get; set; }
         public virtual DbSet<ServiceCommunityAssociation> ServiceCommunityAssociation { get; set; }
         public virtual DbSet<Service> Service { get; set; }
@@ -153,7 +153,7 @@ namespace MultCo_ISD_API.Models
                     .HasConstraintName("FK__Location__locati__46E78A0C");
             });
 
-            modelBuilder.Entity<LocationType>(entity =>
+            modelBuilder.Entity<LocationTypeV1DTOValidator>(entity =>
             {
                 entity.HasIndex(e => e.LocationTypeName)
                     .HasName("UQ__Location__6DC168678A6A427A")

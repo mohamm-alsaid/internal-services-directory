@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MultCo_ISD_API.Models
 {
-    public partial class LocationType
+    public partial class LocationTypeV1DTOValidator
     {
-        public LocationType()
+        public LocationTypeV1DTOValidator()
         {
             Location = new HashSet<Location>();
         }
