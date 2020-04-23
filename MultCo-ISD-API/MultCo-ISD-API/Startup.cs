@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.AccessTokenValidation;
 using MultCo_ISD_API.Models;
 using MultCo_ISD_API.Swagger;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 namespace MultCo_ISD_API
 {
 	public class Startup
@@ -30,11 +33,13 @@ namespace MultCo_ISD_API
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvc();
+			services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<V1.Validators.CommunityV1DTOValidator>()); // Add Fluent Validation 
+
 			var connection = @"Server = localhost; Database = InternalServicesDirectoryV1; Trusted_Connection = True;";
 			services.AddDbContext<InternalServicesDirectoryV1Context>(options => options.UseSqlServer(connection));
 			services.AddControllers();
-
+							
+			// register validator(s):
 
 			services.AddSwaggerService();
 
