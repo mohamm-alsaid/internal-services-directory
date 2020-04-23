@@ -62,12 +62,6 @@ namespace MultCo_ISD_API.V1.DTO
             to.EmployeeConnectMethod = from.EmployeeConnectMethod;
             to.CustomerConnectMethod = from.CustomerConnectMethod;
             to.ExpirationDate = from.ExpirationDate;
-
-            to.ContactDTO = from.Contact?.ToContactV1DTO();
-            to.DepartmentDTO = from.Department?.ToDepartmentV1DTO();
-            to.DivisionDTO = from.Division?.ToDivisionV1DTO();
-            to.ProgramDTO = from.Program?.ToProgramV1DTO();
-
         }
     }
 }
