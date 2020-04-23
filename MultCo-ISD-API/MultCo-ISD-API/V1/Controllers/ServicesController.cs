@@ -46,8 +46,14 @@ namespace MultCo_ISD_API.V1.Controllers
                 return NotFound(message);
             }
 
-            var list = items.Select(i => i.ToServiceV1DTO());
-            return Ok(list);
+            //var list = items.Select(i => i.ToServiceV1DTO());
+            //return Ok(list);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var s in items)
+            {
+                serviceDTOs.Add(await FillInService(s).ConfigureAwait(false));
+            }
+            return Ok(serviceDTOs);
         }
 
         // GET: api/Services/5
