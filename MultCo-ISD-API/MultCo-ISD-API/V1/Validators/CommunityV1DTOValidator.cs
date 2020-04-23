@@ -7,9 +7,9 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public CommunityV1DTOValidator()
         {
-            RuleFor(x => x.CommunityName).NotNull();
-            RuleFor(x => x.CommunityName).NotNull().MaximumLength(5);
-            RuleFor(x => x.CommunityDescription).NotNull().MaximumLength(5);
+            RuleFor(x => x.CommunityID).NotNull();
+            RuleFor(x => x.CommunityName).NotNull().MaximumLength(50);
+            RuleFor(x => x.CommunityDescription).NotNull().MaximumLength(50);
         }
     }
 }

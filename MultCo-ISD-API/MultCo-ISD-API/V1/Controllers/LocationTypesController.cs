@@ -22,14 +22,14 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // GET: api/LocationTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LocationType>>> GetLocationType()
+        public async Task<ActionResult<IEnumerable<LocationTypeV1DTOValidator>>> GetLocationType()
         {
             return await _context.LocationType.ToListAsync();
         }
 
         // GET: api/LocationTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<LocationType>> GetLocationType(int id)
+        public async Task<ActionResult<LocationTypeV1DTOValidator>> GetLocationType(int id)
         {
             var locationType = await _context.LocationType.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace MultCo_ISD_API.V1.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLocationType(int id, LocationType locationType)
+        public async Task<IActionResult> PutLocationType(int id, LocationTypeV1DTOValidator locationType)
         {
             if (id != locationType.LocationTypeId)
             {
@@ -77,7 +77,7 @@ namespace MultCo_ISD_API.V1.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<LocationType>> PostLocationType(LocationType locationType)
+        public async Task<ActionResult<LocationTypeV1DTOValidator>> PostLocationType(LocationTypeV1DTOValidator locationType)
         {
             _context.LocationType.Add(locationType);
             await _context.SaveChangesAsync();
@@ -87,7 +87,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // DELETE: api/LocationTypes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<LocationType>> DeleteLocationType(int id)
+        public async Task<ActionResult<LocationTypeV1DTOValidator>> DeleteLocationType(int id)
         {
             var locationType = await _context.LocationType.FindAsync(id);
             if (locationType == null)
