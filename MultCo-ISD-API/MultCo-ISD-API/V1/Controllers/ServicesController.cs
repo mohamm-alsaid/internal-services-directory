@@ -63,6 +63,11 @@ namespace MultCo_ISD_API.V1.Controllers
                 .FirstOrDefaultAsync(s => s.ServiceId == id)
                 .ConfigureAwait(false);
 
+            if (item == null)
+            {
+                return NotFound(string.Format("No service found with id = {0}", id));
+            }
+
             item.Contact = await _context.Contact
                 .FirstOrDefaultAsync(c => c.ContactId == item.ContactId)
                 .ConfigureAwait(false);
@@ -79,12 +84,58 @@ namespace MultCo_ISD_API.V1.Controllers
                 .FirstOrDefaultAsync(c => c.ProgramId == item.ProgramId)
                 .ConfigureAwait(false);
 
-            if (item == null)
+            var programCommunityAssociationList = await _context.ProgramCommunityAssociation
+                .Where(p => p.ServiceId == item.ServiceId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var serviceLanguageAssociationList = await _context.ServiceLanguageAssociation
+                .Where(p => p.ServiceId == item.ServiceId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var serviceLocationAssociationList = await _context.ServiceLocationAssociation
+                .Where(p => p.ServiceId == item.ServiceId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+
+
+
+            var itemDTO = item.ToServiceV1DTO();
+            //itemDTO.CommunityDTOs = new HashSet<CommunityV1DTO>();
+
+            foreach (var pca in programCommunityAssociationList)
             {
-                return NotFound(string.Format("No service found with id = {0}", id));
+                var community = await _context.Community
+                    .FirstOrDefaultAsync(c => c.CommunityId == pca.CommunityId)
+                    .ConfigureAwait(false);
+                itemDTO.CommunityDTOs.Add(community.ToCommunityV1DTO());
             }
 
-            return Ok(item.ToServiceV1DTO());
+            foreach (var sla in serviceLanguageAssociationList)
+            {
+                var language = await _context.Language
+                    .FirstOrDefaultAsync(l => l.LanguageId == sla.LanguageId)
+                    .ConfigureAwait(false);
+                itemDTO.LanguageDTOs.Add(language.ToLanguageV1DTO());
+            }
+
+            foreach (var sla in serviceLocationAssociationList)
+            {
+                var location = await _context.Location
+                    .FirstOrDefaultAsync(l => l.LocationId == sla.LocationId)
+                    .ConfigureAwait(false);
+
+                location.LocationType = await _context.LocationType
+                    .FirstOrDefaultAsync(lt => lt.LocationTypeId == location.LocationTypeId)
+                    .ConfigureAwait(false);
+
+                itemDTO.LocationDTOs.Add(location.ToLocationV1DTO());
+            }
+
+
+            return Ok(itemDTO);
         }
 
         // PUT: api/Services/5

@@ -14,5 +14,8 @@ namespace MultCo_ISD_API.V1.DTO
         public string LocationAddress { get; set; }
         public string RoomNumber { get; set; }
         public string FloorNumber { get; set; }
+
+
+        public LocationTypeV1DTO LocationTypeDTO { get; set; }
     }
 }

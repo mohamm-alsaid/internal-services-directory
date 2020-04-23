@@ -50,6 +50,8 @@ namespace MultCo_ISD_API.V1.DTO
 			to.LocationAddress = from.LocationAddress;
 			to.RoomNumber = from.RoomNumber;
 			to.FloorNumber = from.RoomNumber;
+
+			to.LocationTypeDTO = from.LocationType?.ToLocationTypeV1DTO();
 		}
 	}
 }

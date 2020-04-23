@@ -20,7 +20,7 @@ namespace MultCo_ISD_API.V1.DTO
 			return languageV1DTO;
 		}
 
-		public static Language toLanguage(this LanguageV1DTO item)
+		public static Language ToLanguage(this LanguageV1DTO item)
 		{
 			if (item == null)
 			{
