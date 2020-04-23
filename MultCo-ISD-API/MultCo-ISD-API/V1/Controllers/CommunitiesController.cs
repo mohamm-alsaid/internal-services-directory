@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultCo_ISD_API.Models;
+using MultCo_ISD_API.V1.DTO;
+using MultCo_ISD_API.Validation;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
+    [Validate]
     [Route("api/[controller]")]
     [ApiController]
     public class CommunitiesController : ControllerBase
