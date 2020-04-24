@@ -25,6 +25,8 @@ namespace MultCo_ISD_API.Models
         public string CustomerConnectMethod { get; set; }
         public DateTime? ExpirationDate { get; set; }
 
+        public Boolean Active { get; set; }
+
         public virtual Contact Contact { get; set; }
         public virtual Department Department { get; set; }
         public virtual Division Division { get; set; }

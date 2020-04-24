@@ -36,6 +36,7 @@ namespace MultCo_ISD_API.V1.DTO
         public HashSet<CommunityV1DTO> CommunityDTOs { get; set; }
         public HashSet<LanguageV1DTO> LanguageDTOs { get; set; }
         public HashSet<LocationV1DTO> LocationDTOs { get; set; }
+        public Boolean Active { get; set; }
     }
 
 }
