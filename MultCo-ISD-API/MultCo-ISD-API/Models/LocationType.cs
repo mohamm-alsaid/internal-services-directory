@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace MultCo_ISD_API.Models
 {
-    public partial class LocationTypeV1DTOValidator
+    [BindProperties]
+    public partial class LocationType
     {
-        public LocationTypeV1DTOValidator()
+        public LocationType()
         {
             Location = new HashSet<Location>();
         }

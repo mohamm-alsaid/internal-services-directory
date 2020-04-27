@@ -18,7 +18,7 @@ namespace MultCo_ISD_API.Models
         public string RoomNumber { get; set; }
         public string FloorNumber { get; set; }
 
-        public virtual LocationTypeV1DTOValidator LocationType { get; set; }
+        public virtual LocationType LocationType { get; set; }
         public virtual ICollection<ServiceLocationAssociation> ServiceLocationAssociation { get; set; }
     }
 }
