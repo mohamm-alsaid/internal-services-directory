@@ -19,5 +19,7 @@ namespace MultCo_ISD_API.V1.DTO
         public string EmployeeConnectMethod { get; set; }
         public string CustomerConnectMethod { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+
+        public Boolean Active { get; set; }
     }
 }

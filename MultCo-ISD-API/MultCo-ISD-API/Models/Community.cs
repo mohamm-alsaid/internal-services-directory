@@ -7,13 +7,13 @@ namespace MultCo_ISD_API.Models
     {
         public Community()
         {
-            ProgramCommunityAssociation = new HashSet<ProgramCommunityAssociation>();
+            ServiceCommunityAssociation = new HashSet<ServiceCommunityAssociation>();
         }
 
         public int CommunityId { get; set; }
         public string CommunityName { get; set; }
         public string CommunityDescription { get; set; }
 
-        public virtual ICollection<ProgramCommunityAssociation> ProgramCommunityAssociation { get; set; }
+        public virtual ICollection<ServiceCommunityAssociation> ServiceCommunityAssociation { get; set; }
     }
 }

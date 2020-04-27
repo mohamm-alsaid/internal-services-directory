@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace MultCo_ISD_API.Models
 {
     [BindProperties]
-    public partial class ProgramCommunityAssociation
+    public partial class ServiceCommunityAssociation
     {
-        public int ProgramCommunityAssociationId { get; set; }
+        public int ServiceCommunityAssociationId { get; set; }
         public int? ServiceId { get; set; }
         public int? CommunityId { get; set; }
 

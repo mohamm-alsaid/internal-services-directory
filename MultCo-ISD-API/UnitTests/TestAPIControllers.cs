@@ -42,38 +42,6 @@ namespace UnitTests
             }
         }
 
-        [TestMethod]
-        public void TestGetPrograms()
-        {
-            var connection = new SqliteConnection("Datasource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                using (var context = new InternalServicesDirectoryV1Context(options))
-                {
-                    context.Database.EnsureCreated();
-                    context.Program.Add(new Program());
-                    context.Program.Add(new Program());
-                    context.Program.Add(new Program());
-                    context.SaveChanges();
-
-                    ProgramsController controller = new ProgramsController(context);
-                    var actionResult = controller.GetProgram().Result;
-
-                    Assert.IsNotNull(actionResult);
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
         /* 
          * Test Methods for Services Controller
          */

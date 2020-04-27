@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.Models
     {
         public Service()
         {
-            ProgramCommunityAssociation = new HashSet<ProgramCommunityAssociation>();
+            ServiceCommunityAssociation = new HashSet<ServiceCommunityAssociation>();
             ServiceLanguageAssociation = new HashSet<ServiceLanguageAssociation>();
             ServiceLocationAssociation = new HashSet<ServiceLocationAssociation>();
         }
@@ -25,11 +25,13 @@ namespace MultCo_ISD_API.Models
         public string CustomerConnectMethod { get; set; }
         public DateTime? ExpirationDate { get; set; }
 
+        public Boolean Active { get; set; }
+
         public virtual Contact Contact { get; set; }
         public virtual Department Department { get; set; }
         public virtual Division Division { get; set; }
         public virtual Program Program { get; set; }
-        public virtual ICollection<ProgramCommunityAssociation> ProgramCommunityAssociation { get; set; }
+        public virtual ICollection<ServiceCommunityAssociation> ServiceCommunityAssociation { get; set; }
         public virtual ICollection<ServiceLanguageAssociation> ServiceLanguageAssociation { get; set; }
         public virtual ICollection<ServiceLocationAssociation> ServiceLocationAssociation { get; set; }
     }
