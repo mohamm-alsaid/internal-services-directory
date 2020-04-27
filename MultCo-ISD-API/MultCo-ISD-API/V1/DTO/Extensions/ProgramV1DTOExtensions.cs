@@ -38,6 +38,7 @@ namespace MultCo_ISD_API.V1.DTO
 			to.SponsorName = from.SponsorName;
 			to.OfferType = from.OfferType;
 			to.ProgramName = from.ProgramName;
+			to.ProgramOfferNumber = from.ProgramOfferNumber;
 		}
 
 		public static void CopyFromProgram(this ProgramV1DTO to, Program from)
@@ -46,6 +47,7 @@ namespace MultCo_ISD_API.V1.DTO
 			to.SponsorName = from.SponsorName;
 			to.OfferType = from.OfferType;
 			to.ProgramName = from.ProgramName;
+			to.ProgramOfferNumber = from.ProgramOfferNumber;
 		}
 	}
 }

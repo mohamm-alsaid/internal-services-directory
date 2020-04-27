@@ -23,7 +23,7 @@ namespace MultCo_ISD_API.Models
         public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<LocationType> LocationType { get; set; }
         public virtual DbSet<Program> Program { get; set; }
-        public virtual DbSet<ProgramCommunityAssociation> ProgramCommunityAssociation { get; set; }
+        public virtual DbSet<ServiceCommunityAssociation> ServiceCommunityAssociation { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServiceLanguageAssociation> ServiceLanguageAssociation { get; set; }
         public virtual DbSet<ServiceLocationAssociation> ServiceLocationAssociation { get; set; }
@@ -182,23 +182,27 @@ namespace MultCo_ISD_API.Models
                 entity.Property(e => e.ProgramName)
                     .HasColumnName("programName")
                     .HasMaxLength(255);
+
+                entity.Property(e => e.ProgramOfferNumber)
+                    .HasColumnName("programOfferNumber")
+                    .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<ProgramCommunityAssociation>(entity =>
+            modelBuilder.Entity<ServiceCommunityAssociation>(entity =>
             {
-                entity.Property(e => e.ProgramCommunityAssociationId).HasColumnName("programCommunityAssociationID");
+                entity.Property(e => e.ServiceCommunityAssociationId).HasColumnName("serviceCommunityAssociationID");
 
                 entity.Property(e => e.CommunityId).HasColumnName("communityID");
 
                 entity.Property(e => e.ServiceId).HasColumnName("serviceID");
 
                 entity.HasOne(d => d.Community)
-                    .WithMany(p => p.ProgramCommunityAssociation)
+                    .WithMany(p => p.ServiceCommunityAssociation)
                     .HasForeignKey(d => d.CommunityId)
                     .HasConstraintName("FK__ProgramCo__commu__440B1D61");
 
                 entity.HasOne(d => d.Service)
-                    .WithMany(p => p.ProgramCommunityAssociation)
+                    .WithMany(p => p.ServiceCommunityAssociation)
                     .HasForeignKey(d => d.ServiceId)
                     .HasConstraintName("FK__ProgramCo__servi__4316F928");
             });
