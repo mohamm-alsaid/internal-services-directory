@@ -15,7 +15,7 @@ namespace MultCo_ISD_API.V1.Validators
             RuleFor(x => x.DivisionId).NotNull();
             RuleFor(x => x.ServiceName).NotNull().MaximumLength(20);
             RuleFor(x => x.ServiceDescription).NotNull().MaximumLength(50);
-            RuleFor(x => x.ExecutiveSummary).NotNull();
+            RuleFor(x => x.ExecutiveSummary).NotNull().MaximumLength(50).WithMessage("you f'ed up");
             RuleFor(x => x.ServiceArea).NotNull().MaximumLength(20);
             //RuleFor(x => x.ContactId).NotNull();
             RuleFor(x => x.EmployeeConnectMethod).NotNull().MaximumLength(50);

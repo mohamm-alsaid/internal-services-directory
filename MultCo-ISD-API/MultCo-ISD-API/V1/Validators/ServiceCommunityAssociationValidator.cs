@@ -5,11 +5,11 @@ using MultCo_ISD_API.Models;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class ProgramConmunnityAssociationValidator : AbstractValidator<ProgramCommunityAssociation>
+    public class ServiceCommunityAssociationValidator : AbstractValidator<ServiceCommunityAssociation>
     {
-        public ProgramConmunnityAssociationValidator()
+        public ServiceCommunityAssociationValidator()
         {
-            RuleFor(x => x.ProgramCommunityAssociationId);
+            RuleFor(x => x.ServiceCommunityAssociationId);
             //
             RuleFor(x => x.CommunityId);
             RuleFor(x => x.ServiceId);

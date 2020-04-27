@@ -47,15 +47,12 @@ namespace MultCo_ISD_API
 			services.AddTransient<IValidator<Language>, V1.Validators.LanguageValidator>(); // register lag 
 			services.AddTransient<IValidator<LocationType>, V1.Validators.LocationTypeValidator>(); // register location type
 			services.AddTransient<IValidator<Location>, V1.Validators.LocationValidator>(); // register location
-			services.AddTransient<IValidator<ProgramCommunityAssociation>, V1.Validators.ProgramConmunnityAssociationValidator>(); // register prog-comm association
+			services.AddTransient<IValidator<ServiceCommunityAssociation>, V1.Validators.ServiceCommunityAssociationValidator>(); // register prog-comm association
 			services.AddTransient<IValidator<Program>, V1.Validators.ProgramValidator>(); 
 			services.AddTransient<IValidator<ServiceLanguageAssociation>, V1.Validators.ServiceLanguageAssociationValidator>(); // 
 			services.AddTransient<IValidator<Department>, V1.Validators.DepartmentValidator>(); // 
 			services.AddTransient<IValidator<ServiceLocationAssociation>, V1.Validators.ServiceLocationAssociationV1DTOValidator>(); 
 			services.AddTransient<IValidator<Service>, V1.Validators.ServiceValidator>(); 
-
-
-
 
 
 			services.AddSwaggerService();
