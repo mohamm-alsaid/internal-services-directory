@@ -2,7 +2,7 @@
 using FluentValidation;
 using MultCo_ISD_API.Models;
 
-namespace MultCo_ISD_API.Validators
+namespace MultCo_ISD_API.V1.Validators
 {
     public class LocationTypeValidator : AbstractValidator<LocationType>
     {

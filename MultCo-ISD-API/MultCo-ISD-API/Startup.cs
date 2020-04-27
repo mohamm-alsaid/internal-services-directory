@@ -41,34 +41,18 @@ namespace MultCo_ISD_API
 			services.AddControllers();
 
 			// register validator(s):
-			/*
-			services.AddTransient<IValidator<V1.DTO.ContactV1DTO>,V1.Validators.ContactValidator>(); // register contact
-			services.AddTransient<IValidator<V1.DTO.CommunityV1DTO>, V1.Validators.CommunityV1DTOValidator>(); // register community
-			//services.AddTransient<IValidator<V1.DTO.DepartmentV1DTO>, V1.Validators.DepartmentV1DTOValidator>(); // register department
-			services.AddTransient<IValidator<V1.DTO.DivisionV1DTO>, V1.Validators.DivisionValidator>(); // register division
-			services.AddTransient<IValidator<V1.DTO.LanguageV1DTO>, V1.Validators.LanguageValidator>(); // register lag 
-			services.AddTransient<IValidator<V1.DTO.LocationTypeV1DTO>, V1.Validators.LocationTypeValidator>(); // register location type
-			services.AddTransient<IValidator<V1.DTO.LocationV1DTO>, V1.Validators.LocationValidator>(); // register location
-			services.AddTransient<IValidator<V1.DTO.ProgramCommunityAssociationV1DTO>, V1.Validators.ProgramConmunnityAssociationV1DTOValidator>(); // register prog-comm association
-			services.AddTransient<IValidator<V1.DTO.ProgramV1DTO>, V1.Validators.ProgramValidator>(); // register contact
-			services.AddTransient<IValidator<V1.DTO.ServiceLanguageAssociationV1DTO>, V1.Validators.ServiceLanguageAssociationValidator>(); // register contact
-			services.AddTransient<IValidator<V1.DTO.DepartmentV1DTO>, V1.Validators.DepartmentV1DTOValidator>(); // register contact
-			services.AddTransient<IValidator<V1.DTO.ServiceLocationAssociationV1DTO>, V1.Validators.ServiceLocationAssociationV1DTOValidator>(); // register contact
-			services.AddTransient<IValidator<V1.DTO.ServiceV1DTO>, V1.Validators.ServiceValidator>(); // register contact
-			*/
-
-			services.AddTransient<IValidator<Contact>, Validators.ContactValidator>(); // register contact
-			services.AddTransient<IValidator<Community>, Validators.CommunityValidator>(); // register community
-			services.AddTransient<IValidator<Division>, Validators.DivisionValidator>(); // register division
-			services.AddTransient<IValidator<Language>, Validators.LanguageValidator>(); // register lag 
-			services.AddTransient<IValidator<LocationType>, Validators.LocationTypeValidator>(); // register location type
-			services.AddTransient<IValidator<Location>, Validators.LocationValidator>(); // register location
-			services.AddTransient<IValidator<ProgramCommunityAssociation>, Validators.ProgramConmunnityAssociationValidator>(); // register prog-comm association
-			services.AddTransient<IValidator<Program>, Validators.ProgramValidator>(); // register contact
-			services.AddTransient<IValidator<ServiceLanguageAssociation>, Validators.ServiceLanguageAssociationValidator>(); // register contact
-			services.AddTransient<IValidator<Department>, Validators.DepartmentValidator>(); // register contact
-			services.AddTransient<IValidator<ServiceLocationAssociation>, Validators.ServiceLocationAssociationV1DTOValidator>(); // register contact
-			services.AddTransient<IValidator<Service>, Validators.ServiceValidator>(); // register contact
+			services.AddTransient<IValidator<Contact>, V1.Validators.ContactValidator>(); // register contact
+			services.AddTransient<IValidator<Community>, V1.Validators.CommunityValidator>(); // register community
+			services.AddTransient<IValidator<Division>, V1.Validators.DivisionValidator>(); // register division
+			services.AddTransient<IValidator<Language>, V1.Validators.LanguageValidator>(); // register lag 
+			services.AddTransient<IValidator<LocationType>, V1.Validators.LocationTypeValidator>(); // register location type
+			services.AddTransient<IValidator<Location>, V1.Validators.LocationValidator>(); // register location
+			services.AddTransient<IValidator<ProgramCommunityAssociation>, V1.Validators.ProgramConmunnityAssociationValidator>(); // register prog-comm association
+			services.AddTransient<IValidator<Program>, V1.Validators.ProgramValidator>(); 
+			services.AddTransient<IValidator<ServiceLanguageAssociation>, V1.Validators.ServiceLanguageAssociationValidator>(); // 
+			services.AddTransient<IValidator<Department>, V1.Validators.DepartmentValidator>(); // 
+			services.AddTransient<IValidator<ServiceLocationAssociation>, V1.Validators.ServiceLocationAssociationV1DTOValidator>(); 
+			services.AddTransient<IValidator<Service>, V1.Validators.ServiceValidator>(); 
 
 
 
