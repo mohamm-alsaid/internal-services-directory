@@ -5,13 +5,13 @@ using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class LocationTypeV1DTOValidator : AbstractValidator<LocationTypeV1DTO>
+    public class LocationTypeValidator : AbstractValidator<LocationTypeV1DTO>
     {
-        public LocationTypeV1DTOValidator()
+        public LocationTypeValidator()
         {
 
-            RuleFor(x => x.LocationTypeID).NotNull();
-            RuleFor(x => x.LocationTypeName).NotNull().MaximumLength(20);
+            //RuleFor(x => x.LocationTypeID).NotNull();
+            //RuleFor(x => x.LocationTypeName).NotNull().MaximumLength(20);
         }
     }
 }

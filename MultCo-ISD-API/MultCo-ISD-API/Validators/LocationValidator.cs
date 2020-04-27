@@ -1,18 +1,17 @@
 ﻿using System.Data;
 using FluentValidation;
-using FluentValidation.Validators;
-using MultCo_ISD_API.V1.DTO;
+using MultCo_ISD_API.Models;
 
-namespace MultCo_ISD_API.V1.Validators
+namespace MultCo_ISD_API.Validators
 {
-    public class LocationValidator : AbstractValidator<LocationV1DTO>
+    public class LocationValidator : AbstractValidator<Location>
     {
         public LocationValidator()
         {
-            RuleFor(x => x.LocationID).NotNull();
-            RuleFor(x => x.LocationTypeID).NotNull();
+            RuleFor(x => x.LocationId).NotNull();
+            RuleFor(x => x.LocationTypeId).NotNull();
             RuleFor(x => x.LocationName).NotNull().MaximumLength(20);
-            RuleFor(x => x.BuildingID).NotNull();
+            RuleFor(x => x.BuildingId).NotNull();
             RuleFor(x => x.LocationAddress).NotNull().MaximumLength(50);
             RuleFor(x => x.RoomNumber).NotNull();
             RuleFor(x => x.FloorNumber).NotNull();

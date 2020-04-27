@@ -3,9 +3,9 @@ using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class DivisionV1DTOValidator : AbstractValidator<DivisionV1DTO>
+    public class DivisionValidator : AbstractValidator<DivisionV1DTO>
     {
-        public DivisionV1DTOValidator()
+        public DivisionValidator()
         {
             RuleFor(x => x.DivisionID).NotNull();
             RuleFor(x => x.DivisionCode).NotNull();

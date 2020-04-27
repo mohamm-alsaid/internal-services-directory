@@ -9,8 +9,8 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ServiceLocationAssociationV1DTOValidator()
         {
-            //RuleFor(x => x.ServiceID).NotNull();
-            //RuleFor(x => x.LocationID).NotNull();
+            RuleFor(x => x.ServiceID).NotNull();
+            RuleFor(x => x.LocationID).NotNull();
         }
     }
 }
