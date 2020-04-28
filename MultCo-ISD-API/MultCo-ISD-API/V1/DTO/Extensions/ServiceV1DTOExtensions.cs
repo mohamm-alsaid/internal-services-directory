@@ -48,10 +48,10 @@ namespace MultCo_ISD_API.V1.DTO
             to.ExpirationDate = from.ExpirationDate;
             to.Active = from.Active;
 
-            to.Contact = from?.ContactDTO.ToContact();
-            to.Department = from?.DepartmentDTO.ToDepartment();
-            to.Division = from?.DivisionDTO.ToDivision();
-            to.Program = from?.ProgramDTO.toProgram();
+            to.Contact = from.ContactDTO?.ToContact();
+            to.Department = from.DepartmentDTO?.ToDepartment();
+            to.Division = from.DivisionDTO?.ToDivision();
+            to.Program = from.ProgramDTO?.toProgram();
 
             foreach (var scaDTO in from.ServiceCommunityAssociationDTOs)
             {
@@ -85,10 +85,10 @@ namespace MultCo_ISD_API.V1.DTO
             to.ExpirationDate = from.ExpirationDate;
             to.Active = from.Active;
 
-            to.ContactDTO = from?.Contact.ToContactV1DTO();
-            to.DepartmentDTO = from?.Department.ToDepartmentV1DTO();
-            to.DivisionDTO = from?.Division.ToDivisionV1DTO();
-            to.ProgramDTO = from?.Program.ToProgramV1DTO();
+            to.ContactDTO = from.Contact?.ToContactV1DTO();
+            to.DepartmentDTO = from.Department?.ToDepartmentV1DTO();
+            to.DivisionDTO = from.Division?.ToDivisionV1DTO();
+            to.ProgramDTO = from.Program?.ToProgramV1DTO();
 
             foreach (var sca in from.ServiceCommunityAssociation)
             {
