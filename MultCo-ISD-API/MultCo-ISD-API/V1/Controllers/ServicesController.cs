@@ -9,6 +9,7 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
+using MultCo_ISD_API.V1.ControllerContexts;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
@@ -19,11 +20,17 @@ namespace MultCo_ISD_API.V1.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
+        private const string DefaultConnectionStringName = "DefaultConnection";
+
         private readonly InternalServicesDirectoryV1Context _context;
+        private readonly IServiceContext _serviceContext;
 
         public ServicesController(InternalServicesDirectoryV1Context context)
         {
+            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member 
+            // and pass 'context' directly to the 'ServiceContext' constructor
             _context = context;
+            _serviceContext = new ServiceContext(_context);
         }
 
         // GET: api/Services
@@ -65,17 +72,33 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> GetService(int id)
         {
-            var item = await _context.Service
-                .FirstOrDefaultAsync(s => s.ServiceId == id)
-                .ConfigureAwait(false);
+            //var item = await _context.Service
+            //    .FirstOrDefaultAsync(s => s.ServiceId == id)
+            //    .ConfigureAwait(false);
 
-            if (item == null)
+            //if (item == null)
+            //{
+            //    return NotFound(string.Format("No service found with id = {0}", id));
+            //}
+
+            //var itemDTO = await FillInService(item).ConfigureAwait(false);
+            //return Ok(itemDTO);
+
+            try
             {
-                return NotFound(string.Format("No service found with id = {0}", id));
-            }
+                var service = await _serviceContext.GetByIdAsync(id);
 
-            var itemDTO = await FillInService(item).ConfigureAwait(false);
-            return Ok(itemDTO);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(service.ToServiceV1DTO());
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         // PUT: api/Services/5
@@ -189,7 +212,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 .FirstOrDefaultAsync(c => c.ProgramId == service.ProgramId)
                 .ConfigureAwait(false);
 
-            var programCommunityAssociationList = await _context.ProgramCommunityAssociation
+            var ServiceCommunityAssociationList = await _context.ServiceCommunityAssociation
                 .Where(p => p.ServiceId == service.ServiceId)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -206,34 +229,34 @@ namespace MultCo_ISD_API.V1.Controllers
 
             var itemDTO = service.ToServiceV1DTO();
 
-            foreach (var pca in programCommunityAssociationList)
-            {
-                var community = await _context.Community
-                    .FirstOrDefaultAsync(c => c.CommunityId == pca.CommunityId)
-                    .ConfigureAwait(false);
-                itemDTO.CommunityDTOs.Add(community.ToCommunityV1DTO());
-            }
+            //foreach (var pca in ServiceCommunityAssociationList)
+            //{
+            //    var community = await _context.Community
+            //        .FirstOrDefaultAsync(c => c.CommunityId == pca.CommunityId)
+            //        .ConfigureAwait(false);
+            //    itemDTO.CommunityDTOs.Add(community.ToCommunityV1DTO());
+            //}
 
-            foreach (var sla in serviceLanguageAssociationList)
-            {
-                var language = await _context.Language
-                    .FirstOrDefaultAsync(l => l.LanguageId == sla.LanguageId)
-                    .ConfigureAwait(false);
-                itemDTO.LanguageDTOs.Add(language.ToLanguageV1DTO());
-            }
+            //foreach (var sla in serviceLanguageAssociationList)
+            //{
+            //    var language = await _context.Language
+            //        .FirstOrDefaultAsync(l => l.LanguageId == sla.LanguageId)
+            //        .ConfigureAwait(false);
+            //    itemDTO.LanguageDTOs.Add(language.ToLanguageV1DTO());
+            //}
 
-            foreach (var sla in serviceLocationAssociationList)
-            {
-                var location = await _context.Location
-                    .FirstOrDefaultAsync(l => l.LocationId == sla.LocationId)
-                    .ConfigureAwait(false);
+            //foreach (var sla in serviceLocationAssociationList)
+            //{
+            //    var location = await _context.Location
+            //        .FirstOrDefaultAsync(l => l.LocationId == sla.LocationId)
+            //        .ConfigureAwait(false);
 
-                location.LocationType = await _context.LocationType
-                    .FirstOrDefaultAsync(lt => lt.LocationTypeId == location.LocationTypeId)
-                    .ConfigureAwait(false);
+            //    location.LocationType = await _context.LocationType
+            //        .FirstOrDefaultAsync(lt => lt.LocationTypeId == location.LocationTypeId)
+            //        .ConfigureAwait(false);
 
-                itemDTO.LocationDTOs.Add(location.ToLocationV1DTO());
-            }
+            //    itemDTO.LocationDTOs.Add(location.ToLocationV1DTO());
+            //}
 
             return itemDTO;
         }

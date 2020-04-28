@@ -10,9 +10,9 @@ namespace MultCo_ISD_API.V1.DTO
     {
         public ServiceV1DTO()
         {
-            CommunityDTOs = new HashSet<CommunityV1DTO>();
-            LanguageDTOs = new HashSet<LanguageV1DTO>();
-            LocationDTOs = new HashSet<LocationV1DTO>();
+            ServiceCommunityAssociationDTOs = new List<ServiceCommunityAssociationV1DTO>();
+            ServiceLanguageAssociationDTOs = new List<ServiceLanguageAssociationV1DTO>();
+            ServiceLocationAssociationDTOs = new List<ServiceLocationAssociationV1DTO>();
         }
 
         public int ServiceId { get; set; }
@@ -27,16 +27,15 @@ namespace MultCo_ISD_API.V1.DTO
         public string EmployeeConnectMethod { get; set; }
         public string CustomerConnectMethod { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+        //public Boolean Active { get; set; }
 
         public ContactV1DTO ContactDTO { get; set; }
         public DepartmentV1DTO DepartmentDTO { get; set; }
         public DivisionV1DTO DivisionDTO { get; set; }
         public ProgramV1DTO ProgramDTO { get; set; }
 
-        public HashSet<CommunityV1DTO> CommunityDTOs { get; set; }
-        public HashSet<LanguageV1DTO> LanguageDTOs { get; set; }
-        public HashSet<LocationV1DTO> LocationDTOs { get; set; }
-        public Boolean Active { get; set; }
+        public List<ServiceCommunityAssociationV1DTO> ServiceCommunityAssociationDTOs { get; set; }
+        public List<ServiceLanguageAssociationV1DTO> ServiceLanguageAssociationDTOs { get; set; }
+        public List<ServiceLocationAssociationV1DTO> ServiceLocationAssociationDTOs { get; set; }
     }
-
 }
