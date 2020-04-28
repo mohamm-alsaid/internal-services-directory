@@ -76,6 +76,6 @@ def read_to_database(file_names):
                     item['Program Contact']))
             conn.commit()
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+    conn.commit()
+    cursor.close()
+    conn.close()

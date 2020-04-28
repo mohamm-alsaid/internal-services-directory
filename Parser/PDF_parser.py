@@ -17,6 +17,76 @@ import re
 # https://multco.us/file/82166/download
 # https://multco.us/file/82174/download
 
+keys = {
+    "Department",
+    "Program Contact",
+    "Program Offer Type",
+    "Program Offer Stage",
+    "Related Programs",
+    "Program Characteristics",
+    "Executive Summary",
+    "Program Summary"
+}
+departments = {
+    "Community Justice",
+    "Community Services",
+    "County Assets",
+    "County Management",
+    "District Attorney",
+    "Sheriff",
+    "County Human Services",
+    "Health Department",
+    "Library",
+    "Nondepartmental"
+}
+program_offer_types = {
+    "Existing Operating Program",
+    "Support",
+    "Administration",
+    "Innovative/New Program",
+    "Internal Service"
+}
+program_characteristics = {
+    "One-Time-Only Request",
+    "Backfill State/Federal/Grant",
+    "Measure 5 Education"
+}
+
+program_contacts = {}
+words = set()
+
+
+def parse(pdf_file, output_file):
+    pages = extract_text(pdf_file)
+    lines = {"Executive Summary", "Program Summary", "Performance Measures Descriptions"}
+    lines.update(keys)
+    lines.update(departments)
+    lines.update(program_offer_types)
+    lines.update(program_characteristics)
+    for line in lines:
+        word = line.split(' ')
+        for w in word:
+            words.add(w)
+
+    pages = [p for p in pages if p.startswith("Program #")]
+    data = []
+    for p in pages:
+        d = read_page(p)
+        data.append(d)
+    with open(output_file, "w") as f:
+        json.dump(data, f, indent="\t")
+
+    with open(output_file, 'r') as f:
+        json_str = f.read()
+        data = json.loads(json_str)
+        for item in data:
+            result = re.findall(r'(\d+)', item["Program Contact"])
+            error_name = item["Program Name"]
+            if result:
+                print(result)
+                print("errors are in :", error_name, '\n')
+
+
 def extract_text(pdf_file, password='', page_numbers=None, maxpages=0,
                  caching=True, codec='utf-8', laparams=None):
     if laparams is None:
@@ -44,54 +114,6 @@ def extract_text(pdf_file, password='', page_numbers=None, maxpages=0,
         print("text extracted")
         return pages
 
-pages = extract_text(filename)
-
-keys = {
-    "Department",
-    "Program Contact", 
-    "Program Offer Type", 
-    "Program Offer Stage", 
-    "Related Programs",
-    "Program Characteristics",
-    "Executive Summary", 
-    "Program Summary"
-}
-departments = { 
-    "Community Justice", 
-    "Community Services", 
-    "County Assets", 
-    "County Management", 
-    "District Attorney",
-    "Sheriff", 
-    "County Human Services",
-    "Health Department", 
-    "Library", 
-    "Nondepartmental"
-}
-program_offer_types = {
-    "Existing Operating Program", 
-    "Support", 
-    "Administration",
-    "Innovative/New Program", 
-    "Internal Service"
-}
-program_characteristics = {
-    "One-Time-Only Request",
-    "Backfill State/Federal/Grant", 
-    "Measure 5 Education"
-}
-program_contacts = {}
-words = set()
-
-lines = {"Executive Summary", "Program Summary", "Performance Measures Descriptions"}
-lines.update(keys)
-lines.update(departments)
-lines.update(program_offer_types)
-lines.update(program_characteristics)
-for line in lines:
-    word = line.split(' ')
-    for w in word:
-        words.add(w)
 
 def read_page(page):
     page = page.split("\n")
@@ -147,7 +169,6 @@ def read_page(page):
                 data["Related Programs"] += (num + " ")
             data["Related Programs"] = data["Related Programs"].strip()
 
-
         elif (line.count(' ') == 1 or line.count(' ') == 2) and need_contact:
             potential_name = line.split(' ')
             is_name = True
@@ -158,12 +179,12 @@ def read_page(page):
                 data["Program Contact"] = line
                 need_contact = False
 
-        #we're at the start of one of the summaries
+        # we're at the start of one of the summaries
         elif len(line) > 40:
-            #if we're at the beginning of executive summary
+            # if we're at the beginning of executive summary
             if not start_exec:
                 start_exec = True
-            #if we're at the beginning of program summary
+            # if we're at the beginning of program summary
             elif finish_exec and not start_prog:
                 start_prog = True
 
@@ -176,26 +197,7 @@ def read_page(page):
         if start_prog and not finish_prog:
             if line == "Performance Measures":
                 return data
-                finish_prog = True
             else:
                 data["Program Summary"] += line
 
     return data
-
-pages = [p for p in pages if p.startswith("Program #")]
-data = []
-for p in pages:
-    d = read_page(p)
-    data.append(d)
-with open(output_filename, "w") as f:
-    json.dump(data, f, indent="\t")
-    
-with open(output_filename, 'r') as f:
-    json_str = f.read()
-    data = json.loads(json_str)
-    for item in data:
-        result = re.findall(r'(\d+)', item["Program Contact"])
-        error_name = item["Program Name"]
-        if result:
-            print(result)
-            print("errors are in :" , error_name, '\n')

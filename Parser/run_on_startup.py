@@ -7,20 +7,24 @@ import PyPDF2
 
 # takes in the args from the command line
 # exits if there are greater than or less than 3 args, sys.argv[0] is always the program name
-if len(sys.argv) != 3 and len(sys.argv[1]) != len(sys.argv[2]):
-    print("Usage: <" + sys.argv[0] + "> <[PDF url 1, PDF url 2, ...]> <[output json filename 1, output json filename "
-                                     "2, ...]>")
+
+pdf_links = sys.argv[1].split('|')
+output_files = sys.argv[2].split('|')
+
+if len(sys.argv) != 3 and len(pdf_links) != len(output_files):
+    print("Usage: <" + sys.argv[0] + "> <[PDF_url_1|PDF_url_2}...]> <[output_json_filename_1|output_json_filename"
+                                     "2|...]>")
     sys.exit(-1)
 
 pdf_files = []
 pdf_num = 0
 
 # downloads the pdf file at the location
-for pdf_file in sys.argv[1]:
-    urllib.request.urlretrieve(pdf_file, "input" + pdf_num + ".pdf")
+for pdf_link in pdf_links:
+    urllib.request.urlretrieve(pdf_link, "input" + str(pdf_num) + ".pdf")
     # checks for valid PDF file
     try:
-        a = open(pdf_file, "rb")
+        a = open("input" + str(pdf_num) + ".pdf", "rb")
         PyPDF2.PdfFileReader(a)
     except PyPDF2.utils.PdfReadError:
         # this line, os.remove(filename), might be redundant since we're just going to overwrite it anyway on next
@@ -31,8 +35,11 @@ for pdf_file in sys.argv[1]:
     else:
         a.close()
         pass
-    pdf_files.append("input" + pdf_num + ".pdf")
+    pdf_files.append("input" + str(pdf_num) + ".pdf")
+
     pdf_num += 1
 
+for pdf, json in zip(pdf_files, output_files):
+    PDF_parser.parse(pdf, json)
 
-output_filename = sys.argv[2]
+read_into_database.read_to_database(output_files)
