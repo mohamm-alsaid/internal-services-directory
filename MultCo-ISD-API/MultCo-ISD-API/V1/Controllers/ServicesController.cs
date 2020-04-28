@@ -23,14 +23,14 @@ namespace MultCo_ISD_API.V1.Controllers
         private const string DefaultConnectionStringName = "DefaultConnection";
 
         private readonly InternalServicesDirectoryV1Context _context;
-        private readonly IServiceContext _serviceContext;
+        private readonly IServiceContextManager _serviceContextManager;
 
         public ServicesController(InternalServicesDirectoryV1Context context)
         {
             // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member 
             // and pass 'context' directly to the 'ServiceContext' constructor
             _context = context;
-            _serviceContext = new ServiceContext(_context);
+            _serviceContextManager = new ServiceContextManager(_context);
         }
 
         // GET: api/Services
@@ -86,7 +86,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
             try
             {
-                var service = await _serviceContext.GetByIdAsync(id);
+                var service = await _serviceContextManager.GetByIdAsync(id);
 
                 if (service == null)
                 {

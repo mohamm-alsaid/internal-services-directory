@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
-    public interface IServiceContext
+    public interface IServiceContextManager
     {
         Task<Service> GetByIdAsync(int id);
     }
 
-    public class ServiceContext : IServiceContext
+    public class ServiceContextManager : IServiceContextManager
     {
         private readonly InternalServicesDirectoryV1Context _context;
 
-        public ServiceContext(InternalServicesDirectoryV1Context context)
+        public ServiceContextManager(InternalServicesDirectoryV1Context context)
         {
             _context = context;
         }

@@ -46,7 +46,7 @@ namespace MultCo_ISD_API.V1.DTO
             to.EmployeeConnectMethod = from.EmployeeConnectMethod;
             to.CustomerConnectMethod = from.CustomerConnectMethod;
             to.ExpirationDate = from.ExpirationDate;
-            //to.Active = from.Active;
+            to.Active = from.Active;
 
             to.Contact = from?.ContactDTO.ToContact();
             to.Department = from?.DepartmentDTO.ToDepartment();
@@ -83,7 +83,7 @@ namespace MultCo_ISD_API.V1.DTO
             to.EmployeeConnectMethod = from.EmployeeConnectMethod;
             to.CustomerConnectMethod = from.CustomerConnectMethod;
             to.ExpirationDate = from.ExpirationDate;
-            //to.Active = from.Active;
+            to.Active = from.Active;
 
             to.ContactDTO = from?.Contact.ToContactV1DTO();
             to.DepartmentDTO = from?.Department.ToDepartmentV1DTO();
