@@ -216,5 +216,35 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestRelationalTables()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    Service serv = new Service();
+                    serv.ServiceName = "service number one";
+                    context.Service.Add(serv);
+
+                    Community comm = new Community();
+                    comm.CommunityName = "community for service number one";
+                    context.Community.Add(comm);
+                    
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

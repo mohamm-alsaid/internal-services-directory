@@ -29,8 +29,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .Include(s => s.Department)
                 .Include(s => s.Division)
                 .Include(s => s.Program)
+                .Include(s => s.ServiceCommunityAssociation)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+
 
             //Add logic here to populate relation lists
             //   NVM - can't be here, as we don't have access to DTOs

@@ -95,6 +95,22 @@ namespace MultCo_ISD_API.V1.Controllers
 
                 var serviceDTO = service.ToServiceV1DTO();
 
+                //foreach (var sca in _context.ServiceCommunityAssociation)
+
+                //var a = await _context.ServiceCommunityAssociation.FirstOrDefaultAsync(sca => sca.ServiceId == 1).ConfigureAwait(false);
+
+
+                /*
+                 *      database    SCA has data here
+                 *      context     DATA EXISTS
+                 *          chain broken
+                 *      models      lists are null
+                 *      DTOs        lists are null
+                 *      JSON        We're not  getting anything out
+                 */
+
+
+
                 /*
                 //This one? 
                 foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
