@@ -93,7 +93,25 @@ namespace MultCo_ISD_API.V1.Controllers
                     return NotFound();
                 }
 
-                return Ok(service.ToServiceV1DTO());
+                var serviceDTO = service.ToServiceV1DTO();
+
+                /*
+                //This one? 
+                foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
+                {
+
+                }
+
+                // or this one?
+                foreach (var sca in service.ServiceCommunityAssociation)
+                {
+
+                }
+                //serviceDTO.CommunityDTOs
+                */
+                return Ok(serviceDTO);
+
+                //return Ok(service.ToServiceV1DTO());
             }
             catch (Exception e)
             {

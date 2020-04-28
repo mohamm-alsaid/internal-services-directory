@@ -13,6 +13,9 @@ namespace MultCo_ISD_API.V1.DTO
             ServiceCommunityAssociationDTOs = new List<ServiceCommunityAssociationV1DTO>();
             ServiceLanguageAssociationDTOs = new List<ServiceLanguageAssociationV1DTO>();
             ServiceLocationAssociationDTOs = new List<ServiceLocationAssociationV1DTO>();
+
+            //Initialize new collection
+            CommunityDTOs = new List<CommunityV1DTO>();
         }
 
         public int ServiceId { get; set; }
@@ -37,5 +40,8 @@ namespace MultCo_ISD_API.V1.DTO
         public List<ServiceCommunityAssociationV1DTO> ServiceCommunityAssociationDTOs { get; set; }
         public List<ServiceLanguageAssociationV1DTO> ServiceLanguageAssociationDTOs { get; set; }
         public List<ServiceLocationAssociationV1DTO> ServiceLocationAssociationDTOs { get; set; }
+
+        //Experimental collections to return related objects
+        public List<CommunityV1DTO> CommunityDTOs { get; set; }
     }
 }
