@@ -351,3 +351,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+#ignore pdf, json, and .idea files
+Parser/*.pdf
+Parser/*.json
+Parser/.idea

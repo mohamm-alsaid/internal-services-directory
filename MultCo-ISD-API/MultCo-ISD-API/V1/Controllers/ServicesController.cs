@@ -59,6 +59,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> GetService(int id)
         {
+            var a = _context;
             var item = await _context.Service
                 .FirstOrDefaultAsync(s => s.ServiceId == id)
                 .ConfigureAwait(false);
