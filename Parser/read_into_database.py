@@ -69,11 +69,11 @@ def read_to_database(file_names):
                 program_inc += 1
                 conn.commit()
             cursor.execute("""INSERT INTO Service (programID, departmentID, serviceName, serviceDescription, 
-                executiveSummary, contactID) VALUES (?, ?, ?, ?, ?, ?)""", programs.get(item['Program Number']),
+                executiveSummary, contactID, active) VALUES (?, ?, ?, ?, ?, ?, ?)""", programs.get(item['Program Number']),
                            departments.get(
                                item['Department']), item['Program Name'], item['Program Summary'],
                            item['Executive Summary'], contacts.get(
-                    item['Program Contact']))
+                    item['Program Contact']), True)
             conn.commit()
 
     conn.commit()
