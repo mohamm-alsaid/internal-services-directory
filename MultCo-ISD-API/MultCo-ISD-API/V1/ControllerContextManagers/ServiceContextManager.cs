@@ -10,6 +10,9 @@ namespace MultCo_ISD_API.V1.ControllerContexts
     public interface IServiceContextManager
     {
         Task<Service> GetByIdAsync(int id);
+        Task<Community> GetCommunityByIdAsync(int id);
+        Task<Language> getLanguageByIdAsync(int id);
+        Task<Location> getLocationByIdAsync(int id);
     }
 
     public class ServiceContextManager : IServiceContextManager
@@ -30,6 +33,8 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .Include(s => s.Division)
                 .Include(s => s.Program)
                 .Include(s => s.ServiceCommunityAssociation)
+                .Include(s => s.ServiceLanguageAssociation)
+                .Include(s => s.ServiceLocationAssociation)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
 
@@ -40,6 +45,30 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             //   CommunityV1DTO or to ServiceV1DTO's List<CommunityV1DTO>
 
             return service;
+        }
+
+        public async Task<Community> GetCommunityByIdAsync(int id)
+        {
+            return await _context.Community
+                .Where(c => c.CommunityId == id)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<Language> getLanguageByIdAsync(int id)
+        {
+            return await _context.Language
+                .Where(l => l.LanguageId == id)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+        }
+        public async Task<Location> getLocationByIdAsync(int id)
+        {
+
+            return await _context.Location
+                .Where(l => l.LocationId == id)
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
         }
     }
 }

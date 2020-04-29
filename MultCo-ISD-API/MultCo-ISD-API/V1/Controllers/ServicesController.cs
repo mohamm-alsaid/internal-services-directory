@@ -95,39 +95,10 @@ namespace MultCo_ISD_API.V1.Controllers
 
                 var serviceDTO = service.ToServiceV1DTO();
 
-                //foreach (var sca in _context.ServiceCommunityAssociation)
-
-                //var a = await _context.ServiceCommunityAssociation.FirstOrDefaultAsync(sca => sca.ServiceId == 1).ConfigureAwait(false);
+                serviceDTO = await populateService(serviceDTO);
 
 
-                /*
-                 *      database    SCA has data here
-                 *      context     DATA EXISTS
-                 *          chain broken
-                 *      models      lists are null
-                 *      DTOs        lists are null
-                 *      JSON        We're not  getting anything out
-                 */
-
-
-
-                /*
-                //This one? 
-                foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
-                {
-
-                }
-
-                // or this one?
-                foreach (var sca in service.ServiceCommunityAssociation)
-                {
-
-                }
-                //serviceDTO.CommunityDTOs
-                */
                 return Ok(serviceDTO);
-
-                //return Ok(service.ToServiceV1DTO());
             }
             catch (Exception e)
             {
@@ -227,6 +198,75 @@ namespace MultCo_ISD_API.V1.Controllers
         {
             return _context.Service.Any(e => e.ServiceId == id);
         }
+
+        private async Task<ServiceV1DTO> populateService(ServiceV1DTO serviceDTO)
+        {
+            //
+            foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
+            {
+                int comm_id;
+
+                if (sca.CommunityID != null)
+                {
+                    comm_id = (int)sca.CommunityID;
+                }
+
+                else
+                {
+                    return null;
+                }
+
+                var comm = await _serviceContextManager.GetCommunityByIdAsync(comm_id);
+
+                if (comm == null)
+                {
+                    return null;
+                }
+
+                serviceDTO.CommunityDTOs.Add(comm.ToCommunityV1DTO());
+            }
+
+            foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
+            {
+                int lang_id;
+                if (sla.LanguageID != null)
+                {
+                    lang_id = (int)sla.LanguageID;
+                }
+                else
+                {
+                    return null;
+                }
+                var lang = await _serviceContextManager.getLanguageByIdAsync(lang_id);
+                if (lang == null)
+                {
+                    return null;
+                }
+                serviceDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+            }
+
+            foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
+            {
+                int loc_id;
+                if (sla.LocationID != null)
+                {
+                    loc_id = (int)sla.LocationID;
+                }
+                else
+                {
+                    return null;
+                }
+                var loc = await _serviceContextManager.getLocationByIdAsync(loc_id);
+                if (loc == null)
+                {
+                    return null;
+                }
+                serviceDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+            }
+            //
+            return serviceDTO;
+        }
+
 
         private async Task<ServiceV1DTO> FillInService(Service service)
         {

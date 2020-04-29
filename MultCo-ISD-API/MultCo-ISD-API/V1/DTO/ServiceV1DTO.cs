@@ -16,6 +16,8 @@ namespace MultCo_ISD_API.V1.DTO
 
             //Initialize new collection
             CommunityDTOs = new List<CommunityV1DTO>();
+            LanguageDTOs = new List<LanguageV1DTO>();
+            LocationDTOs = new List<LocationV1DTO>();
         }
 
         public int ServiceId { get; set; }
@@ -43,5 +45,7 @@ namespace MultCo_ISD_API.V1.DTO
 
         //Experimental collections to return related objects
         public List<CommunityV1DTO> CommunityDTOs { get; set; }
+        public List<LanguageV1DTO> LanguageDTOs { get; set; }
+        public List<LocationV1DTO> LocationDTOs { get; set; }
     }
 }
