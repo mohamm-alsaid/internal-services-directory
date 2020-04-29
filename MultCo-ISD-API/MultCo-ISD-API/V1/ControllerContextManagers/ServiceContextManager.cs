@@ -54,12 +54,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
 
-
-            //Add logic here to populate relation lists
-            //   NVM - can't be here, as we don't have access to DTOs
-            //   so we have nowhere to put Communities. No access to either
-            //   CommunityV1DTO or to ServiceV1DTO's List<CommunityV1DTO>
-
             return service;
         }
 
