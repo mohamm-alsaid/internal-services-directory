@@ -42,6 +42,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> GetServices()
         {
+            /*
             var items = await _context.Service
                 .OrderBy(s => s.ServiceName)
                 .ToListAsync()
@@ -61,6 +62,32 @@ namespace MultCo_ISD_API.V1.Controllers
                 serviceDTOs.Add(await FillInService(s).ConfigureAwait(false));
             }
             return Ok(serviceDTOs);
+            */
+
+            try
+            {
+                var services = await _serviceContextManager.GetAllServices();
+                if (services == null || services.Count == 0)
+                {
+                    return NotFound("There are no services in the system!");
+                }
+
+                var serviceDTOs = new List<ServiceV1DTO>();
+                foreach (var service in services)
+                {
+                    var serviceDTO = await populateService(service);
+                    if (serviceDTO == null)
+                    {
+                        continue;
+                    }
+                    serviceDTOs.Add(serviceDTO);
+                }
+                return Ok(serviceDTOs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         // GET: api/Services/5
@@ -86,18 +113,25 @@ namespace MultCo_ISD_API.V1.Controllers
 
             try
             {
-                var service = await _serviceContextManager.GetByIdAsync(id);
+                var service = await _serviceContextManager.GetServiceByIdAsync(id);
 
                 if (service == null)
                 {
                     return NotFound();
                 }
-
+                /*
                 var serviceDTO = service.ToServiceV1DTO();
 
                 serviceDTO = await populateService(serviceDTO);
 
+                return Ok(serviceDTO);
+                */
 
+                var serviceDTO = await populateService(service);
+                if (serviceDTO == null)
+                {
+                    return NotFound();
+                }
                 return Ok(serviceDTO);
             }
             catch (Exception e)
@@ -199,16 +233,17 @@ namespace MultCo_ISD_API.V1.Controllers
             return _context.Service.Any(e => e.ServiceId == id);
         }
 
-        private async Task<ServiceV1DTO> populateService(ServiceV1DTO serviceDTO)
+        private async Task<ServiceV1DTO> populateService(Service service)
         {
-            //
+            var serviceDTO = service.ToServiceV1DTO();
+
             foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
             {
-                int comm_id;
+                int id;
 
                 if (sca.CommunityID != null)
                 {
-                    comm_id = (int)sca.CommunityID;
+                    id = (int)sca.CommunityID;
                 }
 
                 else
@@ -216,7 +251,7 @@ namespace MultCo_ISD_API.V1.Controllers
                     return null;
                 }
 
-                var comm = await _serviceContextManager.GetCommunityByIdAsync(comm_id);
+                var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
 
                 if (comm == null)
                 {
@@ -228,16 +263,16 @@ namespace MultCo_ISD_API.V1.Controllers
 
             foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
             {
-                int lang_id;
+                int id;
                 if (sla.LanguageID != null)
                 {
-                    lang_id = (int)sla.LanguageID;
+                    id = (int)sla.LanguageID;
                 }
                 else
                 {
                     return null;
                 }
-                var lang = await _serviceContextManager.getLanguageByIdAsync(lang_id);
+                var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
                 if (lang == null)
                 {
                     return null;
@@ -247,23 +282,22 @@ namespace MultCo_ISD_API.V1.Controllers
 
             foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
             {
-                int loc_id;
+                int id;
                 if (sla.LocationID != null)
                 {
-                    loc_id = (int)sla.LocationID;
+                    id = (int)sla.LocationID;
                 }
                 else
                 {
                     return null;
                 }
-                var loc = await _serviceContextManager.getLocationByIdAsync(loc_id);
+                var loc = await _serviceContextManager.GetLocationByIdAsync(id);
                 if (loc == null)
                 {
                     return null;
                 }
                 serviceDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
             }
-            //
             return serviceDTO;
         }
 

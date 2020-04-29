@@ -9,10 +9,11 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 {
     public interface IServiceContextManager
     {
-        Task<Service> GetByIdAsync(int id);
+        Task<List<Service>> GetAllServices();
+        Task<Service> GetServiceByIdAsync(int id);
         Task<Community> GetCommunityByIdAsync(int id);
-        Task<Language> getLanguageByIdAsync(int id);
-        Task<Location> getLocationByIdAsync(int id);
+        Task<Language> GetLanguageByIdAsync(int id);
+        Task<Location> GetLocationByIdAsync(int id);
     }
 
     public class ServiceContextManager : IServiceContextManager
@@ -24,7 +25,22 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             _context = context;
         }
 
-        public async Task<Service> GetByIdAsync(int id)
+        public async Task<List<Service>> GetAllServices()
+        {
+            return await _context.Service
+                .OrderBy(s => s.ServiceName)
+                .Include(s => s.Contact)
+                .Include(s => s.Department)
+                .Include(s => s.Division)
+                .Include(s => s.Program)
+                .Include(s => s.ServiceCommunityAssociation)
+                .Include(s => s.ServiceLanguageAssociation)
+                .Include(s => s.ServiceLocationAssociation)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<Service> GetServiceByIdAsync(int id)
         {
             var service = await _context.Service
                 .Where(s => s.ServiceId == id)
@@ -55,14 +71,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Language> getLanguageByIdAsync(int id)
+        public async Task<Language> GetLanguageByIdAsync(int id)
         {
             return await _context.Language
                 .Where(l => l.LanguageId == id)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
-        public async Task<Location> getLocationByIdAsync(int id)
+        public async Task<Location> GetLocationByIdAsync(int id)
         {
 
             return await _context.Location
