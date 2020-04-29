@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultCo-ISD-API", "MultCo-IS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidatorUnitTest", "ValidatorUnitTest\ValidatorUnitTest.csproj", "{1127AA04-9DE6-4874-B87B-6F47ECEB87CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54AE3ED1-12B3-4320-A494-C6EE7BA299CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1127AA04-9DE6-4874-B87B-6F47ECEB87CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1127AA04-9DE6-4874-B87B-6F47ECEB87CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1127AA04-9DE6-4874-B87B-6F47ECEB87CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1127AA04-9DE6-4874-B87B-6F47ECEB87CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
