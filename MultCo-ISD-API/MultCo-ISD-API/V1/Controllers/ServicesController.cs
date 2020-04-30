@@ -72,8 +72,6 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> GetService(int id)
         {
-
-
             try
             {
                 var service = await _serviceContextManager.GetServiceByIdAsync(id);
