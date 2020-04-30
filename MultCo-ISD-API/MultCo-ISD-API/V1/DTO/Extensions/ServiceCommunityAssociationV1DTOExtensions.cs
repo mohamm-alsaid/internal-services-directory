@@ -34,12 +34,14 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromServiceCommunityAssociationV1DTO(this ServiceCommunityAssociation to, ServiceCommunityAssociationV1DTO from)
 		{
+			to.ServiceCommunityAssociationId = from.ServiceCommunityAssociationID;
 			to.ServiceId = from.ServiceID;
 			to.CommunityId = from.CommunityID;
 		}
 
 		public static void CopyFromServiceCommunityAssociation(this ServiceCommunityAssociationV1DTO to, ServiceCommunityAssociation from)
 		{
+			to.ServiceCommunityAssociationID = from.ServiceCommunityAssociationId;
 			to.ServiceID = from.ServiceId;
 			to.CommunityID = from.CommunityId;
 		}

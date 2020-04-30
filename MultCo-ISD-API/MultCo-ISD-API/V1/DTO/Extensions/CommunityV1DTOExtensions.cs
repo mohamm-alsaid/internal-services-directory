@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MultCo_ISD_API.Models;
 
-namespace MultCo_ISD_API.V1.DTO.Extensions
+namespace MultCo_ISD_API.V1.DTO
 {
 	public static class CommunityV1DTOExtensions
 	{
-		public static CommunityV1DTO ToDivisionV1DTO(this Community item)
+		public static CommunityV1DTO ToCommunityV1DTO(this Community item)
 		{
 			if (item == null)
 			{
@@ -20,7 +20,7 @@ namespace MultCo_ISD_API.V1.DTO.Extensions
 			return communityV1DTO;
 		}
 
-		public static Community ToDivision(this CommunityV1DTO item)
+		public static Community ToCommunity(this CommunityV1DTO item)
 		{
 			if (item == null)
 			{

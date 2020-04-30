@@ -39,7 +39,7 @@ namespace MultCo_ISD_API.V1.DTO
 			to.BuildingId = from.BuildingID;
 			to.LocationAddress = from.LocationAddress;
 			to.RoomNumber = from.RoomNumber;
-			to.FloorNumber = from.RoomNumber;
+			to.FloorNumber = from.FloorNumber;
 		}
 
 		public static void CopyFromLocation(this LocationV1DTO to, Location from)
@@ -49,7 +49,9 @@ namespace MultCo_ISD_API.V1.DTO
 			to.BuildingID = from.BuildingId;
 			to.LocationAddress = from.LocationAddress;
 			to.RoomNumber = from.RoomNumber;
-			to.FloorNumber = from.RoomNumber;
+			to.FloorNumber = from.FloorNumber;
+
+			to.LocationTypeDTO = from.LocationType?.ToLocationTypeV1DTO();
 		}
 	}
 }

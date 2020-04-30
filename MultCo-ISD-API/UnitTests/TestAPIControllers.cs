@@ -216,5 +216,49 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestRelationalTables()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service serv = new Service();
+                    serv.ServiceName = "service number one";
+                    context.Service.Add(serv);
+                    context.SaveChanges();
+                    Community comm1 = new Community();
+                    Community comm2 = new Community();
+                    Community comm3 = new Community();
+                    context.Community.Add(comm1);
+                    context.Community.Add(comm2);
+                    context.Community.Add(comm3);
+                    context.SaveChanges();
+                    ServiceCommunityAssociation sca = new ServiceCommunityAssociation();
+                    sca.ServiceId = 1;
+                    sca.CommunityId = 1;
+                    ServiceCommunityAssociation sca1 = new ServiceCommunityAssociation();
+                    sca1.ServiceId = 1;
+                    sca1.CommunityId = 2;
+                    context.ServiceCommunityAssociation.Add(sca);
+                    context.ServiceCommunityAssociation.Add(sca1);
+                    context.SaveChanges();
+                    var controller = new ServicesController(context);
+                    var output = controller.GetService(1);
+                    var actionResult = output.Result;
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
