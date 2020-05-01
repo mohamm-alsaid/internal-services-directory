@@ -13,6 +13,7 @@ import sys
 import PyPDF2
 import os
 import re
+from tqdm import tqdm
 
 # https://multco.us/file/82166/download
 # https://multco.us/file/82174/download
@@ -100,16 +101,15 @@ def extract_text(pdf_file, password='', page_numbers=None, maxpages=0,
                                laparams=laparams)
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pro = 0
-        for page in PDFPage.get_pages(
+        for page in tqdm(PDFPage.get_pages(
                 fp, page_numbers, maxpages=maxpages,
                 password=password, caching=caching,
                 check_extractable=True,
-        ):
+        )):
             interpreter.process_page(page)
             current = output_string.getvalue()
             pages.append(current[len(prev):])
             prev = current
-            print(pro)
             pro += 1
         print("text extracted")
         return pages
