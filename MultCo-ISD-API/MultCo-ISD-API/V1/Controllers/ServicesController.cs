@@ -89,6 +89,53 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        //GET: api/Services/Community?="community"
+        [Route("[action]/{community}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> Community(string community)
+        {
+            try
+            {
+                //this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
+                var comm = await _context.Community
+                    .FirstOrDefaultAsync(c => c.CommunityName.ToLower() == community.ToLower())
+                    .ConfigureAwait(false);
+
+                if (comm == null)
+                {
+                    return NotFound("Community given does not exist.");
+                }
+
+                var allScas = await _context.ServiceCommunityAssociation.ToListAsync();
+                var services = new List<Service>();
+
+                foreach (var sca in allScas)
+                {
+                    if (sca.CommunityId == comm.CommunityId)
+                    {
+                        services.Add(await _context.Service.FirstOrDefaultAsync(s => s.ServiceId == sca.ServiceId).ConfigureAwait(false));
+                    }
+                }
+
+                var serviceDTOs = new List<ServiceV1DTO>();
+                foreach (var service in services)
+                {
+                    serviceDTOs.Add(await populateService(service));
+                }
+                
+                return Ok(serviceDTOs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
