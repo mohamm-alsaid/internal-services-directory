@@ -112,8 +112,8 @@ namespace MultCo_ISD_API.V1.Controllers
                 }
 
                 //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
-                var allScas = await _context.ServiceCommunityAssociation.
-                    OrderBy(sca => sca.CommunityId == comm.CommunityId)
+                var allScas = await _context.ServiceCommunityAssociation
+                    .OrderBy(sca => sca.CommunityId == comm.CommunityId)
                     .ToListAsync()
                     .ConfigureAwait(false);
                 var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
