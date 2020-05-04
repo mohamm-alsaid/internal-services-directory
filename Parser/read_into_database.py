@@ -1,5 +1,6 @@
 import pyodbc
 import json
+import os
 
 
 def read_to_database(file_names):
@@ -79,3 +80,5 @@ def read_to_database(file_names):
     conn.commit()
     cursor.close()
     conn.close()
+
+
