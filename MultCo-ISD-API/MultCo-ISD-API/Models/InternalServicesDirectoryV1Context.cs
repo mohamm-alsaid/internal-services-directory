@@ -227,7 +227,7 @@ namespace MultCo_ISD_API.Models
 
                 entity.Property(e => e.ExecutiveSummary)
                     .HasColumnName("executiveSummary")
-                    .HasMaxLength(255);
+                    .HasMaxLength(6000);
 
                 entity.Property(e => e.ExpirationDate)
                     .HasColumnName("expirationDate")
@@ -245,7 +245,7 @@ namespace MultCo_ISD_API.Models
 
                 entity.Property(e => e.ServiceDescription)
                     .HasColumnName("serviceDescription")
-                    .HasMaxLength(255);
+                    .HasMaxLength(6000);
 
                 entity.Property(e => e.ServiceName)
                     .HasColumnName("serviceName")
