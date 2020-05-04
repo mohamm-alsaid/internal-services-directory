@@ -7,9 +7,12 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public LanguageValidator()
         {
-            RuleFor(x => x.LanguageId).NotNull();
+            RuleFor(x => x.LanguageId)
+                .NotNull().WithMessage("Language id cannot be null");
 
-            RuleFor(x => x.LanguageName).NotNull().MaximumLength(10).WithMessage("long Language name"); ;
+            RuleFor(x => x.LanguageName)
+                .NotNull().WithMessage("Language name cannot be null")
+                .MaximumLength(20).WithMessage("Language name cannot be longer than 20"); ;
 
         }
     }

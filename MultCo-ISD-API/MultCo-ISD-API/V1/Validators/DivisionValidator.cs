@@ -7,9 +7,15 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public DivisionValidator()
         {
-            RuleFor(x => x.DivisionId).NotNull();
-            RuleFor(x => x.DivisionCode).NotNull();
-            RuleFor(x => x.DivisionName).NotNull().MaximumLength(20).WithMessage("long Division name");
+            RuleFor(x => x.DivisionId)
+                .NotNull().WithMessage("Division id cannot be null");
+
+            RuleFor(x => x.DivisionCode)
+                .NotNull().WithMessage("Division code cannot be null");
+
+            RuleFor(x => x.DivisionName)
+                .NotNull().WithMessage("Division name cannot be null")
+                .MaximumLength(20).WithMessage("Division name cannot be longer than 20");
 
         }
     }
