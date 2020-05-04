@@ -113,25 +113,27 @@ namespace MultCo_ISD_API.V1.Controllers
 
                 //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
                 var allScas = await _context.ServiceCommunityAssociation
-                    .OrderBy(sca => sca.CommunityId == comm.CommunityId)
+                    .Where(sca => sca.CommunityId == comm.CommunityId)
                     .ToListAsync()
                     .ConfigureAwait(false);
+
+                if (allScas.Count() == 0)
+                {
+                    return NotFound("Community has no relationships.");
+                }
+
                 var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
                 foreach (var sca in allScas)
                 {
                     ids.Add(sca.ServiceId);
                 }
 
-                if (ids.Count() == 0)
-                {
-                    return NotFound("No services found from given community.");
-                }
-
                 //fetch only the services with the service ids we just got from the SCAs, then convert to DTO
                 var services = await _context.Service
-                    .OrderBy(s => ids.Contains(s.ServiceId))
+                    .Where(s => ids.Contains(s.ServiceId))
                     .ToListAsync()
                     .ConfigureAwait(false);
+
                 var serviceDTOs = new List<ServiceV1DTO>();
                 foreach (var service in services)
                 {

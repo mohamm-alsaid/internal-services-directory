@@ -329,5 +329,77 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestGetByCommunityNotFound()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    //create a service
+                    Service serv1 = new Service();
+                    context.Service.Add(serv1);
+                    context.SaveChanges();
+
+                    Service serv2 = new Service();
+                    context.Service.Add(serv2);
+
+                    //create some communities
+                    Community comm1 = new Community();
+                    Community comm2 = new Community();
+                    Community comm3 = new Community();
+                    comm1.CommunityName = "comm1";
+                    comm2.CommunityName = "comm2";
+                    comm3.CommunityName = "comm3";
+                    context.Community.Add(comm1);
+                    context.Community.Add(comm2);
+                    context.Community.Add(comm3);
+                    context.SaveChanges();
+
+                    //create some associations
+                    ServiceCommunityAssociation sca = new ServiceCommunityAssociation();
+                    sca.ServiceId = 1;
+                    sca.CommunityId = 1;
+                    ServiceCommunityAssociation sca1 = new ServiceCommunityAssociation();
+                    sca1.ServiceId = 1;
+                    sca1.CommunityId = 2;
+                    ServiceCommunityAssociation sca2 = new ServiceCommunityAssociation();
+                    sca2.ServiceId = 2;
+                    sca2.CommunityId = 1;
+                    context.ServiceCommunityAssociation.Add(sca);
+                    context.ServiceCommunityAssociation.Add(sca1);
+                    context.ServiceCommunityAssociation.Add(sca2);
+                    context.SaveChanges();
+
+                    var controller = new ServicesController(context);
+                    var output = controller.Community("comm3");
+                    var actionresult = output.Result;
+                    var result = actionresult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+
+                    output = controller.Community("comm4");
+                    actionresult = output.Result;
+                    result = actionresult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
