@@ -9,9 +9,17 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ProgramValidator()
         {
-            //RuleFor(x => x.ProgramID).NotNull();
-            RuleFor(x => x.SponsorName).NotNull().MaximumLength(20);
-            RuleFor(x => x.OfferType).NotNull().MaximumLength(20);
+            RuleFor(x => x.SponsorName).NotNull().WithMessage("sponsor name cannot be null")
+                .MaximumLength(20).WithMessage("sponsor name too long");
+
+            RuleFor(x => x.OfferType).NotNull().WithMessage("program offer type cannot be null")
+                .MaximumLength(20).WithMessage("program offer type too long");
+
+            RuleFor(x => x.ProgramName).NotNull().WithMessage("program name cannot be null")
+                .MaximumLength(20).WithMessage("program name too long");
+
+            RuleFor(x => x.ProgramOfferNumber).NotNull().WithMessage("program offer number cannot be null")
+                .MaximumLength(5).WithMessage("program offer number too long");
         }
     }
 }
