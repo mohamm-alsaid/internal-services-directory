@@ -5,9 +5,9 @@ using MultCo_ISD_API.Models;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class ServiceLocationAssociationV1DTOValidator : AbstractValidator<ServiceLocationAssociation>
+    public class ServiceLocationAssociationValidator : AbstractValidator<ServiceLocationAssociation>
     {
-        public ServiceLocationAssociationV1DTOValidator()
+        public ServiceLocationAssociationValidator()
         {
             RuleFor(x => x.ServiceId).NotNull();
             RuleFor(x => x.LocationId).NotNull();
