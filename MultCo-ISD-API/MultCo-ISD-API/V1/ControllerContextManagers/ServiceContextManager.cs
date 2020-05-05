@@ -11,9 +11,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
     {
         Task<List<Service>> GetAllServices();
         Task<Service> GetServiceByIdAsync(int id);
+        //currently nullable because relational table ids that aren't the primary key are nullable
+        Task<List<Service>> GetServicesFromIdList(List<int?> ids);
         Task<Community> GetCommunityByIdAsync(int id);
+        Task<Community> GetCommunityByNameAsync(string name);
+        Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
         Task<Language> GetLanguageByIdAsync(int id);
         Task<Location> GetLocationByIdAsync(int id);
+
     }
 
     public class ServiceContextManager : IServiceContextManager
@@ -57,12 +62,36 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             return service;
         }
 
+        public async Task<List<Service>> GetServicesFromIdList(List<int?> ids)
+        {
+            return await _context.Service
+                    .Where(s => ids.Contains(s.ServiceId))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+        }
+
         public async Task<Community> GetCommunityByIdAsync(int id)
         {
             return await _context.Community
                 .Where(c => c.CommunityId == id)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<Community> GetCommunityByNameAsync(string name)
+        {
+            return await _context.Community
+                .Where(c => c.CommunityName.ToLower() == name.ToLower())
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id)
+        {
+            return await _context.ServiceCommunityAssociation
+                .Where(sca => sca.CommunityId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
 
         public async Task<Language> GetLanguageByIdAsync(int id)

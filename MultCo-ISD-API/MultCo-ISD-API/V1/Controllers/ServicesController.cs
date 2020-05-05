@@ -102,9 +102,7 @@ namespace MultCo_ISD_API.V1.Controllers
             try
             {
                 //this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
-                var comm = await _context.Community
-                    .FirstOrDefaultAsync(c => c.CommunityName.ToLower() == community.ToLower())
-                    .ConfigureAwait(false);
+                var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
 
                 if (comm == null)
                 {
@@ -112,27 +110,21 @@ namespace MultCo_ISD_API.V1.Controllers
                 }
 
                 //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
-                var allScas = await _context.ServiceCommunityAssociation
-                    .Where(sca => sca.CommunityId == comm.CommunityId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
 
-                if (allScas.Count() == 0)
+                if (scas.Count() == 0)
                 {
                     return NotFound("Community has no relationships.");
                 }
 
                 var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
-                foreach (var sca in allScas)
+                foreach (var sca in scas)
                 {
                     ids.Add(sca.ServiceId);
                 }
 
                 //fetch only the services with the service ids we just got from the SCAs, then convert to DTO
-                var services = await _context.Service
-                    .Where(s => ids.Contains(s.ServiceId))
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
 
                 var serviceDTOs = new List<ServiceV1DTO>();
                 foreach (var service in services)
