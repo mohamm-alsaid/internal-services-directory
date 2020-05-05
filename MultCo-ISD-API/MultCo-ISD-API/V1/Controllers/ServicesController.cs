@@ -89,6 +89,19 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        [Route("[action]/{lang}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> Language(string language)
+        {
+            return Ok();
+        }
+
+
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
