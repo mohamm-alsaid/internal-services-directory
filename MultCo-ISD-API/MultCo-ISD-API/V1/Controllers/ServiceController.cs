@@ -89,6 +89,57 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        //GET: api/Services/Community?="community"
+        [Route("[action]/{community}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> Community(string community)
+        {
+            try
+            {
+                //this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
+                var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
+
+                if (comm == null)
+                {
+                    return NotFound("Community given does not exist.");
+                }
+
+                //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
+                var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
+
+                if (scas.Count() == 0)
+                {
+                    return NotFound("Community has no relationships.");
+                }
+
+                var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
+                foreach (var sca in scas)
+                {
+                    ids.Add(sca.ServiceId);
+                }
+
+                //fetch only the services with the service ids we just got from the SCAs, then convert to DTO
+                var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
+
+                var serviceDTOs = new List<ServiceV1DTO>();
+                foreach (var service in services)
+                {
+                    serviceDTOs.Add(await populateService(service));
+                }
+                
+                return Ok(serviceDTOs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
