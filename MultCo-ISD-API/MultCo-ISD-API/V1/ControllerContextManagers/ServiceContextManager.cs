@@ -66,6 +66,13 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         {
             return await _context.Service
                     .Where(s => ids.Contains(s.ServiceId))
+                    .Include(s => s.Contact)
+                    .Include(s => s.Department)
+                    .Include(s => s.Division)
+                    .Include(s => s.Program)
+                    .Include(s => s.ServiceCommunityAssociation)
+                    .Include(s => s.ServiceLanguageAssociation)
+                    .Include(s => s.ServiceLocationAssociation)
                     .ToListAsync()
                     .ConfigureAwait(false);
         }
