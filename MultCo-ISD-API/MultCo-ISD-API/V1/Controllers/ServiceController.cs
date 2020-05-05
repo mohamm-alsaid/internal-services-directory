@@ -16,18 +16,18 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
 #endif
-    [Route("api/[controller]")]
+    [Route("services/api/v1/[controller]")]
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class ServiceController : ControllerBase
     {
         private const string DefaultConnectionStringName = "DefaultConnection";
 
         private readonly InternalServicesDirectoryV1Context _context;
         private readonly IServiceContextManager _serviceContextManager;
 
-        public ServicesController(InternalServicesDirectoryV1Context context)
+        public ServiceController(InternalServicesDirectoryV1Context context)
         {
-            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member 
+            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
             // and pass 'context' directly to the 'ServiceContext' constructor
             _context = context;
             _serviceContextManager = new ServiceContextManager(_context);
@@ -89,8 +89,9 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
-        [Route("[action]/{lang}")]
+        //GET: api/Services/Community?="community"
         [HttpGet]
+        [Route("[action]/{lang}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -99,6 +100,53 @@ namespace MultCo_ISD_API.V1.Controllers
         public async Task<IActionResult> Language(string language)
         {
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("[action]/{community}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Community(string community)
+        {
+            try
+            {
+                //this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
+                var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
+
+                if (comm == null)
+                {
+                    return NotFound("Community given does not exist.");
+                }
+
+                //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
+                var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
+
+                if (scas.Count() == 0)
+                {
+                    return NotFound("Community has no relationships.");
+                }
+
+                var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
+                foreach (var sca in scas)
+                {
+                    ids.Add(sca.ServiceId);
+                }
+
+                //fetch only the services with the service ids we just got from the SCAs, then convert to DTO
+                var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
+
+                var serviceDTOs = new List<ServiceV1DTO>();
+                foreach (var service in services)
+                {
+                    serviceDTOs.Add(await populateService(service));
+                }
+
+                return Ok(serviceDTOs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
 
