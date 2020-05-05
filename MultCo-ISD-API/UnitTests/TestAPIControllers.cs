@@ -65,7 +65,7 @@ namespace UnitTests
                     context.Service.Add(new Service());
                     context.SaveChanges();
 
-                    ServicesController controller = new ServicesController(context);
+                    ServiceController controller = new ServiceController(context);
                     var actionResult = controller.GetServices().Result;
 
                     Assert.IsNotNull(actionResult);
@@ -97,7 +97,7 @@ namespace UnitTests
                     context.Service.Add(new Service());
                     context.SaveChanges();
 
-                    ServicesController controller = new ServicesController(context);
+                    ServiceController controller = new ServiceController(context);
                     var actionResult = controller.GetService(2).Result;
                     var result = actionResult as OkObjectResult;
                     var service = result.Value as ServiceV1DTO;
@@ -133,7 +133,7 @@ namespace UnitTests
                     context.SaveChanges();
 
                     var serv = new Service().ToServiceV1DTO();
-                    ServicesController controller = new ServicesController(context);
+                    ServiceController controller = new ServiceController(context);
                     var actionResult = controller.PostService(serv).Result;
                     var result = actionResult as NoContentResult;
 
@@ -170,7 +170,7 @@ namespace UnitTests
                     context.SaveChanges();
 
                     serv.ServiceName = "Panda Adoption Society";
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var actionResult = controller.PutService(1, serv.ToServiceV1DTO()).Result;
                     var result = actionResult as NoContentResult;
 
@@ -204,7 +204,7 @@ namespace UnitTests
                     context.Service.Add(new Service());
                     context.SaveChanges();
 
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var actionResult = controller.DeleteService(2).Result;
 
                     Assert.IsNotNull(actionResult);
@@ -250,7 +250,7 @@ namespace UnitTests
                     context.ServiceCommunityAssociation.Add(sca);
                     context.ServiceCommunityAssociation.Add(sca1);
                     context.SaveChanges();
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var output = controller.GetService(1);
                     var actionResult = output.Result;
                 }
