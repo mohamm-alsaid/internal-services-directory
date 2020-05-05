@@ -89,7 +89,7 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
-        //GET: api/Services/Community?="community"
+        //GET: api/Services/lang?="language"
         [HttpGet]
         [Route("[action]/{lang}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
@@ -97,13 +97,50 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Language(string language)
+        public async Task<IActionResult> Language(string lang)
         {
-            return Ok();
+            //massage query string into a list
+            var langNames = lang.Split(',');
+            var langNamesList = new List<string>(langNames);
+            var langs = await _serviceContextManager.GetLanguageByNameListAsync(langNamesList);
+
+            if (langs.Count() == 0)
+            {
+                return NotFound("No languages from given names found.");
+            }
+
+            var langIds = new List<int?>();
+            foreach (var language in langs)
+            {
+                langIds.Add(language.LanguageId);
+            }
+
+            var slas = await _serviceContextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
+
+            if (slas.Count() == 0)
+            {
+                return NotFound("No relationships found for given language(s).");
+            }
+
+            var serviceIds = new List<int?>();
+            foreach(var sla in slas)
+            {
+                serviceIds.Add(sla.ServiceId);
+            }
+
+            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach(var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
         }
 
+        //GET: api/Services/Community?="community"
         [HttpGet]
-        [Route("[action]/{community}")]
+        [Route("[action]/{comm}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Community(string community)

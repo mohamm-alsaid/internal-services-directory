@@ -312,7 +312,7 @@ namespace UnitTests
                     context.ServiceCommunityAssociation.Add(sca2);
                     context.SaveChanges();
 
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var output = controller.Community("comm1");
                     var actionresult = output.Result;
                     var result = actionresult as OkObjectResult;
@@ -380,7 +380,7 @@ namespace UnitTests
                     context.ServiceCommunityAssociation.Add(sca2);
                     context.SaveChanges();
 
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var output = controller.Community("comm3");
                     var actionresult = output.Result;
                     var result = actionresult as NotFoundObjectResult;
@@ -394,6 +394,206 @@ namespace UnitTests
 
                     Assert.IsNotNull(result);
                     Assert.AreEqual(404, result.StatusCode);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByLanguage()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service serv1 = new Service();
+                    serv1.ServiceId = 1;
+                    Service serv2 = new Service();
+                    serv2.ServiceId = 2;
+                    Service serv3 = new Service();
+                    serv3.ServiceId = 3;
+                    context.Service.Add(serv1);
+                    context.Service.Add(serv2);
+                    context.Service.Add(serv3);
+                    context.SaveChanges();
+
+                    Language lang1 = new Language();
+                    lang1.LanguageId = 1;
+                    lang1.LanguageName = "english";
+                    Language lang2 = new Language();
+                    lang2.LanguageId = 2;
+                    lang2.LanguageName = "spanish";
+                    Language lang3 = new Language();
+                    lang3.LanguageId = 3;
+                    lang3.LanguageName = "german";
+                    context.Language.Add(lang1);
+                    context.Language.Add(lang2);
+                    context.Language.Add(lang3);
+                    context.SaveChanges();
+
+                    ServiceLanguageAssociation sla1 = new ServiceLanguageAssociation();
+                    sla1.ServiceId = 1;
+                    sla1.LanguageId = 1;
+                    ServiceLanguageAssociation sla2 = new ServiceLanguageAssociation();
+                    sla2.ServiceId = 2;
+                    sla2.LanguageId = 1;
+                    ServiceLanguageAssociation sla3 = new ServiceLanguageAssociation();
+                    sla3.ServiceId = 3;
+                    sla3.LanguageId = 1;
+                    ServiceLanguageAssociation sla4 = new ServiceLanguageAssociation();
+                    sla4.ServiceId = 2;
+                    sla4.LanguageId = 2;
+                    ServiceLanguageAssociation sla5 = new ServiceLanguageAssociation();
+                    sla5.ServiceId = 3;
+                    sla5.LanguageId = 2;
+                    ServiceLanguageAssociation sla6 = new ServiceLanguageAssociation();
+                    sla6.ServiceId = 3;
+                    sla6.LanguageId = 3;
+                    context.ServiceLanguageAssociation.Add(sla1);
+                    context.ServiceLanguageAssociation.Add(sla2);
+                    context.ServiceLanguageAssociation.Add(sla3);
+                    context.ServiceLanguageAssociation.Add(sla4);
+                    context.ServiceLanguageAssociation.Add(sla5);
+                    context.ServiceLanguageAssociation.Add(sla6);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Language("spanish,german");
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(2, services.Count());
+
+                    output = controller.Language("english");
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(3, services.Count());
+
+                    output = controller.Language("german");
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(1, services.Count());
+
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByLanguageNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service serv1 = new Service();
+                    serv1.ServiceId = 1;
+                    Service serv2 = new Service();
+                    serv2.ServiceId = 2;
+                    Service serv3 = new Service();
+                    serv3.ServiceId = 3;
+                    context.Service.Add(serv1);
+                    context.Service.Add(serv2);
+                    context.Service.Add(serv3);
+                    context.SaveChanges();
+
+                    Language lang1 = new Language();
+                    lang1.LanguageId = 1;
+                    lang1.LanguageName = "english";
+                    Language lang2 = new Language();
+                    lang2.LanguageId = 2;
+                    lang2.LanguageName = "spanish";
+                    Language lang3 = new Language();
+                    lang3.LanguageId = 3;
+                    lang3.LanguageName = "german";
+                    context.Language.Add(lang1);
+                    context.Language.Add(lang2);
+                    context.Language.Add(lang3);
+                    context.SaveChanges();
+
+                    ServiceLanguageAssociation sla1 = new ServiceLanguageAssociation();
+                    sla1.ServiceId = 1;
+                    sla1.LanguageId = 1;
+                    ServiceLanguageAssociation sla2 = new ServiceLanguageAssociation();
+                    sla2.ServiceId = 2;
+                    sla2.LanguageId = 1;
+                    ServiceLanguageAssociation sla3 = new ServiceLanguageAssociation();
+                    sla3.ServiceId = 3;
+                    sla3.LanguageId = 1;
+                    ServiceLanguageAssociation sla4 = new ServiceLanguageAssociation();
+                    sla4.ServiceId = 2;
+                    sla4.LanguageId = 2;
+                    ServiceLanguageAssociation sla5 = new ServiceLanguageAssociation();
+                    sla5.ServiceId = 3;
+                    sla5.LanguageId = 2;
+                    ServiceLanguageAssociation sla6 = new ServiceLanguageAssociation();
+                    sla6.ServiceId = 3;
+                    sla6.LanguageId = 3;
+                    context.ServiceLanguageAssociation.Add(sla1);
+                    context.ServiceLanguageAssociation.Add(sla2);
+                    context.ServiceLanguageAssociation.Add(sla3);
+                    context.ServiceLanguageAssociation.Add(sla4);
+                    context.ServiceLanguageAssociation.Add(sla5);
+                    context.ServiceLanguageAssociation.Add(sla6);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Language("russian");
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No languages from given names found.", result.Value);
+
+                    Language lang4 = new Language();
+                    lang4.LanguageName = "russian";
+                    lang4.LanguageId = 4;
+                    context.Language.Add(lang4);
+                    context.SaveChanges();
+
+                    output = controller.Language("russian");
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No relationships found for given language(s).", result.Value);
                 }
             }
             finally
