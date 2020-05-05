@@ -16,16 +16,16 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
 #endif
-    [Route("api/[controller]")]
+    [Route("services/api/v1/[controller]")]
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class ServiceController : ControllerBase
     {
         private const string DefaultConnectionStringName = "DefaultConnection";
 
         private readonly InternalServicesDirectoryV1Context _context;
         private readonly IServiceContextManager _serviceContextManager;
 
-        public ServicesController(InternalServicesDirectoryV1Context context)
+        public ServiceController(InternalServicesDirectoryV1Context context)
         {
             // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member 
             // and pass 'context' directly to the 'ServiceContext' constructor
