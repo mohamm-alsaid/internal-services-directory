@@ -19,7 +19,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids);
         Task<Language> GetLanguageByIdAsync(int id);
-        Task<List<Language>> GetLanguageByNameListAsync(List<string> langs);
+        Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
 
     }
@@ -128,7 +128,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .SingleOrDefaultAsync();
         }
         
-        public async Task<List<Language>> GetLanguageByNameListAsync(List<string> langs)
+        public async Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs)
         {
             langs.ForEach(l => l.ToLower());
 

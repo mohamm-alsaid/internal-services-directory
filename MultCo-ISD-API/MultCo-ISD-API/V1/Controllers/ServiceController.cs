@@ -102,7 +102,7 @@ namespace MultCo_ISD_API.V1.Controllers
             //massage query string into a list
             var langNames = lang.Split(',');
             var langNamesList = new List<string>(langNames);
-            var langs = await _serviceContextManager.GetLanguageByNameListAsync(langNamesList);
+            var langs = await _serviceContextManager.GetLanguagesByNameListAsync(langNamesList);
 
             if (langs.Count() == 0)
             {
