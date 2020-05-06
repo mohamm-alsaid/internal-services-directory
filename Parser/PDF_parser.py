@@ -1,17 +1,9 @@
 from io import StringIO
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
-from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
-from pdfminer.pdfparser import PDFParser
-import pprint
 import json
-import urllib
-from urllib import request
-import sys
-import PyPDF2
-import os
 import re
 from tqdm import tqdm
 
@@ -123,7 +115,6 @@ def read_page(page):
     for x in temp:
         if x != '':
             temp2.append(x)
-    print(temp2)
     data["Program Number"] = temp2[1]
     data["Program Name"] = ' '.join(temp2[2:])
     data["Executive Summary"] = ""
@@ -131,7 +122,6 @@ def read_page(page):
     data["Related Programs"] = ""
 
     need_contact = True
-    exec_endline = 0
 
     start_exec = False
     finish_exec = False
@@ -201,3 +191,4 @@ def read_page(page):
                 data["Program Summary"] += line
 
     return data
+
