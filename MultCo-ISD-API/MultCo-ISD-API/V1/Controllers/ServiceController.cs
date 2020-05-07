@@ -27,7 +27,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
         public ServiceController(InternalServicesDirectoryV1Context context)
         {
-            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member 
+            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
             // and pass 'context' directly to the 'ServiceContext' constructor
             _context = context;
             _serviceContextManager = new ServiceContextManager(_context);
@@ -89,14 +89,60 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
-        //GET: api/Services/Community?="community"
-        [Route("[action]/{community}")]
+        //GET: api/Services/lang?="language"
         [HttpGet]
+        [Route("[action]/{lang}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
+        public async Task<IActionResult> Language(string lang)
+        {
+            //massage query string into a list
+            var langNames = lang.Split(',');
+            var langNamesList = new List<string>(langNames);
+            var langs = await _serviceContextManager.GetLanguagesByNameListAsync(langNamesList);
+
+            if (langs.Count() == 0)
+            {
+                return NotFound("No languages from given names found.");
+            }
+
+            var langIds = new List<int?>();
+            foreach (var language in langs)
+            {
+                langIds.Add(language.LanguageId);
+            }
+
+            var slas = await _serviceContextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
+
+            if (slas.Count() == 0)
+            {
+                return NotFound("No relationships found for given language(s).");
+            }
+
+            var serviceIds = new List<int?>();
+            foreach(var sla in slas)
+            {
+                serviceIds.Add(sla.ServiceId);
+            }
+
+            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach(var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
+
+        //GET: api/Services/Community?="community"
+        [HttpGet]
+        [Route("[action]/{comm}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Community(string community)
         {
             try
@@ -131,7 +177,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 {
                     serviceDTOs.Add(await populateService(service));
                 }
-                
+
                 return Ok(serviceDTOs);
             }
             catch (Exception e)
@@ -139,6 +185,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 throw e;
             }
         }
+
 
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for

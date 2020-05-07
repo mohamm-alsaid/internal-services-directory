@@ -16,7 +16,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Community> GetCommunityByIdAsync(int id);
         Task<Community> GetCommunityByNameAsync(string name);
         Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
+        Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
+        Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids);
         Task<Language> GetLanguageByIdAsync(int id);
+        Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
 
     }
@@ -101,6 +104,22 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .ConfigureAwait(false);
         }
 
+        public async Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id)
+        {
+            return await _context.ServiceLanguageAssociation
+                .Where(sla => sla.LanguageId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids)
+        {
+            return await _context.ServiceLanguageAssociation
+                .Where(sla => ids.Contains(sla.LanguageId))
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<Language> GetLanguageByIdAsync(int id)
         {
             return await _context.Language
@@ -108,6 +127,17 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
+        
+        public async Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs)
+        {
+            langs.ForEach(l => l.ToLower());
+
+            return await _context.Language
+                .Where(l => langs.Contains(l.LanguageName.ToLower()))
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<Location> GetLocationByIdAsync(int id)
         {
 
