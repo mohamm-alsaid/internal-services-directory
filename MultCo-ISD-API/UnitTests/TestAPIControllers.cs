@@ -601,5 +601,191 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestGetByBuildingId()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                // In-mem db exists only while connection is open
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                // Create schema in db
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    LocationType lt1 = new LocationType { LocationTypeName="lt1" };
+                    context.LocationType.Add(lt1);
+                    context.SaveChanges();
+
+                    Location l1 = new Location();
+                    l1.BuildingId = "b1";
+                    l1.LocationId = 1;
+                    l1.LocationType = lt1;
+                    Location l2 = new Location();
+                    l2.BuildingId = "b2";
+                    l2.LocationId = 2;
+                    l2.LocationType = lt1;
+                    Location l3 = new Location();
+                    l3.BuildingId = "b2";
+                    l3.LocationId = 3;
+                    l3.LocationType = lt1;
+                    context.Location.Add(l1);
+                    context.Location.Add(l2);
+                    context.Location.Add(l3);
+                    context.SaveChanges();
+
+                    Service s1 = new Service { ServiceId = 1 };
+                    Service s2 = new Service { ServiceId = 2 };
+                    Service s3 = new Service { ServiceId = 3 };
+                    Service s4 = new Service { ServiceId = 4 };
+                    Service s5 = new Service { ServiceId = 5 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.SaveChanges();
+
+                    ServiceLocationAssociation sla1 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 1, LocationId = 1, ServiceId = 1 };
+                    ServiceLocationAssociation sla2 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 2, LocationId = 2, ServiceId = 2 };
+                    ServiceLocationAssociation sla3 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 3, LocationId = 3, ServiceId = 3 };
+                    ServiceLocationAssociation sla4 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 4, LocationId = 2, ServiceId = 4 };
+                    ServiceLocationAssociation sla5 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 5, LocationId = 2, ServiceId = 5 };
+                    context.ServiceLocationAssociation.Add(sla1);
+                    context.ServiceLocationAssociation.Add(sla2);
+                    context.ServiceLocationAssociation.Add(sla3);
+                    context.ServiceLocationAssociation.Add(sla4);
+                    context.ServiceLocationAssociation.Add(sla5);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.BuildingId("b2");
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(4, services.Count());
+
+                    output = controller.BuildingId("b1");
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(1, services.Count());
+
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByBuildingIdNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                // In-mem db exists only while connection is open
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                // Create schema in db
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    LocationType lt1 = new LocationType { LocationTypeName = "lt1" };
+                    context.LocationType.Add(lt1);
+                    context.SaveChanges();
+
+                    Location l1 = new Location();
+                    l1.BuildingId = "b1";
+                    l1.LocationId = 1;
+                    l1.LocationType = lt1;
+                    Location l2 = new Location();
+                    l2.BuildingId = "b2";
+                    l2.LocationId = 2;
+                    l2.LocationType = lt1;
+                    Location l3 = new Location();
+                    l3.BuildingId = "b2";
+                    l3.LocationId = 3;
+                    l3.LocationType = lt1;
+                    context.Location.Add(l1);
+                    context.Location.Add(l2);
+                    context.Location.Add(l3);
+                    context.SaveChanges();
+
+                    Service s1 = new Service { ServiceId = 1 };
+                    Service s2 = new Service { ServiceId = 2 };
+                    Service s3 = new Service { ServiceId = 3 };
+                    Service s4 = new Service { ServiceId = 4 };
+                    Service s5 = new Service { ServiceId = 5 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.SaveChanges();
+
+                    ServiceLocationAssociation sla1 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 1, LocationId = 1, ServiceId = 1 };
+                    ServiceLocationAssociation sla2 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 2, LocationId = 2, ServiceId = 2 };
+                    ServiceLocationAssociation sla3 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 3, LocationId = 3, ServiceId = 3 };
+                    ServiceLocationAssociation sla4 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 4, LocationId = 2, ServiceId = 4 };
+                    ServiceLocationAssociation sla5 = new ServiceLocationAssociation { ServiceLocationAssociation1 = 5, LocationId = 2, ServiceId = 5 };
+                    context.ServiceLocationAssociation.Add(sla1);
+                    context.ServiceLocationAssociation.Add(sla2);
+                    context.ServiceLocationAssociation.Add(sla3);
+                    context.ServiceLocationAssociation.Add(sla4);
+                    context.ServiceLocationAssociation.Add(sla5);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.BuildingId("b3");
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No locations found from given building id.", result.Value);
+
+                    Location l4 = new Location();
+                    l4.BuildingId = "b3";
+                    l4.LocationId = 4;
+                    l4.LocationType = lt1;
+                    context.Location.Add(l4);
+                    context.SaveChanges();
+
+                    output = controller.BuildingId("b3");
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Location(s) found have no relationships to any services.", result.Value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

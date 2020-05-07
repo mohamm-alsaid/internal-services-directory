@@ -18,9 +18,11 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids);
+        Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids);
         Task<Language> GetLanguageByIdAsync(int id);
         Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
+        Task<List<Location>> GetLocationsByBuildingId(string buildingid);
 
     }
 
@@ -120,6 +122,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .ConfigureAwait(false);
         }
 
+        public async Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids)
+        {
+            return await _context.ServiceLocationAssociation
+                .Where(sla => ids.Contains(sla.LocationId))
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<Language> GetLanguageByIdAsync(int id)
         {
             return await _context.Language
@@ -145,6 +155,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .Where(l => l.LocationId == id)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+        }
+        
+        public async Task<List<Location>> GetLocationsByBuildingId(string buildingid)
+        {
+            return await _context.Location
+                .Where(l => l.BuildingId == buildingid)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
     }
 }

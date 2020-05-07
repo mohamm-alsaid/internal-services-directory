@@ -186,6 +186,46 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        // GET: api/Service/BuildingId
+        [HttpGet]
+        [Route("[action]/{buildingId}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> BuildingId(string buildingId)
+        {
+            var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
+            if (locations.Count() == 0)
+            {
+                return NotFound("No locations found from given building id.");
+            }
+
+            var locationIds = new List<int?>();
+            foreach (var l in locations)
+            {
+                locationIds.Add(l.LocationId);
+            }
+
+            var slas = await _serviceContextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
+            if (slas.Count() == 0)
+            {
+                return NotFound("Location(s) found have no relationships to any services.");
+            }
+
+            var serviceIds = new List<int?>();
+            foreach (var sla in slas)
+            {
+                serviceIds.Add(sla.ServiceId);
+            }
+
+            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
 
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
