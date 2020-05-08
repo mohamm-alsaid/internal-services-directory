@@ -40,17 +40,13 @@ namespace ValidatorUnitTest
             ServiceLocationVal = new ServiceLocationAssociationV1DTOValidator();
             ServiceCommunityVal = new ServiceCommunityAssociationV1DTOValidator();
         }
-
         [Test]
         public void Department_should_not_have_errors()
         {
-
-
             var dept = new DepartmentV1DTO();
             dept.DepartmentCode = 1;
             dept.DepartmentName = "some name";
             var deptResult = DepartmentVal.TestValidate(dept);
-
 
             deptResult.ShouldNotHaveValidationErrorFor(x => x.DepartmentName);
             deptResult.ShouldNotHaveValidationErrorFor(x => x.DepartmentCode);
@@ -71,7 +67,6 @@ namespace ValidatorUnitTest
             contact.PhoneNumber = "555-555-5555";
             contact.EmailAddress = "vali@mult.co";
             var Result = ContactVal.TestValidate(contact);
-
 
             Result.ShouldNotHaveValidationErrorFor(x => x.ContactName);
             Result.ShouldNotHaveValidationErrorFor(x => x.PhoneNumber);
@@ -103,7 +98,6 @@ namespace ValidatorUnitTest
             program.ProgramName = "a valid name";
             program.ProgramOfferNumber = "1";
             var Result = ProgramVal.TestValidate(program);
-
 
             Result.ShouldNotHaveValidationErrorFor(x => x.SponsorName);
             Result.ShouldNotHaveValidationErrorFor(x => x.OfferType);
@@ -172,7 +166,6 @@ namespace ValidatorUnitTest
 
             var Result = LocationTypeVal.TestValidate(locationType);
 
-
             Result.ShouldNotHaveValidationErrorFor(x => x.LocationTypeName);
         }
         [Test]
@@ -210,7 +203,6 @@ namespace ValidatorUnitTest
 
             var Result = LanguageVal.TestValidate(language);
 
-
             Result.ShouldNotHaveValidationErrorFor(x => x.LanguageName);
         }
         [Test]
@@ -231,7 +223,6 @@ namespace ValidatorUnitTest
             
 
             var Result = CommunityVal.TestValidate(community);
-
 
             Result.ShouldNotHaveValidationErrorFor(x => x.CommunityName);
             Result.ShouldNotHaveValidationErrorFor(x => x.CommunityDescription);
