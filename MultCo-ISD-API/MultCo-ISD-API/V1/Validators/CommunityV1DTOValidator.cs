@@ -1,15 +1,15 @@
 ﻿using FluentValidation;
-using MultCo_ISD_API.Models;
+using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class CommunityValidator : AbstractValidator<Community>
+    public class CommunityV1DTOValidator : AbstractValidator<CommunityV1DTO>
     {
-        public CommunityValidator()
+        public CommunityV1DTOValidator()
         {
-            RuleFor(x => x.CommunityId)
-                .NotNull().WithMessage("Community id cannot be null")
-                .GreaterThan(0).WithMessage("Community Id should start from 1");
+
+            RuleFor(x => x.CommunityID)
+               .Empty().WithMessage("cannot specify community ID explicitly");
 
             RuleFor(x => x.CommunityName)
                 .NotNull().WithMessage("Community name cannot be null")

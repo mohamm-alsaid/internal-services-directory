@@ -8,8 +8,10 @@ namespace MultCo_ISD_API.V1.DTO
 {
 	public static class CommunityV1DTOExtensions
 	{
+
 		public static CommunityV1DTO ToCommunityV1DTO(this Community item)
 		{
+			
 			if (item == null)
 			{
 				throw new ArgumentException(nameof(item));

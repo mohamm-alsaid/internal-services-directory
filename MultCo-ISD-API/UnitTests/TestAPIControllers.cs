@@ -312,7 +312,7 @@ namespace UnitTests
                     context.ServiceCommunityAssociation.Add(sca2);
                     context.SaveChanges();
 
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var output = controller.Community("comm1");
                     var actionresult = output.Result;
                     var result = actionresult as OkObjectResult;
@@ -380,7 +380,7 @@ namespace UnitTests
                     context.ServiceCommunityAssociation.Add(sca2);
                     context.SaveChanges();
 
-                    var controller = new ServicesController(context);
+                    var controller = new ServiceController(context);
                     var output = controller.Community("comm3");
                     var actionresult = output.Result;
                     var result = actionresult as NotFoundObjectResult;

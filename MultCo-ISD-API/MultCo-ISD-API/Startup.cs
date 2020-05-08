@@ -18,6 +18,8 @@ using MultCo_ISD_API.Models;
 using MultCo_ISD_API.Swagger;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MultCo_ISD_API.V1.DTO;
+using MultCo_ISD_API.V1.Validators;
 
 namespace MultCo_ISD_API
 {
@@ -41,18 +43,18 @@ namespace MultCo_ISD_API
 			services.AddControllers();
 
 			// register validator(s):
-			services.AddTransient<IValidator<Contact>, V1.Validators.ContactValidator>(); 
-			services.AddTransient<IValidator<Community>, V1.Validators.CommunityValidator>(); 
-			services.AddTransient<IValidator<Division>, V1.Validators.DivisionValidator>(); 
-			services.AddTransient<IValidator<Language>, V1.Validators.LanguageValidator>(); 
-			services.AddTransient<IValidator<LocationType>, V1.Validators.LocationTypeValidator>(); 
-			services.AddTransient<IValidator<Location>, V1.Validators.LocationValidator>(); 
-			services.AddTransient<IValidator<ServiceCommunityAssociation>, V1.Validators.ServiceCommunityAssociationValidator>(); 
-			services.AddTransient<IValidator<Program>, V1.Validators.ProgramValidator>(); 
-			services.AddTransient<IValidator<ServiceLanguageAssociation>, V1.Validators.ServiceLanguageAssociationValidator>(); 
-			services.AddTransient<IValidator<Department>, V1.Validators.DepartmentValidator>(); 
-			services.AddTransient<IValidator<ServiceLocationAssociation>, V1.Validators.ServiceLocationAssociationValidator>(); 
-			services.AddTransient<IValidator<Service>, V1.Validators.ServiceValidator>(); 
+			services.AddTransient<IValidator<ContactV1DTO>, ContactV1DTOValidator>(); 
+			services.AddTransient<IValidator<CommunityV1DTO>, CommunityV1DTOValidator>(); 
+			services.AddTransient<IValidator<DivisionV1DTO>, DivisionV1DTOValidator>(); 
+			services.AddTransient<IValidator<LanguageV1DTO>, LanguageV1DTOValidator>(); 
+			services.AddTransient<IValidator<LocationTypeV1DTO>, LocationTypeV1DTOValidator>(); 
+			services.AddTransient<IValidator<LocationV1DTO>, LocationV1DTOValidator>(); 
+			services.AddTransient<IValidator<ServiceCommunityAssociationV1DTO>, ServiceCommunityAssociationV1DTOValidator>(); 
+			services.AddTransient<IValidator<ProgramV1DTO>, ProgramV1DTOValidator>(); 
+			services.AddTransient<IValidator<ServiceLanguageAssociationV1DTO>, ServiceLanguageAssociationV1DTOValidator>(); 
+			services.AddTransient<IValidator<DepartmentV1DTO>, DepartmentV1DTOValidator>(); 
+			services.AddTransient<IValidator<ServiceLocationAssociationV1DTO>, ServiceLocationAssociationV1DTOValidator>(); 
+			services.AddTransient<IValidator<ServiceV1DTO>, ServiceV1DTOValidator>(); 
 
 
 			services.AddSwaggerService();

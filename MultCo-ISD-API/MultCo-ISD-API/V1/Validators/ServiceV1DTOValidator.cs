@@ -1,17 +1,16 @@
 ﻿using System.Data;
 using FluentValidation;
 using FluentValidation.Validators;
-using MultCo_ISD_API.Models;
+using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.Validators
 {
-    public class ServiceValidator : AbstractValidator<Service>
+    public class ServiceV1DTOValidator : AbstractValidator<ServiceV1DTO>
     {
-        public ServiceValidator()
+        public ServiceV1DTOValidator()
         {
             RuleFor(x => x.ServiceId)
-                .NotNull().WithMessage("Service id cannot be null")
-                .GreaterThan(0).WithMessage("Service Id should start from 1");
+                .Empty().WithMessage("cannot specify service ID explicitly");
 
             RuleFor(x => x.ProgramId)
                 .NotNull().WithMessage("program id cannot be null")
@@ -20,10 +19,10 @@ namespace MultCo_ISD_API.V1.Validators
             RuleFor(x => x.DivisionId)
                 .NotNull().WithMessage("division id cannot be null")
                 .GreaterThan(0).WithMessage("division Id should start from 1");
-
+            
             RuleFor(x => x.ServiceName)
                 .NotNull().WithMessage("service name cannot be null")
-                .MaximumLength(20).WithMessage("service name cannot exceed 20 chars");
+                .MaximumLength(20).WithMessage("service name cannot exceed 20");
           
             RuleFor(x => x.ServiceDescription)
                 .NotNull().WithMessage("service Description cannot be null")
@@ -54,20 +53,19 @@ namespace MultCo_ISD_API.V1.Validators
 
             RuleFor(x => x.Active)
                 .NotNull().WithMessage("Service active cannot be null");
-
-            RuleFor(x => x.Contact).SetValidator(new ContactValidator());
-
-            RuleFor(x => x.Department).SetValidator(new DepartmentValidator());
-
-            RuleFor(x => x.Division).SetValidator(new DivisionValidator());
             
-            RuleFor(x => x.Program).SetValidator(new ProgramValidator());
+            // apply all the validation rules for the following fields:
+            RuleFor(x => x.ContactDTO).SetValidator(new ContactV1DTOValidator());
 
-            /*
-            RuleFor(x => x.ServiceCommunityAssociation).SetValidator(new ServiceCommunityAssociationValidator());
-            RuleFor(x => x.ServiceLanguageAssociation).SetValidator(new ServiceLanguageAssociationValidator());
-            RuleFor(x => x.ServiceLocationAssociation).SetValidator(new ServiceLocationAssociationValidator());
-            */
+            RuleFor(x => x.DepartmentDTO).SetValidator(new DepartmentV1DTOValidator());
+
+            RuleFor(x => x.DivisionDTO).SetValidator(new DivisionV1DTOValidator());
+            
+            RuleFor(x => x.ProgramDTO).SetValidator(new ProgramV1DTOValidator());
+            
+            RuleForEach(x => x.ServiceCommunityAssociationDTOs).SetValidator(new ServiceCommunityAssociationV1DTOValidator());
+            RuleForEach(x => x.ServiceLanguageAssociationDTOs).SetValidator(new ServiceLanguageAssociationV1DTOValidator());
+            RuleForEach(x => x.ServiceLocationAssociationDTOs).SetValidator(new ServiceLocationAssociationV1DTOValidator());
         }
     }
 }
