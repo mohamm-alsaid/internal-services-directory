@@ -143,6 +143,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [Route("[action]/{comm}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
         public async Task<IActionResult> Community(string community)
         {
             try
@@ -191,6 +194,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [Route("[action]/{buildingId}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
         public async Task<IActionResult> BuildingId(string buildingId)
         {
             var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
@@ -218,6 +224,32 @@ namespace MultCo_ISD_API.V1.Controllers
             }
 
             var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
+
+        //GET: api/Services/Community?="community"
+        [HttpGet]
+        [Route("[action]/{programId}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> Program(int programId)
+        {
+            var services = await _serviceContextManager.GetServicesFromProgramId(programId);
+
+            if (services.Count() == 0)
+            {
+                return NotFound("No services found with given program id.");
+            }
+
             var serviceDTOs = new List<ServiceV1DTO>();
             foreach (var service in services)
             {

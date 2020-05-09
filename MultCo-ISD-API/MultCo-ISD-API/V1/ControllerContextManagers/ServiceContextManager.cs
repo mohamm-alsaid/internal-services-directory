@@ -13,6 +13,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Service> GetServiceByIdAsync(int id);
         //currently nullable because relational table ids that aren't the primary key are nullable
         Task<List<Service>> GetServicesFromIdList(List<int?> ids);
+        Task<List<Service>> GetServicesFromProgramId(int? ids);
         Task<Community> GetCommunityByIdAsync(int id);
         Task<Community> GetCommunityByNameAsync(string name);
         Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
@@ -88,6 +89,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .Where(c => c.CommunityId == id)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<List<Service>> GetServicesFromProgramId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.ProgramId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
 
         public async Task<Community> GetCommunityByNameAsync(string name)

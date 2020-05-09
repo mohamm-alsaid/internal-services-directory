@@ -140,7 +140,7 @@ namespace UnitTests
 
                     Assert.IsNotNull(result);
                     Assert.AreEqual(204, result.StatusCode);
-                    
+
                 }
             }
             finally
@@ -209,7 +209,7 @@ namespace UnitTests
                     var actionResult = controller.DeleteService(2).Result;
 
                     Assert.IsNotNull(actionResult);
-                    
+
                 }
             }
             finally
@@ -620,7 +620,7 @@ namespace UnitTests
                 {
                     context.Database.EnsureCreated();
 
-                    LocationType lt1 = new LocationType { LocationTypeName="lt1" };
+                    LocationType lt1 = new LocationType { LocationTypeName = "lt1" };
                     context.LocationType.Add(lt1);
                     context.SaveChanges();
 
@@ -780,6 +780,114 @@ namespace UnitTests
                     Assert.IsNotNull(result);
                     Assert.AreEqual(404, result.StatusCode);
                     Assert.AreEqual("Location(s) found have no relationships to any services.", result.Value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByProgramId()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Program p1 = new Program { ProgramId = 1 };
+                    Program p2 = new Program { ProgramId = 2 };
+                    Program p3 = new Program { ProgramId = 3 };
+                    context.Program.Add(p1);
+                    context.Program.Add(p2);
+                    context.Program.Add(p3);
+                    context.SaveChanges();
+
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.Service.Add(s6);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Program(3);
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(3, services.Count());
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByProgramIdNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Program p1 = new Program { ProgramId = 1 };
+                    Program p2 = new Program { ProgramId = 2 };
+                    Program p3 = new Program { ProgramId = 3 };
+                    context.Program.Add(p1);
+                    context.Program.Add(p2);
+                    context.Program.Add(p3);
+                    context.SaveChanges();
+
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.Service.Add(s6);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Program(4);
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with given program id.", result.Value);
                 }
             }
             finally
