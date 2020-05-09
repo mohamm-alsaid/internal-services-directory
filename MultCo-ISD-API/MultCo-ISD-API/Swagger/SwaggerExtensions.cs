@@ -11,21 +11,12 @@ namespace MultCo_ISD_API.Swagger
 {
     public static class SwaggerExtensions
     {
-        /*
-         * need 2 functions: 
-         * 1. AddSwaggerService
-         * 2. UseSwaggerService
-         * 
-         * then reference them in startup.cs
-         */
+
         public static IServiceCollection AddSwaggerService(this IServiceCollection services)
         {
-            // V1 Info
-            // grab the service title from assembly
+
             var serviceTitle = Assembly.GetExecutingAssembly().GetName().Name;
-            // specify description of service
             var serviceDescription = "Multnomah County API";
-            // specify contact
             var openApiContact = new OpenApiContact { Name = "Team Bravo", Email = "someformalemail@pdx.edu" };
 
 
@@ -38,7 +29,6 @@ namespace MultCo_ISD_API.Swagger
             };
             services.AddSwaggerGen(c =>
             {
-                /**/
                 c.SwaggerDoc("V1", openApiInfoV1);
             });
             return services;

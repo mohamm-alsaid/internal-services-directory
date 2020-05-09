@@ -10,12 +10,15 @@ using Microsoft.AspNetCore.Authorization;
 using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
 using MultCo_ISD_API.V1.ControllerContexts;
+using MultCo_ISD_API.Validation;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
 #if AUTH
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
 #endif
+
+    [Validate]
     [Route("services/api/v1/[controller]")]
     [ApiController]
     public class ServiceController : ControllerBase
