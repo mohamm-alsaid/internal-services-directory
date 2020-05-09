@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using MultCo_ISD_API.V1.DTO;
 
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
@@ -21,6 +22,8 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Language> GetLanguageByIdAsync(int id);
         Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
+
+        Task PostAsync(ServiceV1DTO serviceDTO);
     }
 
     public class ServiceContextManager : IServiceContextManager
@@ -30,6 +33,26 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         public ServiceContextManager(InternalServicesDirectoryV1Context context)
         {
             _context = context;
+        }
+
+        public async Task PostAsync(ServiceV1DTO serviceDTO)
+        {
+            var service = new Service();
+
+            //add service to context
+            _context.Service.Add(service);
+            _context.Entry(service).CurrentValues.SetValues(serviceDTO);
+
+
+
+
+
+
+
+
+
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Service>> GetAllServices()

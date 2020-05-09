@@ -234,6 +234,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
         {
+            /*
             if (serviceV1DTO == null)
             {
                 throw new ArgumentNullException(nameof(serviceV1DTO));
@@ -243,7 +244,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
                 .ConfigureAwait(false);
 
-            if (item != null)
+            if (item != null) 
             {
                 return Conflict(); // 409
             }
@@ -252,6 +253,28 @@ namespace MultCo_ISD_API.V1.Controllers
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
             return NoContent(); // 204
+            */
+
+
+
+            //Check to ensure service does not exist in database before calling contextmanager method.
+            try
+            {
+                var service = await _serviceContextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
+                if (service != null)
+                {
+                    return Conflict();
+                }
+
+                await _serviceContextManager.PostAsync(serviceV1DTO);
+                return NoContent();
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+
         }
 
         // DELETE: api/Services/5
