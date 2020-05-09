@@ -288,9 +288,9 @@ namespace MultCo_ISD_API.V1.Controllers
             {
                 int id;
 
-                if (sca.CommunityID != null)
+                if (sca.CommunityId != null)
                 {
-                    id = (int)sca.CommunityID;
+                    id = (int)sca.CommunityId;
 
                     var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
 
@@ -306,9 +306,9 @@ namespace MultCo_ISD_API.V1.Controllers
             foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
             {
                 int id;
-                if (sla.LanguageID != null)
+                if (sla.LanguageId != null)
                 {
-                    id = (int)sla.LanguageID;
+                    id = (int)sla.LanguageId;
                     var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
                     if (lang == null)
                     {
@@ -321,9 +321,9 @@ namespace MultCo_ISD_API.V1.Controllers
             foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
             {
                 int id;
-                if (sla.LocationID != null)
+                if (sla.LocationId != null)
                 {
-                    id = (int)sla.LocationID;
+                    id = (int)sla.LocationId;
                     var loc = await _serviceContextManager.GetLocationByIdAsync(id);
                     if (loc == null)
                     {

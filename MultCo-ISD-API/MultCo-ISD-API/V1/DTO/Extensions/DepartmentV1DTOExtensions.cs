@@ -34,14 +34,14 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromDepartmentV1DTO(this Department to, DepartmentV1DTO from)
 		{
-			to.DepartmentId = from.DepartmentID;
+			to.DepartmentId = from.DepartmentId;
 			to.DepartmentCode = from.DepartmentCode;
 			to.DepartmentName = from.DepartmentName;
 		}
 
 		public static void CopyFromDepartment(this DepartmentV1DTO to, Department from)
 		{
-			to.DepartmentID = from.DepartmentId;
+			to.DepartmentId = from.DepartmentId;
 			to.DepartmentCode = from.DepartmentCode;
 			to.DepartmentName = from.DepartmentName;
 		}

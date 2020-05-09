@@ -34,13 +34,13 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromLanguageV1DTO(this Language to, LanguageV1DTO from)
 		{
-			to.LanguageId = from.LanguageID;
+			to.LanguageId = from.LanguageId;
 			to.LanguageName = from.LanguageName;
 		}
 
 		public static void CopyFromLanguage(this LanguageV1DTO to, Language from)
 		{
-			to.LanguageID = from.LanguageId;
+			to.LanguageId = from.LanguageId;
 			to.LanguageName = from.LanguageName;
 		}
 

@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.DTO
 {
     public class ContactV1DTO
     {
-        public int ContactID { get; set; }
+        public int ContactId { get; set; }
         public string ContactName { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }

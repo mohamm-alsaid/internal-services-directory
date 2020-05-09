@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.DTO
 {
     public class LanguageV1DTO
     {
-        public int LanguageID { get; set; }
+        public int LanguageId { get; set; }
         public string LanguageName { get; set; }
     }
 }

@@ -21,7 +21,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Language> GetLanguageByIdAsync(int id);
         Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
-
     }
 
     public class ServiceContextManager : IServiceContextManager

@@ -34,9 +34,9 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromLocationV1DTO(this Location to, LocationV1DTO from)
 		{
-			to.LocationId = from.LocationID;
-			to.LocationTypeId = from.LocationTypeID;
-			to.BuildingId = from.BuildingID;
+			to.LocationId = from.LocationId;
+			to.LocationTypeId = from.LocationTypeId;
+			to.BuildingId = from.BuildingId;
 			to.LocationAddress = from.LocationAddress;
 			to.RoomNumber = from.RoomNumber;
 			to.FloorNumber = from.FloorNumber;
@@ -44,9 +44,9 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromLocation(this LocationV1DTO to, Location from)
 		{
-			to.LocationID = from.LocationId;
-			to.LocationTypeID = from.LocationTypeId;
-			to.BuildingID = from.BuildingId;
+			to.LocationId = from.LocationId;
+			to.LocationTypeId = from.LocationTypeId;
+			to.BuildingId = from.BuildingId;
 			to.LocationAddress = from.LocationAddress;
 			to.RoomNumber = from.RoomNumber;
 			to.FloorNumber = from.FloorNumber;

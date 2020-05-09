@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.DTO
 {
     public class LocationTypeV1DTO
     {
-        public int LocationTypeID { get; set; }
+        public int LocationTypeId { get; set; }
         public string LocationTypeName { get; set; }
     }
 }

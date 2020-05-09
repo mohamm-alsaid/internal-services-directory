@@ -36,13 +36,13 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromLocationTypeV1DTO(this LocationType to, LocationTypeV1DTO from)
 		{
-			to.LocationTypeId = from.LocationTypeID;
+			to.LocationTypeId = from.LocationTypeId;
 			to.LocationTypeName = from.LocationTypeName;
 		}
 
 		public static void CopyFromLocationType(this LocationTypeV1DTO to, LocationType from)
 		{
-			to.LocationTypeID = from.LocationTypeId;
+			to.LocationTypeId = from.LocationTypeId;
 			to.LocationTypeName = from.LocationTypeName;
 		}
 
