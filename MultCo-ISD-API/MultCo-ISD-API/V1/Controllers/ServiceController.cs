@@ -261,7 +261,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
         //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
         [HttpGet]
-        [Route("[action]/{programId}")]
+        [Route("[action]/{depId},{divId}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
