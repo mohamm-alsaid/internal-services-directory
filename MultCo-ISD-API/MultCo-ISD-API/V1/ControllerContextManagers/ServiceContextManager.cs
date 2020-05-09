@@ -37,20 +37,62 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
         public async Task PostAsync(ServiceV1DTO serviceDTO)
         {
+
+
+            //check if contact exists in database
+            var contact = await _context.Contact
+                .Where(c => c.ContactId == serviceDTO.ContactId)
+                .SingleOrDefaultAsync() ?? null;
+            if (contact == null && serviceDTO.ContactId != null)
+            {
+                var c = new Contact();
+                _context.Contact.Add(c);
+                _context.Entry(c).CurrentValues.SetValues(serviceDTO.ContactDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.ContactId = c.ContactId;
+            }
+
+            var department = await _context.Department
+                .Where(d => d.DepartmentId == serviceDTO.DepartmentId)
+                .SingleOrDefaultAsync() ?? null;
+            if (department == null && serviceDTO.DepartmentId != null)
+            {
+                var d = new Department();
+                _context.Department.Add(d);
+                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DepartmentDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.DepartmentId = d.DepartmentId;
+            }
+
+            var division = await _context.Division
+                .Where(d => d.DivisionId == serviceDTO.DivisionId)
+                .SingleOrDefaultAsync() ?? null;
+            if (division == null && serviceDTO.DivisionId != null)
+            {
+                var d = new Division();
+                _context.Division.Add(d);
+                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DivisionDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.DivisionId = d.DivisionId;
+            }
+
+            var program = await _context.Program
+                .Where(p => p.ProgramId == serviceDTO.ProgramId)
+                .SingleOrDefaultAsync() ?? null;
+            if (program == null && serviceDTO.ProgramId != null)
+            {
+                var p = new Program();
+                _context.Program.Add(p);
+                _context.Entry(p).CurrentValues.SetValues(serviceDTO.ProgramDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.ProgramId = p.ProgramId;
+            }
+
             var service = new Service();
 
             //add service to context
             _context.Service.Add(service);
             _context.Entry(service).CurrentValues.SetValues(serviceDTO);
-
-
-
-
-
-
-
-
-
 
             await _context.SaveChangesAsync();
         }

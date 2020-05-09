@@ -51,7 +51,7 @@ namespace MultCo_ISD_API.V1.DTO
             to.Contact = from.ContactDTO?.ToContact();
             to.Department = from.DepartmentDTO?.ToDepartment();
             to.Division = from.DivisionDTO?.ToDivision();
-            to.Program = from.ProgramDTO?.toProgram();
+            to.Program = from.ProgramDTO?.ToProgram();
 
             foreach (var scaDTO in from.ServiceCommunityAssociationDTOs)
             {

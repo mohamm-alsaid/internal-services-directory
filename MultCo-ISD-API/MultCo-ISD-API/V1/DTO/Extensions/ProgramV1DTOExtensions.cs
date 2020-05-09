@@ -20,7 +20,7 @@ namespace MultCo_ISD_API.V1.DTO
 			return programV1DTO;
 		}
 
-		public static Program toProgram(this ProgramV1DTO item)
+		public static Program ToProgram(this ProgramV1DTO item)
 		{
 			if (item == null)
 			{
