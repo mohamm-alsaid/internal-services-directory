@@ -895,5 +895,157 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestGetByDivisionAndOrDepartmentId()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Division div1 = new Division { DivisionId = 1, DivisionCode = 1 };
+                    Division div2 = new Division { DivisionId = 2, DivisionCode = 2 };
+                    Division div3 = new Division { DivisionId = 3, DivisionCode = 3 };
+                    context.Division.Add(div1);
+                    context.Division.Add(div2);
+                    context.Division.Add(div3);
+
+                    Department dep1 = new Department { DepartmentId = 1, DepartmentCode = 1 };
+                    Department dep2 = new Department { DepartmentId = 2, DepartmentCode = 2 };
+                    Department dep3 = new Department { DepartmentId = 3, DepartmentCode = 3 };
+                    context.Department.Add(dep1);
+                    context.Department.Add(dep2);
+                    context.Department.Add(dep3);
+
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.DepartmentAndOrDivisionId(3);
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(2, services.Count());
+
+                    output = controller.DepartmentAndOrDivisionId(null,2);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(1, services.Count());
+
+                    output = controller.DepartmentAndOrDivisionId(3, 3);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(2, services.Count());
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByDivisionAndOrDepartmentIdNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Division div1 = new Division { DivisionId = 1, DivisionCode = 1 };
+                    Division div2 = new Division { DivisionId = 2, DivisionCode = 2 };
+                    Division div3 = new Division { DivisionId = 3, DivisionCode = 3 };
+                    context.Division.Add(div1);
+                    context.Division.Add(div2);
+                    context.Division.Add(div3);
+
+                    Department dep1 = new Department { DepartmentId = 1, DepartmentCode = 1 };
+                    Department dep2 = new Department { DepartmentId = 2, DepartmentCode = 2 };
+                    Department dep3 = new Department { DepartmentId = 3, DepartmentCode = 3 };
+                    context.Department.Add(dep1);
+                    context.Department.Add(dep2);
+                    context.Department.Add(dep3);
+
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.Service.Add(s4);
+                    context.Service.Add(s5);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.DepartmentAndOrDivisionId(4);
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with valid arguments given.", result.Value);
+
+                    output = controller.DepartmentAndOrDivisionId(null,4);
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with valid arguments given.", result.Value);
+
+                    output = controller.DepartmentAndOrDivisionId(null, null);
+                    actionResult = output.Result;
+                    var badRequestResult = actionResult as BadRequestObjectResult;
+
+                    Assert.IsNotNull(badRequestResult);
+                    Assert.AreEqual(400, badRequestResult.StatusCode);
+                    Assert.AreEqual("No input given.", badRequestResult.Value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

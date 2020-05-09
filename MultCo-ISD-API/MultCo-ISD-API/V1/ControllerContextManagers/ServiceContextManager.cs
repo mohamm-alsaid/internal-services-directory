@@ -14,6 +14,9 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         //currently nullable because relational table ids that aren't the primary key are nullable
         Task<List<Service>> GetServicesFromIdList(List<int?> ids);
         Task<List<Service>> GetServicesFromProgramId(int? ids);
+        Task<List<Service>> GetServicesFromDepartmentId(int? id);
+        Task<List<Service>> GetServicesFromDivisionId(int? id);
+        Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId);
         Task<Community> GetCommunityByIdAsync(int id);
         Task<Community> GetCommunityByNameAsync(string name);
         Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
@@ -95,6 +98,30 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         {
             return await _context.Service
                 .Where(s => s.ProgramId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDepartmentId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.DepartmentId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDivisionId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.DivisionId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId)
+        {
+            return await _context.Service
+                .Where(s => s.DepartmentId == deptId && s.DivisionId == divId)
                 .ToListAsync()
                 .ConfigureAwait(false);
         }
