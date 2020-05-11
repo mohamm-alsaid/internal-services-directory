@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using MultCo_ISD_API.V1.DTO;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
@@ -38,11 +39,13 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         public async Task PostAsync(ServiceV1DTO serviceDTO)
         {
 
-            #region Check to see if attempting to add duplicate with different ID
+            #region Check to see if attempting to add duplicate department/division with different ID
             /* 
              * We are checking to see if the incoming Service is attempting to 
              * re-create an existing department/division using a different ID.
-             * This should not be allowed.
+             * This should be corrected to reference the existing department/division.
+             * We choose the passed DTO over the passed ID number, and change the ID
+             * to match the deperment/division pulled from the database context by "...Code".
             */ 
             var department = await _context.Department
                 .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
@@ -64,11 +67,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             #endregion
 
             #region Check existence of one-to-one items
-            //check if contact exists in database
             var contact = await _context.Contact
                 .Where(c => c.ContactId == serviceDTO.ContactId)
                 .SingleOrDefaultAsync() ?? null;
-            if (contact == null && serviceDTO.ContactId != null)
+            if (contact == null && serviceDTO.ContactDTO != null)
             {
                 var c = new Contact();
                 _context.Contact.Add(c);
@@ -80,7 +82,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             department = await _context.Department
                 .Where(d => d.DepartmentId == serviceDTO.DepartmentId)
                 .SingleOrDefaultAsync() ?? null;
-            if (department == null && serviceDTO.DepartmentId != null)
+            if (department == null && serviceDTO.DepartmentDTO != null)
             {
                 var d = new Department();
                 _context.Department.Add(d);
@@ -92,7 +94,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             division = await _context.Division
                 .Where(d => d.DivisionId == serviceDTO.DivisionId)
                 .SingleOrDefaultAsync() ?? null;
-            if (division == null && serviceDTO.DivisionId != null)
+            if (division == null && serviceDTO.DivisionDTO != null)
             {
                 var d = new Division();
                 _context.Division.Add(d);
@@ -104,7 +106,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             var program = await _context.Program
                 .Where(p => p.ProgramId == serviceDTO.ProgramId)
                 .SingleOrDefaultAsync() ?? null;
-            if (program == null && serviceDTO.ProgramId != null)
+            if (program == null && serviceDTO.ProgramDTO != null)
             {
                 var p = new Program();
                 _context.Program.Add(p);
