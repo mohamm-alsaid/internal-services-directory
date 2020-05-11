@@ -36,7 +36,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         public async Task<List<Service>> GetAllServices(int pageSize, int pageIndex)
         {
             return await _context.Service
-                .Where(s => s.ServiceId >= pageSize * pageIndex && s.ServiceId < pageSize * pageIndex + 1)
+                .Where(s => (s.ServiceId > pageSize * pageIndex) && ( s.ServiceId <= pageSize * (pageIndex + 1)))
                 .OrderBy(s => s.ServiceName)
                 .Include(s => s.Contact)
                 .Include(s => s.Department)
