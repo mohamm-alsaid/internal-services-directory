@@ -39,6 +39,8 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         public async Task PostAsync(ServiceV1DTO serviceDTO)
         {
 
+            #region Handle one-to-one relations
+
             #region Check to see if attempting to add duplicate department/division with different ID
             /* 
              * We are checking to see if the incoming Service is attempting to 
@@ -46,7 +48,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
              * This should be corrected to reference the existing department/division.
              * We choose the passed DTO over the passed ID number, and change the ID
              * to match the deperment/division pulled from the database context by "...Code".
-            */ 
+            */
             var department = await _context.Department
                 .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
                 .SingleOrDefaultAsync();
@@ -69,7 +71,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             #region Check existence of one-to-one items
             var contact = await _context.Contact
                 .Where(c => c.ContactId == serviceDTO.ContactId)
-                .SingleOrDefaultAsync() ?? null;
+                .SingleOrDefaultAsync();
             if (contact == null && serviceDTO.ContactDTO != null)
             {
                 var c = new Contact();
@@ -81,7 +83,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             department = await _context.Department
                 .Where(d => d.DepartmentId == serviceDTO.DepartmentId)
-                .SingleOrDefaultAsync() ?? null;
+                .SingleOrDefaultAsync();
             if (department == null && serviceDTO.DepartmentDTO != null)
             {
                 var d = new Department();
@@ -93,7 +95,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             division = await _context.Division
                 .Where(d => d.DivisionId == serviceDTO.DivisionId)
-                .SingleOrDefaultAsync() ?? null;
+                .SingleOrDefaultAsync();
             if (division == null && serviceDTO.DivisionDTO != null)
             {
                 var d = new Division();
@@ -105,7 +107,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             var program = await _context.Program
                 .Where(p => p.ProgramId == serviceDTO.ProgramId)
-                .SingleOrDefaultAsync() ?? null;
+                .SingleOrDefaultAsync();
             if (program == null && serviceDTO.ProgramDTO != null)
             {
                 var p = new Program();
@@ -116,11 +118,32 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             }
             #endregion
 
+            #endregion
             var service = new Service();
 
-            //add service to context
+            // Add service to context
             _context.Service.Add(service);
             _context.Entry(service).CurrentValues.SetValues(serviceDTO);
+
+            await _context.SaveChangesAsync();
+
+            #region Handle many-to-many relations
+            foreach (var cDTO in serviceDTO.CommunityDTOs)
+            {
+                var community = await _context.Community
+                    .Where(c => c.CommunityName == cDTO.CommunityName)
+                    .SingleOrDefaultAsync();
+                if (community == null)
+                {
+                    community = new Community();
+                    _context.Community.Add(community);
+                    _context.Entry(community).CurrentValues.SetValues(cDTO);
+                    await _context.SaveChangesAsync();
+                }
+                var sca = new ServiceCommunityAssociation { ServiceId = service.ServiceId, CommunityId = community.CommunityId };
+                _context.ServiceCommunityAssociation.Add(sca);
+            }
+            #endregion
 
             await _context.SaveChangesAsync();
         }
