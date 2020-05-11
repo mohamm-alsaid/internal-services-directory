@@ -121,7 +121,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             #endregion
             var service = new Service();
 
-            // Add service to context
             _context.Service.Add(service);
             _context.Entry(service).CurrentValues.SetValues(serviceDTO);
 
@@ -143,8 +142,53 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 var sca = new ServiceCommunityAssociation { ServiceId = service.ServiceId, CommunityId = community.CommunityId };
                 _context.ServiceCommunityAssociation.Add(sca);
             }
-            #endregion
 
+            foreach (var lDTO in serviceDTO.LanguageDTOs)
+            {
+                var language = await _context.Language
+                    .Where(l => l.LanguageName == lDTO.LanguageName)
+                    .SingleOrDefaultAsync();
+                if (language == null)
+                {
+                    language = new Language();
+                    _context.Language.Add(language);
+                    _context.Entry(language).CurrentValues.SetValues(lDTO);
+                    await _context.SaveChangesAsync();
+                }
+                var sla = new ServiceLanguageAssociation { ServiceId = service.ServiceId, LanguageId = language.LanguageId };
+                _context.ServiceLanguageAssociation.Add(sla);
+            }
+            
+            foreach (var lDTO in serviceDTO.LocationDTOs)
+            {
+                var location = await _context.Location
+                    .Where(l => l.LocationName == lDTO.LocationName)
+                    .SingleOrDefaultAsync();
+                if (location == null)
+                {
+                    location = new Location();
+                    
+                    var ltype = await _context.LocationType
+                        .Where(l => l.LocationTypeId == location.LocationTypeId)
+                        .SingleOrDefaultAsync();
+                    if (ltype == null)
+                    {
+                        ltype = new LocationType();
+                        _context.LocationType.Add(ltype);
+                        _context.Entry(ltype).CurrentValues.SetValues(lDTO.LocationTypeDTO);
+                        await _context.SaveChangesAsync();
+                    }
+                    lDTO.LocationTypeId = ltype.LocationTypeId;
+                    
+                    _context.Location.Add(location);
+                    _context.Entry(location).CurrentValues.SetValues(lDTO);
+                    await _context.SaveChangesAsync();
+                }
+                var sla = new ServiceLocationAssociation { ServiceId = service.ServiceId, LocationId = location.LocationId };
+                _context.ServiceLocationAssociation.Add(sla);
+            }
+            
+            #endregion
             await _context.SaveChangesAsync();
         }
 
