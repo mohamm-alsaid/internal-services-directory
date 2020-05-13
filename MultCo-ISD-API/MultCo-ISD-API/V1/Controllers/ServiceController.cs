@@ -192,35 +192,59 @@ namespace MultCo_ISD_API.V1.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
-        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceV1DTO)
+        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
         {
-            if (serviceV1DTO == null)
+            //if (serviceV1DTO == null)
+            //{
+            //    throw new ArgumentNullException(nameof(serviceV1DTO));
+            //}
+
+            //if (id != serviceV1DTO.ServiceId)
+            //{
+            //    return BadRequest();
+            //}
+
+            //var item = await _context.Service
+            //    .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
+            //    .ConfigureAwait(false);
+
+            //if (item == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //item.CopyFromServiceV1DTO(serviceV1DTO);
+
+            //await _context.SaveChangesAsync().ConfigureAwait(false);
+            //return NoContent(); // 204
+
+
+            try
             {
-                throw new ArgumentNullException(nameof(serviceV1DTO));
-            }
+                if (id != serviceDTO.ServiceId)
+                {
+                    return BadRequest();
+                }
 
-            if (id != serviceV1DTO.ServiceId)
+                // Check to ensure service exists before calling contextmanager method.
+                var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+
+                await _serviceContextManager.PutAsync(serviceDTO);
+                return NoContent();
+            }
+            catch (Exception e)
             {
-                return BadRequest();
+                throw e;
             }
-
-            var item = await _context.Service
-                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
-                .ConfigureAwait(false);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            item.CopyFromServiceV1DTO(serviceV1DTO);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
         }
 
         // POST: api/Services
@@ -234,29 +258,6 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
         {
-            /*
-            if (serviceV1DTO == null)
-            {
-                throw new ArgumentNullException(nameof(serviceV1DTO));
-            }
-
-            var item = await _context.Service
-                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
-                .ConfigureAwait(false);
-
-            if (item != null) 
-            {
-                return Conflict(); // 409
-            }
-
-            _context.Service.Add(serviceV1DTO.ToService());
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
-            */
-
-
-
             //Check to ensure service does not exist in database before calling contextmanager method.
             try
             {

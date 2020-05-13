@@ -23,8 +23,8 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Language> GetLanguageByIdAsync(int id);
         Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
-
         Task PostAsync(ServiceV1DTO serviceDTO);
+        Task PutAsync(ServiceV1DTO serviceDTO);
     }
 
     public class ServiceContextManager : IServiceContextManager
@@ -41,7 +41,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             #region Handle one-to-one relations
 
-            #region Check to see if attempting to add duplicate department/division with different ID
+            #region Check to see if attempting to add duplicate contact/department/division/program with different ID
             /* 
              * We are checking to see if the incoming Service is attempting to 
              * re-create an existing department/division using a different ID.
@@ -49,92 +49,17 @@ namespace MultCo_ISD_API.V1.ControllerContexts
              * We choose the passed DTO over the passed ID number, and change the ID
              * to match the deperment/division pulled from the database context by "...Code".
             */
-
-            var contact = await _context.Contact
-                .Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
-                .FirstOrDefaultAsync();
-            if (contact != null)
-            {
-                serviceDTO.ContactId = contact.ContactId;
-                serviceDTO.ContactDTO = null;
-            }
-
-            var department = await _context.Department
-                .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
-                .SingleOrDefaultAsync();
-            if (department != null)
-            {
-                serviceDTO.DepartmentId = department.DepartmentId;
-                serviceDTO.DepartmentDTO = null;
-            }
-
-            var division = await _context.Division
-                .Where(d => d.DivisionCode == serviceDTO.DivisionDTO.DivisionCode)
-                .SingleOrDefaultAsync();
-            if (division != null)
-            {
-                serviceDTO.DivisionId = division.DivisionId;
-                serviceDTO.DivisionDTO = null;
-            }
-
-            var program = await _context.Program
-                .Where(p => p.ProgramOfferNumber == serviceDTO.ProgramDTO.ProgramOfferNumber)
-                .FirstOrDefaultAsync();
-            if (program != null)
-            {
-                serviceDTO.ProgramId = program.ProgramId;
-                serviceDTO.ProgramDTO = null;
-            }
+            await EnsureNoContactDuplicate(serviceDTO);
+            await EnsureNoDepartmentDuplicate(serviceDTO);
+            await EnsureNoDivisionDuplicate(serviceDTO);
+            await EnsureNoProgramDuplicate(serviceDTO);
             #endregion
 
             #region Check existence of one-to-one items
-            contact = await _context.Contact
-                .Where(c => c.ContactId == serviceDTO.ContactId)
-                .SingleOrDefaultAsync();
-            if (contact == null && serviceDTO.ContactDTO != null)
-            {
-                var c = new Contact();
-                _context.Contact.Add(c);
-                _context.Entry(c).CurrentValues.SetValues(serviceDTO.ContactDTO);
-                await _context.SaveChangesAsync();
-                serviceDTO.ContactId = c.ContactId;
-            }
-
-            department = await _context.Department
-                .Where(d => d.DepartmentId == serviceDTO.DepartmentId)
-                .SingleOrDefaultAsync();
-            if (department == null && serviceDTO.DepartmentDTO != null)
-            {
-                var d = new Department();
-                _context.Department.Add(d);
-                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DepartmentDTO);
-                await _context.SaveChangesAsync();
-                serviceDTO.DepartmentId = d.DepartmentId;
-            }
-
-            division = await _context.Division
-                .Where(d => d.DivisionId == serviceDTO.DivisionId)
-                .SingleOrDefaultAsync();
-            if (division == null && serviceDTO.DivisionDTO != null)
-            {
-                var d = new Division();
-                _context.Division.Add(d);
-                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DivisionDTO);
-                await _context.SaveChangesAsync();
-                serviceDTO.DivisionId = d.DivisionId;
-            }
-
-            program = await _context.Program
-                .Where(p => p.ProgramId == serviceDTO.ProgramId)
-                .SingleOrDefaultAsync();
-            if (program == null && serviceDTO.ProgramDTO != null)
-            {
-                var p = new Program();
-                _context.Program.Add(p);
-                _context.Entry(p).CurrentValues.SetValues(serviceDTO.ProgramDTO);
-                await _context.SaveChangesAsync();
-                serviceDTO.ProgramId = p.ProgramId;
-            }
+            await EnsureContactExistence(serviceDTO);
+            await EnsureDepartmentExistence(serviceDTO);
+            await EnsureDivisionExistence(serviceDTO);
+            await EnsureProgramExistence(serviceDTO);
             #endregion
 
             #endregion
@@ -208,6 +133,41 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             }
             
             #endregion
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task PutAsync(ServiceV1DTO serviceDTO)
+        {
+            var service = await _context.Service
+                .Where(s => s.ServiceId == serviceDTO.ServiceId)
+                .SingleOrDefaultAsync();
+
+            #region Handle one-to-one relations
+            if (service.ContactId != serviceDTO.ContactId)
+            {
+                await EnsureNoContactDuplicate(serviceDTO);
+                await EnsureContactExistence(serviceDTO);
+            }
+            if (service.DepartmentId != serviceDTO.DepartmentId)
+            {
+                await EnsureNoDepartmentDuplicate(serviceDTO);
+                await EnsureDepartmentExistence(serviceDTO);
+            }
+            if (service.DivisionId != serviceDTO.DivisionId)
+            {
+                await EnsureNoDivisionDuplicate(serviceDTO);
+                await EnsureDivisionExistence(serviceDTO);
+            }
+            if (service.ProgramId != serviceDTO.ProgramId)
+            {
+                await EnsureNoProgramDuplicate(serviceDTO);
+                await EnsureProgramExistence(serviceDTO);
+            }
+            #endregion
+
+            #region Handle many-to-many relations
+            #endregion
+            _context.Entry(service).CurrentValues.SetValues(serviceDTO);
             await _context.SaveChangesAsync();
         }
 
@@ -324,5 +284,115 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
+
+        #region Helpers
+        private async Task EnsureNoContactDuplicate(ServiceV1DTO serviceDTO)
+        {
+            var contact = await _context.Contact
+                .Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
+                .FirstOrDefaultAsync();
+            if (contact != null)
+            {
+                serviceDTO.ContactId = contact.ContactId;
+                serviceDTO.ContactDTO = null;
+            }
+        }
+        
+        private async Task EnsureContactExistence(ServiceV1DTO serviceDTO)
+        {
+            var contact = await _context.Contact
+                .Where(c => c.ContactId == serviceDTO.ContactId)
+                .SingleOrDefaultAsync();
+            if (contact == null && serviceDTO.ContactDTO != null)
+            {
+                var c = new Contact();
+                _context.Contact.Add(c);
+                _context.Entry(c).CurrentValues.SetValues(serviceDTO.ContactDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.ContactId = c.ContactId;
+            }
+        }
+
+        private async Task EnsureNoDepartmentDuplicate(ServiceV1DTO serviceDTO)
+        {
+            var department = await _context.Department
+                .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
+                .SingleOrDefaultAsync();
+            if (department != null)
+            {
+                serviceDTO.DepartmentId = department.DepartmentId;
+                serviceDTO.DepartmentDTO = null;
+            }
+        }
+
+        private async Task EnsureDepartmentExistence(ServiceV1DTO serviceDTO)
+        {
+            var department = await _context.Department
+                .Where(d => d.DepartmentId == serviceDTO.DepartmentId)
+                .SingleOrDefaultAsync();
+            if (department == null && serviceDTO.DepartmentDTO != null)
+            {
+                var d = new Department();
+                _context.Department.Add(d);
+                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DepartmentDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.DepartmentId = d.DepartmentId;
+            }
+        }
+
+        private async Task EnsureNoDivisionDuplicate(ServiceV1DTO serviceDTO)
+        {
+            var division = await _context.Division
+                .Where(d => d.DivisionCode == serviceDTO.DivisionDTO.DivisionCode)
+                .SingleOrDefaultAsync();
+            if (division != null)
+            {
+                serviceDTO.DivisionId = division.DivisionId;
+                serviceDTO.DivisionDTO = null;
+            }
+        }
+        
+        private async Task EnsureDivisionExistence(ServiceV1DTO serviceDTO)
+        {
+            var division = await _context.Division
+                .Where(d => d.DivisionId == serviceDTO.DivisionId)
+                .SingleOrDefaultAsync();
+            if (division == null && serviceDTO.DivisionDTO != null)
+            {
+                var d = new Division();
+                _context.Division.Add(d);
+                _context.Entry(d).CurrentValues.SetValues(serviceDTO.DivisionDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.DivisionId = d.DivisionId;
+            }
+        }
+
+        private async Task EnsureNoProgramDuplicate(ServiceV1DTO serviceDTO)
+        {
+            var program = await _context.Program
+                .Where(p => p.ProgramOfferNumber == serviceDTO.ProgramDTO.ProgramOfferNumber)
+                .FirstOrDefaultAsync();
+            if (program != null)
+            {
+                serviceDTO.ProgramId = program.ProgramId;
+                serviceDTO.ProgramDTO = null;
+            }
+        }
+
+        private async Task EnsureProgramExistence(ServiceV1DTO serviceDTO)
+        {
+            var program = await _context.Program
+                .Where(p => p.ProgramId == serviceDTO.ProgramId)
+                .SingleOrDefaultAsync();
+            if (program == null && serviceDTO.ProgramDTO != null)
+            {
+                var p = new Program();
+                _context.Program.Add(p);
+                _context.Entry(p).CurrentValues.SetValues(serviceDTO.ProgramDTO);
+                await _context.SaveChangesAsync();
+                serviceDTO.ProgramId = p.ProgramId;
+            }
+        }
+        #endregion
     }
 }
