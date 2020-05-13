@@ -40,14 +40,18 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> GetServices()
+        public async Task<IActionResult> GetServices(int pageSize = 20, int pageIndex = 0)
         {
             try
             {
-                var services = await _serviceContextManager.GetAllServices();
+                if(pageSize < 0 || pageIndex < 0)
+                {
+                    return NotFound("Invalid page index or page size.");
+                }
+                var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
                 if (services == null || services.Count == 0)
                 {
-                    return NotFound("There are no services in the system!");
+                    return NotFound("No services were found with the given page information.");
                 }
 
                 var serviceDTOs = new List<ServiceV1DTO>();

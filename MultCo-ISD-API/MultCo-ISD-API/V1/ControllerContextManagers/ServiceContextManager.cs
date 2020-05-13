@@ -11,7 +11,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 {
     public interface IServiceContextManager
     {
-        Task<List<Service>> GetAllServices();
+        Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
         Task<Service> GetServiceByIdAsync(int id);
         //currently nullable because relational table ids that aren't the primary key are nullable
         Task<List<Service>> GetServicesFromIdList(List<int?> ids);
@@ -41,7 +41,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         {
             _context = context;
         }
-
         public async Task PostAsync(ServiceV1DTO serviceDTO)
         {
 
@@ -226,10 +225,12 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Service>> GetAllServices()
+        public async Task<List<Service>> GetAllServices(int pageSize, int pageIndex)
         {
             return await _context.Service
                 .OrderBy(s => s.ServiceName)
+                .Skip(pageSize * pageIndex)
+                .Take(pageSize)
                 .Include(s => s.Contact)
                 .Include(s => s.Department)
                 .Include(s => s.Division)
