@@ -13,14 +13,20 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         Task<Service> GetServiceByIdAsync(int id);
         //currently nullable because relational table ids that aren't the primary key are nullable
         Task<List<Service>> GetServicesFromIdList(List<int?> ids);
+        Task<List<Service>> GetServicesFromProgramId(int? ids);
+        Task<List<Service>> GetServicesFromDepartmentId(int? id);
+        Task<List<Service>> GetServicesFromDivisionId(int? id);
+        Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId);
         Task<Community> GetCommunityByIdAsync(int id);
         Task<Community> GetCommunityByNameAsync(string name);
         Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
         Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids);
+        Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids);
         Task<Language> GetLanguageByIdAsync(int id);
         Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
         Task<Location> GetLocationByIdAsync(int id);
+        Task<List<Location>> GetLocationsByBuildingId(string buildingid);
 
     }
 
@@ -88,6 +94,38 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<List<Service>> GetServicesFromProgramId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.ProgramId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDepartmentId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.DepartmentId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDivisionId(int? id)
+        {
+            return await _context.Service
+                .Where(s => s.DivisionId == id)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId)
+        {
+            return await _context.Service
+                .Where(s => s.DepartmentId == deptId && s.DivisionId == divId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<Community> GetCommunityByNameAsync(string name)
         {
             return await _context.Community
@@ -120,6 +158,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .ConfigureAwait(false);
         }
 
+        public async Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids)
+        {
+            return await _context.ServiceLocationAssociation
+                .Where(sla => ids.Contains(sla.LocationId))
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<Language> GetLanguageByIdAsync(int id)
         {
             return await _context.Language
@@ -145,6 +191,14 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 .Where(l => l.LocationId == id)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
+        }
+        
+        public async Task<List<Location>> GetLocationsByBuildingId(string buildingid)
+        {
+            return await _context.Location
+                .Where(l => l.BuildingId == buildingid)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
     }
 }
