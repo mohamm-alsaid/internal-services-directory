@@ -2,45 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 using MultCo_ISD_API.V1.DTO;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using MultCo_ISD_API.V1.Validators;
 
 namespace ValidatorUnitTest
 {
-    class ValidatorsUnitTest
-    {
-        private ContactV1DTOValidator ContactVal;
-        private CommunityV1DTOValidator CommunityVal;
-        private DivisionV1DTOValidator DivisionVal;
-        private LanguageV1DTOValidator LanguageVal;
-        private LocationTypeV1DTOValidator LocationTypeVal;
-        private LocationV1DTOValidator LocationVal;
-        private DepartmentV1DTOValidator DepartmentVal;
-        private ServiceV1DTOValidator ServiceVal;
-        private ProgramV1DTOValidator ProgramVal;
-        private ServiceLanguageAssociationV1DTOValidator ServiceLanguageVal;
-        private ServiceLocationAssociationV1DTOValidator ServiceLocationVal;
-        private ServiceCommunityAssociationV1DTOValidator ServiceCommunityVal;
 
-        [SetUp]
-        public void SetUp()
-        {
-            ContactVal = new ContactV1DTOValidator();
-            CommunityVal = new CommunityV1DTOValidator();
-            DivisionVal = new DivisionV1DTOValidator();
-            LanguageVal = new LanguageV1DTOValidator();
-            LocationTypeVal = new LocationTypeV1DTOValidator();
-            LocationVal = new LocationV1DTOValidator();
-            DepartmentVal = new DepartmentV1DTOValidator();
-            ServiceVal = new ServiceV1DTOValidator();
-            ProgramVal = new ProgramV1DTOValidator();
-            ServiceLanguageVal = new ServiceLanguageAssociationV1DTOValidator();
-            ServiceLocationVal = new ServiceLocationAssociationV1DTOValidator();
-            ServiceCommunityVal = new ServiceCommunityAssociationV1DTOValidator();
-        }
-        [Test]
+    [TestClass]
+    public class ValidatorsUnitTest
+    {
+        private ContactV1DTOValidator ContactVal = new ContactV1DTOValidator();
+        private CommunityV1DTOValidator CommunityVal = new CommunityV1DTOValidator();
+        private DivisionV1DTOValidator DivisionVal = new DivisionV1DTOValidator();
+        private LanguageV1DTOValidator LanguageVal = new LanguageV1DTOValidator();
+        private LocationTypeV1DTOValidator LocationTypeVal = new LocationTypeV1DTOValidator();
+        private LocationV1DTOValidator LocationVal = new LocationV1DTOValidator();
+        private DepartmentV1DTOValidator DepartmentVal = new DepartmentV1DTOValidator();
+        private ServiceV1DTOValidator ServiceVal = new ServiceV1DTOValidator();
+        private ProgramV1DTOValidator ProgramVal = new ProgramV1DTOValidator();
+        private ServiceLanguageAssociationV1DTOValidator ServiceLanguageVal = new ServiceLanguageAssociationV1DTOValidator();
+        private ServiceLocationAssociationV1DTOValidator ServiceLocationVal = new ServiceLocationAssociationV1DTOValidator();
+        private ServiceCommunityAssociationV1DTOValidator ServiceCommunityVal = new ServiceCommunityAssociationV1DTOValidator();
+
+
+        [TestMethod]
         public void Department_should_not_have_errors()
         {
             var dept = new DepartmentV1DTO();
@@ -51,7 +38,7 @@ namespace ValidatorUnitTest
             deptResult.ShouldNotHaveValidationErrorFor(x => x.DepartmentName);
             deptResult.ShouldNotHaveValidationErrorFor(x => x.DepartmentCode);
         }
-        [Test]
+        [TestMethod]
         public void Department_should_have_errors()
         {
             var validator = new DepartmentV1DTOValidator();
@@ -59,7 +46,7 @@ namespace ValidatorUnitTest
             validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, new string('x', 31));
         }
 
-        [Test]
+        [TestMethod]
         public void Contact_should_not_have_errors()
         {
             var contact = new ContactV1DTO();
@@ -72,7 +59,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.PhoneNumber);
             Result.ShouldNotHaveValidationErrorFor(x => x.EmailAddress);
         }
-        [Test]
+        [TestMethod]
         public void Contact_should_have_errors()
         {
             ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, null as string);
@@ -89,7 +76,7 @@ namespace ValidatorUnitTest
         }
 
 
-        [Test]
+        [TestMethod]
         public void Program_should_not_have_errors()
         {
             var program = new ProgramV1DTO();
@@ -105,7 +92,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.ProgramOfferNumber);
 
         }
-        [Test]
+        [TestMethod]
         public void Program_should_have_errors()
         {
             ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, null as string);
@@ -123,7 +110,7 @@ namespace ValidatorUnitTest
 
         }
 
-        [Test]
+        [TestMethod]
         public void Location_should_not_have_errors()
         {
             var location = new LocationV1DTO();
@@ -143,7 +130,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.FloorNumber);
 
         }
-        [Test]
+        [TestMethod]
         public void Location_should_have_errors()
         {
             LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, null as string);
@@ -158,7 +145,7 @@ namespace ValidatorUnitTest
             LocationVal.ShouldHaveValidationErrorFor(x => x.FloorNumber, null as string);
         }
 
-        [Test]
+        [TestMethod]
         public void LocationType_should_not_have_errors()
         {
             var locationType = new LocationTypeV1DTO();
@@ -168,14 +155,14 @@ namespace ValidatorUnitTest
 
             Result.ShouldNotHaveValidationErrorFor(x => x.LocationTypeName);
         }
-        [Test]
+        [TestMethod]
         public void LocationType_should_have_errors()
         {
             LocationTypeVal.ShouldHaveValidationErrorFor(x => x.LocationTypeName, null as string);
             LocationTypeVal.ShouldHaveValidationErrorFor(x => x.LocationTypeName, new string('x', 31));
         }
 
-        [Test]
+        [TestMethod]
         public void Division_should_not_have_errors()
         {
             var division = new DivisionV1DTO();
@@ -188,14 +175,14 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.DivisionCode);
             Result.ShouldNotHaveValidationErrorFor(x => x.DivisionName);
         }
-        [Test]
+        [TestMethod]
         public void Division_should_have_errors()
         {
             DivisionVal.ShouldHaveValidationErrorFor(x => x.DivisionName, null as string);
             DivisionVal.ShouldHaveValidationErrorFor(x => x.DivisionName, new string('x', 31));
         }
 
-        [Test]
+        [TestMethod]
         public void Language_should_not_have_errors()
         {
             var language = new LanguageV1DTO();
@@ -205,14 +192,14 @@ namespace ValidatorUnitTest
 
             Result.ShouldNotHaveValidationErrorFor(x => x.LanguageName);
         }
-        [Test]
+        [TestMethod]
         public void Language_should_have_errors()
         {
             LanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageName, null as string);
             LanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageName, new string('x', 31));
         }
 
-        [Test]
+        [TestMethod]
         public void Community_should_not_have_errors()
         {
 
@@ -227,7 +214,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.CommunityName);
             Result.ShouldNotHaveValidationErrorFor(x => x.CommunityDescription);
         }
-        [Test]
+        [TestMethod]
         public void Community_should_have_errors()
         {
             //CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityID, 0);
@@ -240,7 +227,7 @@ namespace ValidatorUnitTest
             CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityDescription, new string('x', 51));
         }
 
-        [Test]
+        [TestMethod]
         public void ServiceCommunity_should_not_have_errors()
         {
 
@@ -254,7 +241,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
             Result.ShouldNotHaveValidationErrorFor(x => x.CommunityID);
         }
-        [Test]
+        [TestMethod]
         public void ServiceCommunity_should_have_errors()
         {
 
@@ -267,7 +254,7 @@ namespace ValidatorUnitTest
 
         }
 
-        [Test]
+        [TestMethod]
         public void ServiceLanguage_should_not_have_errors()
         {
 
@@ -281,7 +268,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
             Result.ShouldNotHaveValidationErrorFor(x => x.LanguageID);
         }
-        [Test]
+        [TestMethod]
         public void ServiceLanguage_should_have_errors()
         {
             //ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceLanguageAssociation, 0);
@@ -295,7 +282,7 @@ namespace ValidatorUnitTest
             ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceID, 0);
             ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceID, -1);
         }
-        [Test]
+        [TestMethod]
         public void ServiceLocation_should_not_have_errors()
         {
 
@@ -309,7 +296,7 @@ namespace ValidatorUnitTest
             Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
             Result.ShouldNotHaveValidationErrorFor(x => x.LocationID);
         }
-        [Test]
+        [TestMethod]
         public void ServiceLocation_should_have_errors()
         {
 
@@ -320,7 +307,7 @@ namespace ValidatorUnitTest
             ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.ServiceID, -1);
         }
 
-        [Test]
+        [TestMethod]
         public void Service_should_not_have_errors()
         {
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.ProgramId, 1);
@@ -352,7 +339,7 @@ namespace ValidatorUnitTest
             ServiceVal.ShouldHaveChildValidator(x => x.DivisionDTO, typeof(DivisionV1DTOValidator));
 
         }
-        [Test]
+        [TestMethod]
         public void Service_should_have_errors()
         {
 
