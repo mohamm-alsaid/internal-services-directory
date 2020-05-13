@@ -44,6 +44,10 @@ namespace MultCo_ISD_API.V1.Controllers
         {
             try
             {
+                if(pageSize < 0 || pageIndex < 0)
+                {
+                    return NotFound("Invalid page index or page size.");
+                }
                 var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
                 if (services == null || services.Count == 0)
                 {

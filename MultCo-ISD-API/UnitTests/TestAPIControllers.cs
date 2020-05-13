@@ -123,12 +123,14 @@ namespace UnitTests
                     // pageIndex doesn't exist
                     Assert.IsNotNull(actionResult);
                     Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
 
                     actionResult = controller.GetServices(100, 1).Result;
                     result = actionResult as NotFoundObjectResult;
 
                     Assert.IsNotNull(actionResult);
                     Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services were found with the given page information.", result.Value);
 
                     actionResult = controller.GetServices(-1, 1).Result;
                     result = actionResult as NotFoundObjectResult;
@@ -136,6 +138,15 @@ namespace UnitTests
                     // pageSize is negative
                     Assert.IsNotNull(actionResult);
                     Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
+
+                    actionResult = controller.GetServices(-1, -1).Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    // pageSize and pageIndex are negative
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
                 }
             }
             finally
