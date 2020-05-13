@@ -73,61 +73,21 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             #region Handle many-to-many relations
             foreach (var cDTO in serviceDTO.CommunityDTOs)
             {
-                var community = await _context.Community
-                    .Where(c => c.CommunityName == cDTO.CommunityName)
-                    .SingleOrDefaultAsync();
-                if (community == null)
-                {
-                    community = new Community();
-                    _context.Community.Add(community);
-                    _context.Entry(community).CurrentValues.SetValues(cDTO);
-                    await _context.SaveChangesAsync();
-                }
+                var community = await EnsureCommunityExistence(cDTO);
                 var sca = new ServiceCommunityAssociation { ServiceId = service.ServiceId, CommunityId = community.CommunityId };
                 _context.ServiceCommunityAssociation.Add(sca);
             }
 
             foreach (var lDTO in serviceDTO.LanguageDTOs)
             {
-                var language = await _context.Language
-                    .Where(l => l.LanguageName == lDTO.LanguageName)
-                    .SingleOrDefaultAsync();
-                if (language == null)
-                {
-                    language = new Language();
-                    _context.Language.Add(language);
-                    _context.Entry(language).CurrentValues.SetValues(lDTO);
-                    await _context.SaveChangesAsync();
-                }
+                var language = await EnsureLanguageExistence(lDTO);
                 var sla = new ServiceLanguageAssociation { ServiceId = service.ServiceId, LanguageId = language.LanguageId };
                 _context.ServiceLanguageAssociation.Add(sla);
             }
             
             foreach (var lDTO in serviceDTO.LocationDTOs)
             {
-                var location = await _context.Location
-                    .Where(l => l.LocationName == lDTO.LocationName)
-                    .SingleOrDefaultAsync();
-                if (location == null)
-                {
-                    location = new Location();
-                    
-                    var ltype = await _context.LocationType
-                        .Where(l => l.LocationTypeId == location.LocationTypeId)
-                        .SingleOrDefaultAsync();
-                    if (ltype == null)
-                    {
-                        ltype = new LocationType();
-                        _context.LocationType.Add(ltype);
-                        _context.Entry(ltype).CurrentValues.SetValues(lDTO.LocationTypeDTO);
-                        await _context.SaveChangesAsync();
-                    }
-                    lDTO.LocationTypeId = ltype.LocationTypeId;
-                    
-                    _context.Location.Add(location);
-                    _context.Entry(location).CurrentValues.SetValues(lDTO);
-                    await _context.SaveChangesAsync();
-                }
+                var location = await EnsureLocationExistence(lDTO);
                 var sla = new ServiceLocationAssociation { ServiceId = service.ServiceId, LocationId = location.LocationId };
                 _context.ServiceLocationAssociation.Add(sla);
             }
@@ -166,6 +126,95 @@ namespace MultCo_ISD_API.V1.ControllerContexts
             #endregion
 
             #region Handle many-to-many relations
+
+            var communityIds = new HashSet<int>();
+            var scas = await _context.ServiceCommunityAssociation
+                .Where(sca => sca.ServiceId == serviceDTO.ServiceId)
+                .ToListAsync();         
+            foreach (var cDTO in serviceDTO.CommunityDTOs)
+            {
+                //Build community if it needs to be built.
+                var community = await EnsureCommunityExistence(cDTO);
+                communityIds.Add(community.CommunityId);
+            }
+            foreach (var id in communityIds)
+            {
+                var sca = scas.FirstOrDefault(s => s.CommunityId == id);
+         
+                // If this is a new entry in SCA table, we need to build the entry and add to table.
+                if (sca == null)
+                {
+                    var scaEntry = new ServiceCommunityAssociation { ServiceId = serviceDTO.ServiceId, CommunityId = id };
+                    _context.ServiceCommunityAssociation.Add(scaEntry);
+                }
+                else
+                {
+                    scas.Remove(sca);
+                }
+            }
+            foreach (var sca in scas)
+            {
+                _context.ServiceCommunityAssociation.Remove(sca);
+            }
+
+
+            var languageIds = new HashSet<int>();
+            var slas = await _context.ServiceLanguageAssociation
+                .Where(sla => sla.ServiceId == serviceDTO.ServiceId)
+                .ToListAsync();
+            foreach (var lDTO in serviceDTO.LanguageDTOs)
+            {
+                var language = await EnsureLanguageExistence(lDTO);
+                languageIds.Add(language.LanguageId);
+            }
+            foreach (var id in languageIds)
+            {
+                var sla = slas.FirstOrDefault(l => l.LanguageId == id);
+
+                if (sla == null)
+                {
+                    var slaEntry = new ServiceLanguageAssociation { ServiceId = serviceDTO.ServiceId, LanguageId = id };
+                    _context.ServiceLanguageAssociation.Add(slaEntry);
+                }
+                else
+                {
+                    slas.Remove(sla);
+                }
+            }
+            foreach (var sla in slas)
+            {
+                _context.ServiceLanguageAssociation.Remove(sla);
+            }
+
+
+            var locationIds = new HashSet<int>();
+            var slocs = await _context.ServiceLocationAssociation
+                .Where(sla => sla.ServiceId == serviceDTO.ServiceId)
+                .ToListAsync();
+            foreach (var lDTO in serviceDTO.LocationDTOs)
+            {
+                var location = await EnsureLocationExistence(lDTO);
+                locationIds.Add(location.LocationId);
+            }
+            foreach (var id in locationIds)
+            {
+                var sla = slocs.FirstOrDefault(l => l.LocationId == id);
+
+                if (sla == null)
+                {
+                    var slaEntry = new ServiceLocationAssociation { ServiceId = service.ServiceId, LocationId = id };
+                    _context.ServiceLocationAssociation.Add(slaEntry);
+                }
+                else
+                {
+                    slocs.Remove(sla);
+                }
+            }
+            foreach (var sla in slocs)
+            {
+                _context.ServiceLocationAssociation.Remove(sla);
+            }
+
             #endregion
             _context.Entry(service).CurrentValues.SetValues(serviceDTO);
             await _context.SaveChangesAsync();
@@ -288,6 +337,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
         #region Helpers
         private async Task EnsureNoContactDuplicate(ServiceV1DTO serviceDTO)
         {
+            if (serviceDTO.ContactDTO == null)
+            {
+                return;
+            }
             var contact = await _context.Contact
                 .Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
                 .FirstOrDefaultAsync();
@@ -315,6 +368,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
         private async Task EnsureNoDepartmentDuplicate(ServiceV1DTO serviceDTO)
         {
+            if (serviceDTO.DepartmentDTO == null)
+            {
+                return;
+            }
             var department = await _context.Department
                 .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
                 .SingleOrDefaultAsync();
@@ -342,6 +399,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
         private async Task EnsureNoDivisionDuplicate(ServiceV1DTO serviceDTO)
         {
+            if (serviceDTO.DivisionDTO == null)
+            {
+                return;
+            }
             var division = await _context.Division
                 .Where(d => d.DivisionCode == serviceDTO.DivisionDTO.DivisionCode)
                 .SingleOrDefaultAsync();
@@ -369,6 +430,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
         private async Task EnsureNoProgramDuplicate(ServiceV1DTO serviceDTO)
         {
+            if (serviceDTO.ProgramDTO == null)
+            {
+                return;
+            }
             var program = await _context.Program
                 .Where(p => p.ProgramOfferNumber == serviceDTO.ProgramDTO.ProgramOfferNumber)
                 .FirstOrDefaultAsync();
@@ -393,6 +458,67 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 serviceDTO.ProgramId = p.ProgramId;
             }
         }
+
+        private async Task<Community> EnsureCommunityExistence(CommunityV1DTO cDTO)
+        {
+            var community = await _context.Community
+                .Where(c => c.CommunityName == cDTO.CommunityName)
+                .SingleOrDefaultAsync();
+            if (community == null)
+            {
+                community = new Community();
+                _context.Community.Add(community);
+                _context.Entry(community).CurrentValues.SetValues(cDTO);
+                await _context.SaveChangesAsync();
+            }
+            return community;
+        }
+
+        private async Task<Language> EnsureLanguageExistence(LanguageV1DTO lDTO)
+        {
+            var language = await _context.Language
+                .Where(l => l.LanguageName == lDTO.LanguageName)
+                .SingleOrDefaultAsync();
+            if (language == null)
+            {
+                language = new Language();
+                _context.Language.Add(language);
+                _context.Entry(language).CurrentValues.SetValues(lDTO);
+                await _context.SaveChangesAsync();
+            }
+            return language;
+        }
+        
+        private async Task<Location> EnsureLocationExistence(LocationV1DTO lDTO)
+        {
+            var location = await _context.Location
+                    .Where(l => l.LocationName == lDTO.LocationName)
+                    .SingleOrDefaultAsync();
+            if (location == null)
+            {
+                location = new Location();
+
+                if (lDTO.LocationTypeDTO != null)
+                {
+                    var ltype = await _context.LocationType
+                        .Where(l => l.LocationTypeId == location.LocationTypeId)
+                        .SingleOrDefaultAsync();
+                    if (ltype == null)
+                    {
+                        ltype = new LocationType();
+                        _context.LocationType.Add(ltype);
+                        _context.Entry(ltype).CurrentValues.SetValues(lDTO.LocationTypeDTO);
+                        await _context.SaveChangesAsync();
+                    }
+                    lDTO.LocationTypeId = ltype.LocationTypeId;
+                }
+                _context.Location.Add(location);
+                _context.Entry(location).CurrentValues.SetValues(lDTO);
+                await _context.SaveChangesAsync();
+            }
+            return location;
+        }
+
         #endregion
     }
 }
