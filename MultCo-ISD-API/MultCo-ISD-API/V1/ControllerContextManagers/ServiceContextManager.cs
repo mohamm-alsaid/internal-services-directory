@@ -52,7 +52,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             var contact = await _context.Contact
                 .Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (contact != null)
             {
                 serviceDTO.ContactId = contact.ContactId;
@@ -79,7 +79,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
             var program = await _context.Program
                 .Where(p => p.ProgramOfferNumber == serviceDTO.ProgramDTO.ProgramOfferNumber)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (program != null)
             {
                 serviceDTO.ProgramId = program.ProgramId;
