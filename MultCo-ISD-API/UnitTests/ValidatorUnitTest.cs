@@ -56,7 +56,7 @@ namespace ValidatorUnitTest
         {
             var validator = new DepartmentV1DTOValidator();
             validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, null as string);
-            validator.ShouldHaveValidationErrorFor(x => x.DepartmentName,  new string('x',31));
+            validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, new string('x', 31));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace ValidatorUnitTest
 
             ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, null as string);
             // tests two cases
-            ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, new string('1',14));
+            ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, new string('1', 14));
 
             ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, null as string);
             ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, new string('a', 21));
@@ -126,9 +126,9 @@ namespace ValidatorUnitTest
         [Test]
         public void Location_should_not_have_errors()
         {
-            var location= new LocationV1DTO();
+            var location = new LocationV1DTO();
             location.LocationName = "a valid name";
-            location.BuildingID= "1";
+            location.BuildingID = "1";
             location.LocationAddress = "506 SW Mill St, Portland, OR 97201";
             location.RoomNumber = "1";
             location.FloorNumber = "1";
@@ -179,7 +179,7 @@ namespace ValidatorUnitTest
         public void Division_should_not_have_errors()
         {
             var division = new DivisionV1DTO();
-            division.DivisionName= "valid name";
+            division.DivisionName = "valid name";
 
             division.DivisionCode = 1;
 
@@ -219,8 +219,8 @@ namespace ValidatorUnitTest
 
             var community = new CommunityV1DTO();
             community.CommunityName = "valid name";
-            community.CommunityDescription= "A valid description";
-            
+            community.CommunityDescription = "A valid description";
+
 
             var Result = CommunityVal.TestValidate(community);
 
@@ -334,7 +334,7 @@ namespace ValidatorUnitTest
 
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.EmployeeConnectMethod, "valid Employee Connect Method");
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.CustomerConnectMethod, "valid Customer Connect Method");
-            
+
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.ExpirationDate, default(DateTime));
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.Active, true);
 
@@ -343,7 +343,7 @@ namespace ValidatorUnitTest
 
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.ProgramDTO, new ProgramV1DTO());
             ServiceVal.ShouldHaveChildValidator(x => x.ProgramDTO, typeof(ProgramV1DTOValidator));
-         
+
             ServiceVal.ShouldNotHaveValidationErrorFor(x => x.DepartmentDTO, new DepartmentV1DTO());
             ServiceVal.ShouldHaveChildValidator(x => x.DepartmentDTO, typeof(DepartmentV1DTOValidator));
 
@@ -366,11 +366,11 @@ namespace ValidatorUnitTest
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ContactId, -1);
 
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, new string('x',21));
-           
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, new string('x', 21));
+
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceDescription, null as string);
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceDescription, new string('x', 51));
-          
+
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ExecutiveSummary, null as string);
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ExecutiveSummary, new string('x', 51));
 
