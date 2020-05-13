@@ -61,15 +61,92 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
+                    for(int i = 0; i < 100; i++)
+                    {
+                        context.Service.Add(new Service());
+                    }
+                    context.SaveChanges();
+
+                    // pageSize and pageIndex working correctly
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.GetServices(20, 0).Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(20, services.Count());
+
+                    // pageSize is too big for all services
+                    actionResult = controller.GetServices(110, 0).Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(100, services.Count());
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestNotFoundServices()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    for (int i = 0; i < 100; i++)
+                    {
+                        context.Service.Add(new Service());
+                    }
                     context.SaveChanges();
 
                     ServiceController controller = new ServiceController(context);
-                    var actionResult = controller.GetServices().Result;
+                    var actionResult = controller.GetServices(1, -1).Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    // pageIndex doesn't exist
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
+
+                    actionResult = controller.GetServices(100, 1).Result;
+                    result = actionResult as NotFoundObjectResult;
 
                     Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services were found with the given page information.", result.Value);
+
+                    actionResult = controller.GetServices(-1, 1).Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    // pageSize is negative
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
+
+                    actionResult = controller.GetServices(-1, -1).Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    // pageSize and pageIndex are negative
+                    Assert.IsNotNull(actionResult);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("Invalid page index or page size.", result.Value);
                 }
             }
             finally
