@@ -199,31 +199,6 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
         {
-            //if (serviceV1DTO == null)
-            //{
-            //    throw new ArgumentNullException(nameof(serviceV1DTO));
-            //}
-
-            //if (id != serviceV1DTO.ServiceId)
-            //{
-            //    return BadRequest();
-            //}
-
-            //var item = await _context.Service
-            //    .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
-            //    .ConfigureAwait(false);
-
-            //if (item == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //item.CopyFromServiceV1DTO(serviceV1DTO);
-
-            //await _context.SaveChangesAsync().ConfigureAwait(false);
-            //return NoContent(); // 204
-
-
             try
             {
                 if (id != serviceDTO.ServiceId)
