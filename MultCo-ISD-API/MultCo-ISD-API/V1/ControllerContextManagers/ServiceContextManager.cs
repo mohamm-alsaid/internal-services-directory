@@ -49,6 +49,16 @@ namespace MultCo_ISD_API.V1.ControllerContexts
              * We choose the passed DTO over the passed ID number, and change the ID
              * to match the deperment/division pulled from the database context by "...Code".
             */
+
+            var contact = await _context.Contact
+                .Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
+                .SingleOrDefaultAsync();
+            if (contact != null)
+            {
+                serviceDTO.ContactId = contact.ContactId;
+                serviceDTO.ContactDTO = null;
+            }
+
             var department = await _context.Department
                 .Where(d => d.DepartmentCode == serviceDTO.DepartmentDTO.DepartmentCode)
                 .SingleOrDefaultAsync();
@@ -66,10 +76,19 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 serviceDTO.DivisionId = division.DivisionId;
                 serviceDTO.DivisionDTO = null;
             }
+
+            var program = await _context.Program
+                .Where(p => p.ProgramOfferNumber == serviceDTO.ProgramDTO.ProgramOfferNumber)
+                .SingleOrDefaultAsync();
+            if (program != null)
+            {
+                serviceDTO.ProgramId = program.ProgramId;
+                serviceDTO.ProgramDTO = null;
+            }
             #endregion
 
             #region Check existence of one-to-one items
-            var contact = await _context.Contact
+            contact = await _context.Contact
                 .Where(c => c.ContactId == serviceDTO.ContactId)
                 .SingleOrDefaultAsync();
             if (contact == null && serviceDTO.ContactDTO != null)
@@ -105,7 +124,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
                 serviceDTO.DivisionId = d.DivisionId;
             }
 
-            var program = await _context.Program
+            program = await _context.Program
                 .Where(p => p.ProgramId == serviceDTO.ProgramId)
                 .SingleOrDefaultAsync();
             if (program == null && serviceDTO.ProgramDTO != null)
