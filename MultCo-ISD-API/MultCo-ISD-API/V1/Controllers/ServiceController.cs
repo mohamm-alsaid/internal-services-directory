@@ -143,6 +143,9 @@ namespace MultCo_ISD_API.V1.Controllers
         [Route("[action]/{comm}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
         public async Task<IActionResult> Community(string community)
         {
             try
@@ -186,6 +189,120 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        // GET: api/Service/BuildingId
+        [HttpGet]
+        [Route("[action]/{buildingId}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> BuildingId(string buildingId)
+        {
+            var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
+            if (locations.Count() == 0)
+            {
+                return NotFound("No locations found from given building id.");
+            }
+
+            var locationIds = new List<int?>();
+            foreach (var l in locations)
+            {
+                locationIds.Add(l.LocationId);
+            }
+
+            var slas = await _serviceContextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
+            if (slas.Count() == 0)
+            {
+                return NotFound("Location(s) found have no relationships to any services.");
+            }
+
+            var serviceIds = new List<int?>();
+            foreach (var sla in slas)
+            {
+                serviceIds.Add(sla.ServiceId);
+            }
+
+            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
+
+        //GET: api/Services/Program?="programId"
+        [HttpGet]
+        [Route("[action]/{programId}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> Program(int programId)
+        {
+            var services = await _serviceContextManager.GetServicesFromProgramId(programId);
+
+            if (services.Count() == 0)
+            {
+                return NotFound("No services found with given program id.");
+            }
+
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
+
+        //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
+        [HttpGet]
+        [Route("[action]/{depId},{divId}")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+#if AUTH
+        [Authorize(Policy = "Reader")]
+#endif
+        public async Task<IActionResult> DepartmentAndOrDivisionId(int? deptId = null, int? divId = null)
+        {
+            if (deptId == null && divId == null)
+            {
+                return BadRequest("No input given.");
+            }
+            var services = new List<Service>();
+
+            if (deptId == null && divId != null)
+            {
+                services = await _serviceContextManager.GetServicesFromDivisionId(divId);
+            }
+
+            else if (deptId != null && divId == null)
+            {
+                services = await _serviceContextManager.GetServicesFromDepartmentId(deptId);
+            }
+
+            else if (deptId != null && divId != null)
+            {
+                services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId);
+            }
+
+            if (services.Count() == 0)
+            {
+                return NotFound("No services found with valid arguments given.");
+            }
+
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
 
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
