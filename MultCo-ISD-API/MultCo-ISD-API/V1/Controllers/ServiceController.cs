@@ -313,35 +313,34 @@ namespace MultCo_ISD_API.V1.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
-        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceV1DTO)
+        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
         {
-            if (serviceV1DTO == null)
+            try
             {
-                throw new ArgumentNullException(nameof(serviceV1DTO));
-            }
+                if (id != serviceDTO.ServiceId)
+                {
+                    return BadRequest();
+                }
 
-            if (id != serviceV1DTO.ServiceId)
+                // Check to ensure service exists before calling contextmanager method.
+                var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+
+                await _serviceContextManager.PutAsync(serviceDTO);
+                return NoContent();
+            }
+            catch (Exception e)
             {
-                return BadRequest();
+                throw e;
             }
-
-            var item = await _context.Service
-                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
-                .ConfigureAwait(false);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            item.CopyFromServiceV1DTO(serviceV1DTO);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
         }
 
         // POST: api/Services
@@ -355,24 +354,24 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
         public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
         {
-            if (serviceV1DTO == null)
+            //Check to ensure service does not exist in database before calling contextmanager method.
+            try
             {
-                throw new ArgumentNullException(nameof(serviceV1DTO));
+                var service = await _serviceContextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
+                if (service != null)
+                {
+                    return Conflict();
+                }
+
+                await _serviceContextManager.PostAsync(serviceV1DTO);
+                return NoContent();
+            }
+            catch(Exception e)
+            {
+                throw e;
             }
 
-            var item = await _context.Service
-                .FirstOrDefaultAsync(s => s.ServiceId == serviceV1DTO.ServiceId)
-                .ConfigureAwait(false);
 
-            if (item != null)
-            {
-                return Conflict(); // 409
-            }
-
-            _context.Service.Add(serviceV1DTO.ToService());
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
         }
 
         // DELETE: api/Services/5
@@ -409,9 +408,9 @@ namespace MultCo_ISD_API.V1.Controllers
             {
                 int id;
 
-                if (sca.CommunityID != null)
+                if (sca.CommunityId != null)
                 {
-                    id = (int)sca.CommunityID;
+                    id = (int)sca.CommunityId;
 
                     var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
 
@@ -427,9 +426,9 @@ namespace MultCo_ISD_API.V1.Controllers
             foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
             {
                 int id;
-                if (sla.LanguageID != null)
+                if (sla.LanguageId != null)
                 {
-                    id = (int)sla.LanguageID;
+                    id = (int)sla.LanguageId;
                     var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
                     if (lang == null)
                     {
@@ -442,9 +441,9 @@ namespace MultCo_ISD_API.V1.Controllers
             foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
             {
                 int id;
-                if (sla.LocationID != null)
+                if (sla.LocationId != null)
                 {
-                    id = (int)sla.LocationID;
+                    id = (int)sla.LocationId;
                     var loc = await _serviceContextManager.GetLocationByIdAsync(id);
                     if (loc == null)
                     {

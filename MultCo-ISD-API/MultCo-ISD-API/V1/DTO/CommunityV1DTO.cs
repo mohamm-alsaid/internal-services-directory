@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.DTO
 {
     public class CommunityV1DTO
     {
-        public int CommunityID { get; set; }
+        public int CommunityId { get; set; }
         public string CommunityName { get; set; }
         public string CommunityDescription { get; set; }
     }

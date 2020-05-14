@@ -20,7 +20,7 @@ namespace MultCo_ISD_API.V1.DTO
 			return programV1DTO;
 		}
 
-		public static Program toProgram(this ProgramV1DTO item)
+		public static Program ToProgram(this ProgramV1DTO item)
 		{
 			if (item == null)
 			{
@@ -34,7 +34,7 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromProgramV1DTO(this Program to, ProgramV1DTO from)
 		{
-			to.ProgramId = from.ProgramID;
+			to.ProgramId = from.ProgramId;
 			to.SponsorName = from.SponsorName;
 			to.OfferType = from.OfferType;
 			to.ProgramName = from.ProgramName;
@@ -43,7 +43,7 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromProgram(this ProgramV1DTO to, Program from)
 		{
-			to.ProgramID = from.ProgramId;
+			to.ProgramId = from.ProgramId;
 			to.SponsorName = from.SponsorName;
 			to.OfferType = from.OfferType;
 			to.ProgramName = from.ProgramName;

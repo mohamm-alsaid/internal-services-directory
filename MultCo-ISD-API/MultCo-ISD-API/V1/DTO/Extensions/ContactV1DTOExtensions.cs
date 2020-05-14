@@ -34,7 +34,7 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromContactV1DTO(this Contact to, ContactV1DTO from)
 		{
-			to.ContactId = from.ContactID;
+			to.ContactId = from.ContactId;
 			to.ContactName = from.ContactName;
 			to.PhoneNumber = from.PhoneNumber;
 			to.EmailAddress = from.EmailAddress;
@@ -42,7 +42,7 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromContact(this ContactV1DTO to, Contact from)
 		{
-			to.ContactID = from.ContactId;
+			to.ContactId = from.ContactId;
 			to.ContactName = from.ContactName;
 			to.PhoneNumber = from.PhoneNumber;
 			to.EmailAddress = from.EmailAddress;

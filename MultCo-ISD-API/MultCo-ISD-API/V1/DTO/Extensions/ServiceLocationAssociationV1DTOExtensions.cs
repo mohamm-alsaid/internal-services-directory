@@ -35,15 +35,15 @@ namespace MultCo_ISD_API.V1.DTO
         public static void CopyFromServiceLocationAssociationV1DTO(this ServiceLocationAssociation to, ServiceLocationAssociationV1DTO from)
         {
             to.ServiceLocationAssociation1 = from.ServiceLocationAssociation;
-            to.ServiceId = from.ServiceID;
-            to.LocationId = from.LocationID;
+            to.ServiceId = from.ServiceId;
+            to.LocationId = from.LocationId;
         }
 
         public static void CopyFromServiceLocationAssociation(this ServiceLocationAssociationV1DTO to, ServiceLocationAssociation from)
         {
             to.ServiceLocationAssociation = from.ServiceLocationAssociation1;
-            to.ServiceID = from.ServiceId;
-            to.LocationID = from.LocationId;
+            to.ServiceId = from.ServiceId;
+            to.LocationId = from.LocationId;
         }
     }
 }

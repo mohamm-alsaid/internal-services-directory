@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.DTO
 {
     public class DepartmentV1DTO
     {
-        public int DepartmentID { get; set; }
+        public int DepartmentId { get; set; }
         public int DepartmentCode { get; set; }
         public string DepartmentName { get; set; }
     }
