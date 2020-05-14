@@ -9,7 +9,7 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public LanguageV1DTOValidator()
         {
-            RuleFor(x => x.LanguageID)
+            RuleFor(x => x.LanguageId)
                 .Empty().WithMessage("cannot specify language ID explicitly");
 
             RuleFor(x => x.LanguageName)
