@@ -36,14 +36,14 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromCommunityV1DTO(this Community to, CommunityV1DTO from)
 		{
-			to.CommunityId = from.CommunityID;
+			to.CommunityId = from.CommunityId;
 			to.CommunityName = from.CommunityName;
 			to.CommunityDescription = from.CommunityDescription;
 		}
 
 		public static void CopyFromCommunity(this CommunityV1DTO to, Community from)
 		{
-			to.CommunityID = from.CommunityId;
+			to.CommunityId = from.CommunityId;
 			to.CommunityName = from.CommunityName;
 			to.CommunityDescription = from.CommunityDescription;
 		}

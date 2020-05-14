@@ -34,16 +34,16 @@ namespace MultCo_ISD_API.V1.DTO
 
         public static void CopyFromServiceLanguageAssociationV1DTO(this ServiceLanguageAssociation to, ServiceLanguageAssociationV1DTO from)
         {
-            to.ServiceLanguageAssociation1 = from.ServiceLanguageAssociation;
-            to.ServiceId = from.ServiceID;
-            to.LanguageId = from.LanguageID;
+            to.ServiceLanguageAssociation1 = from.ServiceLanguageAssociation1;
+            to.ServiceId = from.ServiceId;
+            to.LanguageId = from.LanguageId;
         }
 
         public static void CopyFromServiceLanguageAssociation(this ServiceLanguageAssociationV1DTO to, ServiceLanguageAssociation from)
         {
-            to.ServiceLanguageAssociation = from.ServiceLanguageAssociation1;
-            to.ServiceID = from.ServiceId;
-            to.LanguageID = from.LanguageId;
+            to.ServiceLanguageAssociation1 = from.ServiceLanguageAssociation1;
+            to.ServiceId = from.ServiceId;
+            to.LanguageId = from.LanguageId;
         }
     }
 }

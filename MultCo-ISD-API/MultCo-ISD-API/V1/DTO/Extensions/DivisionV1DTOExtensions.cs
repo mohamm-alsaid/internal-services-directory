@@ -34,14 +34,14 @@ namespace MultCo_ISD_API.V1.DTO
 
 		public static void CopyFromDivisionV1DTO(this Division to, DivisionV1DTO from)
 		{
-			to.DivisionId = from.DivisionID;
+			to.DivisionId = from.DivisionId;
 			to.DivisionCode = from.DivisionCode;
 			to.DivisionName = from.DivisionName;
 		}
 
 		public static void CopyFromDivision(this DivisionV1DTO to, Division from)
 		{
-			to.DivisionID = from.DivisionId;
+			to.DivisionId = from.DivisionId;
 			to.DivisionCode = from.DivisionCode;
 			to.DivisionName = from.DivisionName;
 		}
