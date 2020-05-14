@@ -37,7 +37,6 @@ namespace MultCo_ISD_API.V1.Validators
                 .MaximumLength(20).WithMessage("SService Area cannot exceed 20 chars");
 
             RuleFor(x => x.ContactId)
-                .NotNull().WithMessage("Contact id cannot be null")
                 .GreaterThan(0).WithMessage("Contact Id should start from 1");
 
             RuleFor(x => x.EmployeeConnectMethod)
@@ -53,7 +52,11 @@ namespace MultCo_ISD_API.V1.Validators
 
             RuleFor(x => x.Active)
                 .NotNull().WithMessage("Service active cannot be null");
-            
+
+            // validate Contact ID:
+            RuleFor(x => x).Must(x => x.ContactId == null || x.ContactDTO == null)
+                .WithMessage("either ContactDTO or ContactId can be specified (not both)");
+
             // apply all the validation rules for the following fields:
             RuleFor(x => x.ContactDTO).SetValidator(new ContactV1DTOValidator());
 
@@ -62,10 +65,6 @@ namespace MultCo_ISD_API.V1.Validators
             RuleFor(x => x.DivisionDTO).SetValidator(new DivisionV1DTOValidator());
             
             RuleFor(x => x.ProgramDTO).SetValidator(new ProgramV1DTOValidator());
-            
-            RuleForEach(x => x.ServiceCommunityAssociationDTOs).SetValidator(new ServiceCommunityAssociationV1DTOValidator());
-            RuleForEach(x => x.ServiceLanguageAssociationDTOs).SetValidator(new ServiceLanguageAssociationV1DTOValidator());
-            RuleForEach(x => x.ServiceLocationAssociationDTOs).SetValidator(new ServiceLocationAssociationV1DTOValidator());
         }
     }
 }

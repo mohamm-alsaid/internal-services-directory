@@ -217,9 +217,6 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Community_should_have_errors()
         {
-            //CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityID, 0);
-            //CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityID, -1);
-
             CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityName, null as string);
             CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityName, new string('x', 51));
 
@@ -271,9 +268,6 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void ServiceLanguage_should_have_errors()
         {
-            //ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceLanguageAssociation, 0);
-            //ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceLanguageAssociation, -1);
-
 
             ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageID, 0);
             ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageID, -1);

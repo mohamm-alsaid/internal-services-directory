@@ -7,7 +7,6 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public CommunityV1DTOValidator()
         {
-
             RuleFor(x => x.CommunityID)
                .Empty().WithMessage("cannot specify community ID explicitly");
 
