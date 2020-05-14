@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace MultCo_ISD_API.Models
 {
+    [BindProperties]
     public partial class LocationType
     {
         public LocationType()
