@@ -11,7 +11,7 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ProgramV1DTOValidator()
         {
-            RuleFor(x => x.ProgramID)
+            RuleFor(x => x.ProgramId)
                 .Empty().WithMessage("cannot specify program ID explicitly");
 
             RuleFor(x => x.SponsorName)

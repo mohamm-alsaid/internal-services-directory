@@ -11,14 +11,14 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ServiceLanguageAssociationV1DTOValidator()
         {
-            RuleFor(x => x.ServiceLanguageAssociation)
+            RuleFor(x => x.ServiceLanguageAssociation1)
                .Empty().WithMessage("cannot specify service language ID explicitly");
 
-            RuleFor(x => x.ServiceID)
+            RuleFor(x => x.ServiceId)
                 .NotNull().WithMessage("Service Id cannot be null")
                 .GreaterThan(0).WithMessage("Service Id cannot be 0");
             
-            RuleFor(x => x.LanguageID)
+            RuleFor(x => x.LanguageId)
                 .NotNull().WithMessage("Language Id cannot be null")
                 .GreaterThan(0).WithMessage("Language Id cannot be 0");
                 

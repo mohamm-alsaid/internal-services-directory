@@ -8,7 +8,7 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public DepartmentV1DTOValidator()
         {
-            RuleFor(x => x.DepartmentID)
+            RuleFor(x => x.DepartmentId)
                .Empty().WithMessage("cannot specify department ID explicitly");
 
             RuleFor(x => x.DepartmentCode)

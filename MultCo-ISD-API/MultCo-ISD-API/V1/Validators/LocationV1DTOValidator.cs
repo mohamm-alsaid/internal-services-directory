@@ -10,17 +10,17 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public LocationV1DTOValidator()
         {
-            RuleFor(x => x.LocationID)
+            RuleFor(x => x.LocationId)
                 .Empty().WithMessage("cannot specify location ID explicitly");
 
-            RuleFor(x => x.LocationTypeID)
+            RuleFor(x => x.LocationTypeId)
                 .NotNull().WithMessage("Location Type ID cannot be null");
 
             RuleFor(x => x.LocationName)
                 .NotNull().WithMessage("Location name cannot be null")
                 .MaximumLength(30).WithMessage("Location name cannot exceed 30 characters");
 
-            RuleFor(x => x.BuildingID)
+            RuleFor(x => x.BuildingId)
                 .NotNull().WithMessage("Building ID cannot be null");
 
             RuleFor(x => x.LocationAddress)

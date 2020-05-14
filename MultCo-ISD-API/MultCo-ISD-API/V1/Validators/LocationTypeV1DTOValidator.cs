@@ -9,7 +9,7 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public LocationTypeV1DTOValidator()
         {
-            RuleFor(x => x.LocationTypeID)
+            RuleFor(x => x.LocationTypeId)
                 .Empty().WithMessage("cannot specify location type ID explicitly");
 
             RuleFor(x => x.LocationTypeName)

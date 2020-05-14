@@ -7,7 +7,7 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ContactV1DTOValidator()
         {
-            RuleFor(x => x.ContactID)
+            RuleFor(x => x.ContactId)
                .Empty().WithMessage("cannot specify contact ID explicitly");
 
             RuleFor(x => x.ContactName)
