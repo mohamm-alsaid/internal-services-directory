@@ -15,8 +15,7 @@ namespace MultCo_ISD_API.V1.Validators
                 .NotNull().WithMessage("Division code cannot be null");
 
             RuleFor(x => x.DivisionName)
-                .NotNull().WithMessage("Division name cannot be null")
-                .MaximumLength(30).WithMessage("Division name cannot exceed 30 characters");
+               .MaximumLength(255).WithMessage("Division name cannot exceed 255 characters");
 
         }
     }
