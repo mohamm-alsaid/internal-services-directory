@@ -115,16 +115,16 @@ namespace ValidatorUnitTest
         {
             var location = new LocationV1DTO();
             location.LocationName = "a valid name";
-            location.BuildingID = "1";
+            location.BuildingId = "1";
             location.LocationAddress = "506 SW Mill St, Portland, OR 97201";
             location.RoomNumber = "1";
             location.FloorNumber = "1";
             var Result = LocationVal.TestValidate(location);
 
 
-            Result.ShouldNotHaveValidationErrorFor(x => x.LocationTypeID);
+            Result.ShouldNotHaveValidationErrorFor(x => x.LocationTypeId);
             Result.ShouldNotHaveValidationErrorFor(x => x.LocationName);
-            Result.ShouldNotHaveValidationErrorFor(x => x.BuildingID);
+            Result.ShouldNotHaveValidationErrorFor(x => x.BuildingId);
             Result.ShouldNotHaveValidationErrorFor(x => x.LocationAddress);
             Result.ShouldNotHaveValidationErrorFor(x => x.RoomNumber);
             Result.ShouldNotHaveValidationErrorFor(x => x.FloorNumber);
@@ -136,7 +136,7 @@ namespace ValidatorUnitTest
             LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, null as string);
             LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, new string('x', 31));
 
-            LocationVal.ShouldHaveValidationErrorFor(x => x.BuildingID, null as string);
+            LocationVal.ShouldHaveValidationErrorFor(x => x.BuildingId, null as string);
 
             LocationVal.ShouldHaveValidationErrorFor(x => x.LocationAddress, null as string);
             LocationVal.ShouldHaveValidationErrorFor(x => x.LocationAddress, new string('x', 51));
@@ -229,25 +229,25 @@ namespace ValidatorUnitTest
         {
 
             var ServiceCommunity = new ServiceCommunityAssociationV1DTO();
-            ServiceCommunity.ServiceID = 5;
-            ServiceCommunity.CommunityID = 2;
+            ServiceCommunity.ServiceId = 5;
+            ServiceCommunity.CommunityId = 2;
 
             var Result = ServiceCommunityVal.TestValidate(ServiceCommunity);
 
 
-            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
-            Result.ShouldNotHaveValidationErrorFor(x => x.CommunityID);
+            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceId);
+            Result.ShouldNotHaveValidationErrorFor(x => x.CommunityId);
         }
         [TestMethod]
         public void ServiceCommunity_should_have_errors()
         {
 
-            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityID, 0);
-            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityID, -1);
+            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityId, 0);
+            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityId, -1);
 
 
-            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.ServiceID, 0);
-            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.ServiceID, -1);
+            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.ServiceId, 0);
+            ServiceCommunityVal.ShouldHaveValidationErrorFor(x => x.ServiceId, -1);
 
         }
 
@@ -256,49 +256,49 @@ namespace ValidatorUnitTest
         {
 
             var ServiceLanguage = new ServiceLanguageAssociationV1DTO();
-            ServiceLanguage.ServiceID = 2;
-            ServiceLanguage.LanguageID = 5;
+            ServiceLanguage.ServiceId = 2;
+            ServiceLanguage.LanguageId = 5;
 
             var Result = ServiceLanguageVal.TestValidate(ServiceLanguage);
 
 
-            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
-            Result.ShouldNotHaveValidationErrorFor(x => x.LanguageID);
+            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceId);
+            Result.ShouldNotHaveValidationErrorFor(x => x.LanguageId);
         }
         [TestMethod]
         public void ServiceLanguage_should_have_errors()
         {
 
-            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageID, 0);
-            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageID, -1);
+            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageId, 0);
+            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageId, -1);
 
 
-            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceID, 0);
-            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceID, -1);
+            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceId, 0);
+            ServiceLanguageVal.ShouldHaveValidationErrorFor(x => x.ServiceId, -1);
         }
         [TestMethod]
         public void ServiceLocation_should_not_have_errors()
         {
 
             var ServiceLocation = new ServiceLocationAssociationV1DTO();
-            ServiceLocation.ServiceID = 1;
-            ServiceLocation.LocationID = 2;
+            ServiceLocation.ServiceId = 1;
+            ServiceLocation.LocationId = 2;
 
             var Result = ServiceLocationVal.TestValidate(ServiceLocation);
 
 
-            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceID);
-            Result.ShouldNotHaveValidationErrorFor(x => x.LocationID);
+            Result.ShouldNotHaveValidationErrorFor(x => x.ServiceId);
+            Result.ShouldNotHaveValidationErrorFor(x => x.LocationId);
         }
         [TestMethod]
         public void ServiceLocation_should_have_errors()
         {
 
-            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.LocationID, 0);
-            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.LocationID, -1);
+            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.LocationId, 0);
+            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.LocationId, -1);
 
-            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.ServiceID, 0);
-            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.ServiceID, -1);
+            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.ServiceId, 0);
+            ServiceLocationVal.ShouldHaveValidationErrorFor(x => x.ServiceId, -1);
         }
 
         [TestMethod]
