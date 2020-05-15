@@ -13,7 +13,7 @@ namespace MultCo_ISD_API.V1.Validators
                 .Empty().WithMessage("cannot specify language ID explicitly");
 
             RuleFor(x => x.LanguageName)
-                .NotNull().WithMessage("Language name cannot be null")
+                //.NotNull().WithMessage("Language name cannot be null")
                 .MaximumLength(30).WithMessage("Language name cannot exceed 30 characters"); ;
         }
     }
