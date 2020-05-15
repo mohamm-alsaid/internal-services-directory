@@ -7,21 +7,18 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public ContactV1DTOValidator()
         {
-            RuleFor(x => x.ContactId)
+            RuleFor(x => x.ContactID)
                .Empty().WithMessage("cannot specify contact ID explicitly");
 
             RuleFor(x => x.ContactName)
-               // .NotNull().WithMessage("Contact name cannot be null")
-                .MaximumLength(20).WithMessage("Contact name cannot be longer than 20");
+                .MaximumLength(255).WithMessage("Contact name cannot be longer than 255");
 
             RuleFor(x => x.PhoneNumber)
-               // .NotNull().WithMessage("Contact name cannot be null")
-                .MaximumLength(13).WithMessage("Contact phone number cannot exceed 13 numbers")
+                .MaximumLength(255).WithMessage("Contact phone number cannot exceed 255 numbers")
                 .Matches("^\\d{3}-\\d{3}-\\d{4}$").WithMessage("contact phone number must follow xxx-xxx-xxxx format");
 
             RuleFor(x => x.EmailAddress)
-                .NotNull().WithMessage("contact email address cannot be null")
-                .MaximumLength(30).WithMessage("contact email address cannot exceed 30 characters")
+                .MaximumLength(255).WithMessage("contact email address cannot exceed 255 characters")
                 .EmailAddress().WithMessage("contact email address is not in the correct format");
         }
     }

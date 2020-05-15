@@ -7,16 +7,15 @@ namespace MultCo_ISD_API.V1.Validators
     {
         public CommunityV1DTOValidator()
         {
-            RuleFor(x => x.CommunityId)
+
+            RuleFor(x => x.CommunityID)
                .Empty().WithMessage("cannot specify community ID explicitly");
 
             RuleFor(x => x.CommunityName)
-                //.NotNull().WithMessage("Community name cannot be null")
-                .MaximumLength(50).WithMessage("Community name cannot exceed 50 chars");
+                .MaximumLength(255).WithMessage("Community name cannot exceed 255 chars");
 
             RuleFor(x => x.CommunityDescription)
-                .NotNull().WithMessage("Community Description cannot be null")
-                .MaximumLength(50).WithMessage("Community Description cannot exceed 50 chars");
+                .MaximumLength(255).WithMessage("Community Description cannot exceed 255 chars");
         }
     }
 }
