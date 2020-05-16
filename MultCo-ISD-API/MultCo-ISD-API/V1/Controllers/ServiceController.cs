@@ -407,7 +407,7 @@ namespace MultCo_ISD_API.V1.Controllers
         {
             var serviceDTO = service.ToServiceV1DTO();
 
-            foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
+            foreach (var sca in service.ServiceCommunityAssociation)
             {
                 int id;
 
@@ -426,7 +426,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 }
             }
 
-            foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
+            foreach (var sla in service.ServiceLanguageAssociation)
             {
                 int id;
                 if (sla.LanguageId != null)
@@ -441,7 +441,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 }
             }
 
-            foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
+            foreach (var sla in service.ServiceLocationAssociation)
             {
                 int id;
                 if (sla.LocationId != null)
