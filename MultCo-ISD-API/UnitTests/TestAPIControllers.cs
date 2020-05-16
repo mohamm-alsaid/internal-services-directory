@@ -1140,15 +1140,15 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    Service s1 = new Service { ServiceName = "panda adoption service" };
-                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service" };
-                    Service s3 = new Service { ServiceName = "public health service" };
+                    Service s1 = new Service { ServiceName = "panda adoption service", Active = true };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service", Active = true };
+                    Service s3 = new Service { ServiceName = "public health service", Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
                     for (int i = 0; i < 27; i++)
                     {
-                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i)};
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i), Active = true };
                         context.Service.Add(s);
                     }
                     context.SaveChanges();
