@@ -42,8 +42,9 @@ namespace ValidatorUnitTest
         public void Department_should_have_errors()
         {
             var validator = new DepartmentV1DTOValidator();
-            validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, null as string);
-            validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, new string('x', 31));
+            //validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, null as string);
+            validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, new string('x', 256));
+            
         }
 
         [TestMethod]
@@ -63,14 +64,14 @@ namespace ValidatorUnitTest
         public void Contact_should_have_errors()
         {
             //ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, null as string);
-            ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, new string('x', 21));
+            ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, new string('x', 256));
 
             //ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, null as string);
             // tests two cases
-            ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, new string('1', 14));
+            ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, new string('1', 256));
 
             //ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, null as string);
-            ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, new string('a', 21));
+            ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, new string('a', 256));
 
 
         }
@@ -96,16 +97,16 @@ namespace ValidatorUnitTest
         public void Program_should_have_errors()
         {
             //ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, null as string);
-            ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, new string('x', 21));
+            ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, new string('x', 256));
 
             //ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramName, null as string);
-            ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramName, new string('x', 31));
+            ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramName, new string('x', 256));
 
             //ProgramVal.ShouldHaveValidationErrorFor(x => x.OfferType, null as string);
-            ProgramVal.ShouldHaveValidationErrorFor(x => x.OfferType, new string('x', 21));
+            ProgramVal.ShouldHaveValidationErrorFor(x => x.OfferType, new string('x', 256));
 
             //ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramOfferNumber, null as string);
-            ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramOfferNumber, new string('x', 11));
+            ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramOfferNumber, new string('x', 256));
 
 
         }
@@ -133,16 +134,16 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Location_should_have_errors()
         {
-            //LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, null as string);
-            LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, new string('x', 31));
+            LocationVal.ShouldHaveValidationErrorFor(x => x.LocationName, new string('x', 256));
 
-            LocationVal.ShouldHaveValidationErrorFor(x => x.BuildingId, null as string);
+            LocationVal.ShouldHaveValidationErrorFor(x => x.BuildingId, new string('x', 256));
 
-            //LocationVal.ShouldHaveValidationErrorFor(x => x.LocationAddress, null as string);
-            LocationVal.ShouldHaveValidationErrorFor(x => x.LocationAddress, new string('x', 51));
+            LocationVal.ShouldHaveValidationErrorFor(x => x.LocationAddress, new string('x', 256));
 
-            //LocationVal.ShouldHaveValidationErrorFor(x => x.RoomNumber, null as string);
-            LocationVal.ShouldHaveValidationErrorFor(x => x.FloorNumber, null as string);
+            LocationVal.ShouldHaveValidationErrorFor(x => x.RoomNumber, new string('x', 256));
+
+            LocationVal.ShouldHaveValidationErrorFor(x => x.FloorNumber, new string('x', 256));
+
         }
 
         [TestMethod]
@@ -158,8 +159,7 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void LocationType_should_have_errors()
         {
-            LocationTypeVal.ShouldHaveValidationErrorFor(x => x.LocationTypeName, null as string);
-            LocationTypeVal.ShouldHaveValidationErrorFor(x => x.LocationTypeName, new string('x', 31));
+            LocationTypeVal.ShouldHaveValidationErrorFor(x => x.LocationTypeName, new string('x', 256));
         }
 
         [TestMethod]
@@ -178,8 +178,7 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Division_should_have_errors()
         {
-            //DivisionVal.ShouldHaveValidationErrorFor(x => x.DivisionName, null as string);
-            DivisionVal.ShouldHaveValidationErrorFor(x => x.DivisionName, new string('x', 31));
+            DivisionVal.ShouldHaveValidationErrorFor(x => x.DivisionName, new string('x', 256));
         }
 
         [TestMethod]
@@ -195,8 +194,8 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Language_should_have_errors()
         {
-            //LanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageName, null as string);
-            LanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageName, new string('x', 31));
+
+            LanguageVal.ShouldHaveValidationErrorFor(x => x.LanguageName, new string('x', 256));
         }
 
         [TestMethod]
@@ -217,11 +216,11 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Community_should_have_errors()
         {
-            //CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityName, null as string);
-            CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityName, new string('x', 51));
 
-            //CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityDescription, null as string);
-            CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityDescription, new string('x', 51));
+            CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityName, new string('x', 256));
+
+
+            CommunityVal.ShouldHaveValidationErrorFor(x => x.CommunityDescription, new string('x', 256));
         }
 
         [TestMethod]
@@ -346,26 +345,20 @@ namespace ValidatorUnitTest
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ContactId, 0);
             ServiceVal.ShouldHaveValidationErrorFor(x => x.ContactId, -1);
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, new string('x', 21));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceName, new string('x', 256));
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceDescription, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceDescription, new string('x', 51));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceDescription, new string('x', 6001));
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ExecutiveSummary, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ExecutiveSummary, new string('x', 51));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.ExecutiveSummary, new string('x', 6001));
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceArea, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceArea, new string('x', 21));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.ServiceArea, new string('x', 256));
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.EmployeeConnectMethod, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.EmployeeConnectMethod, new string('x', 51));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.EmployeeConnectMethod, new string('x', 256));
 
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.CustomerConnectMethod, null as string);
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.CustomerConnectMethod, new string('x', 51));
+            ServiceVal.ShouldHaveValidationErrorFor(x => x.CustomerConnectMethod, new string('x', 256));
 
-            DateTime? date = null;
-            ServiceVal.ShouldHaveValidationErrorFor(x => x.ExpirationDate, date);
+            //DateTime? date = null;
+            //ServiceVal.ShouldHaveValidationErrorFor(x => x.ExpirationDate, date);
 
         }
     }
