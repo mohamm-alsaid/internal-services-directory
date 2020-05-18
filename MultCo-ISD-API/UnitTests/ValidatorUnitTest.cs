@@ -42,7 +42,7 @@ namespace ValidatorUnitTest
         public void Department_should_have_errors()
         {
             var validator = new DepartmentV1DTOValidator();
-            //validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, null as string);
+
             validator.ShouldHaveValidationErrorFor(x => x.DepartmentName, new string('x', 256));
             
         }
@@ -63,14 +63,14 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Contact_should_have_errors()
         {
-            //ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, null as string);
+
             ContactVal.ShouldHaveValidationErrorFor(x => x.ContactName, new string('x', 256));
 
-            //ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, null as string);
+
             // tests two cases
             ContactVal.ShouldHaveValidationErrorFor(x => x.PhoneNumber, new string('1', 256));
 
-            //ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, null as string);
+
             ContactVal.ShouldHaveValidationErrorFor(x => x.EmailAddress, new string('a', 256));
 
 
@@ -96,16 +96,16 @@ namespace ValidatorUnitTest
         [TestMethod]
         public void Program_should_have_errors()
         {
-            //ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, null as string);
+
             ProgramVal.ShouldHaveValidationErrorFor(x => x.SponsorName, new string('x', 256));
 
-            //ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramName, null as string);
+
             ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramName, new string('x', 256));
 
-            //ProgramVal.ShouldHaveValidationErrorFor(x => x.OfferType, null as string);
+
             ProgramVal.ShouldHaveValidationErrorFor(x => x.OfferType, new string('x', 256));
 
-            //ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramOfferNumber, null as string);
+
             ProgramVal.ShouldHaveValidationErrorFor(x => x.ProgramOfferNumber, new string('x', 256));
 
 
@@ -357,8 +357,6 @@ namespace ValidatorUnitTest
 
             ServiceVal.ShouldHaveValidationErrorFor(x => x.CustomerConnectMethod, new string('x', 256));
 
-            //DateTime? date = null;
-            //ServiceVal.ShouldHaveValidationErrorFor(x => x.ExpirationDate, date);
 
         }
     }

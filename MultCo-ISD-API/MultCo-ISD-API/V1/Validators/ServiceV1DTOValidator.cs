@@ -40,8 +40,6 @@ namespace MultCo_ISD_API.V1.Validators
             RuleFor(x => x.CustomerConnectMethod)
                 .MaximumLength(255).WithMessage("Customer Connect Method cannot exceed 255");
 
-            //RuleFor(x => x.ExpirationDate); 
-                //.NotNull().WithMessage("Expiration Date cannot be null");
 
             RuleFor(x => x.Active)
                 .NotNull().WithMessage("Service active cannot be null");
