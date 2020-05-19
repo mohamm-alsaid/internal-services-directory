@@ -1164,7 +1164,7 @@ namespace UnitTests
                     Assert.IsNotNull(services);
                     Assert.AreEqual(2, services.Count());
 
-                    output = controller.Name("a");
+                    output = controller.Name("a", 20, 1);
                     actionResult = output.Result;
                     result = actionResult as OkObjectResult;
                     services = result.Value as IEnumerable<ServiceV1DTO>;
@@ -1172,7 +1172,24 @@ namespace UnitTests
                     Assert.IsNotNull(result);
                     Assert.AreEqual(200, result.StatusCode);
                     Assert.IsNotNull(services);
-                    Assert.AreEqual(20, services.Count());
+                    Assert.AreEqual(10, services.Count());
+
+                    //add some services that are expired
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i + 30), Active = false, ExpirationDate = DateTime.Now + TimeSpan.FromDays(1) };
+                    }
+
+                    //verify that they DON'T show up in the search
+                    output = controller.Name("a", 20, 1);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(10, services.Count());
                 }
             }
             finally
@@ -1208,6 +1225,14 @@ namespace UnitTests
                     var output = controller.Name("glsadfngksdfjngksjd");
                     var actionResult = output.Result;
                     var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with search query.", result.Value);
+
+                    output = controller.Name("a", 20, 4);
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
 
                     Assert.IsNotNull(result);
                     Assert.AreEqual(404, result.StatusCode);

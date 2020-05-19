@@ -278,7 +278,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		public async Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum)
 		{
 			var services =  await _context.Service
-					.Where(s => s.ServiceName.ToLower().Contains(name.ToLower()) && (s.Active == true || s.ExpirationDate < DateTime.Now))
+					.Where(s => s.ServiceName.ToLower().Contains(name.ToLower()) && (s.Active == true || s.ExpirationDate > DateTime.Now))
 					.OrderBy(s => s.ServiceName)
 					.Include(s => s.Contact)
 					.Include(s => s.Department)
@@ -291,10 +291,29 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 					.ConfigureAwait(false);
 
 			//to me, it makes more sense to paginate the result of the search rather than paginating the search query itself
-			if (services.Count < pageSize) 
+			//grab list size since we're going to use it a few times
+			var size = services.Count();
+			var lastPage = Math.Floor((double)(size / pageSize)); //want this to determine the index of the last page
+
+			//if they request a page that's beyond the last page, return an empty list
+			if (pageNum > lastPage)
 			{
-				return services.GetRange(0, services.Count);
+				return new List<Service>();
 			}
+
+			//if the whole list is less than a page size, return everything we have
+			if (size < pageSize) 
+			{
+				return services;
+			}
+
+			//if we're looking at the last page, but the last page isn't an entire page, return however many services there are left
+			if ( (services.Count() < pageSize * (pageNum+1)) && pageNum == lastPage)
+			{
+				return services.GetRange((pageNum * pageSize), size-pageSize);
+			}
+
+			//otherwise, return the desired page
 			return services.GetRange(pageSize * pageNum, pageSize);
 
 		}
