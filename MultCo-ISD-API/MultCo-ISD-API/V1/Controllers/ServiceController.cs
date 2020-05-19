@@ -311,6 +311,29 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
 
+        //GET: api/Services/Name
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Name([FromQuery] string name, int pageSize = 20, int pageNum = 0)
+        {
+            var services = await _serviceContextManager.GetServicesByName(name, pageSize, pageNum);
+
+            if (services.Count == 0)
+            {
+                return NotFound("No services found with search query.");
+            }
+
+            var serviceDTOs = new List<ServiceV1DTO>();
+            foreach (var service in services)
+            {
+                serviceDTOs.Add(await populateService(service));
+            }
+
+            return Ok(serviceDTOs);
+        }
+
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
