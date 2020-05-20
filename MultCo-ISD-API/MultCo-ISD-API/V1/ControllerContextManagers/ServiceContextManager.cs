@@ -15,12 +15,12 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<Service> GetServiceByIdAsync(int id);
 		//currently nullable because relational table ids that aren't the primary key are nullable
     Task<List<Service>> GetServicesFromIdList(List<int> ids);
-		Task<List<Service>> GetServicesFromIdListPaginated(List<int?> ids, int pageSize, int pageNum);
+		Task<List<Service>> GetServicesFromIdListPaginated(List<int> ids, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromProgramId(int ids);
 		Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum);
-		Task<List<Service>> GetServicesFromDepartmentId(int? id);
-		Task<List<Service>> GetServicesFromDivisionId(int? id);
-		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId);
+		Task<List<Service>> GetServicesFromDepartmentId(int? id, int pageSize, int pageNum);
+		Task<List<Service>> GetServicesFromDivisionId(int? id, int pageSize, int pageNum);
+		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId, int pageSize, int pageNum);
 		Task<Community> GetCommunityByIdAsync(int id);
 		Task<Community> GetCommunityByNameAsync(string name);
 		Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
@@ -277,7 +277,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 					.ConfigureAwait(false);
 		}
 
-		public async Task<List<Service>> GetServicesFromIdListPaginated(List<int?> ids, int pageSize, int pageNum)
+		public async Task<List<Service>> GetServicesFromIdListPaginated(List<int> ids, int pageSize, int pageNum)
 		{
 			var services = await _context.Service
 					.Where(s => ids.Contains(s.ServiceId) && (s.Active == true || s.ExpirationDate > DateTime.Now))
