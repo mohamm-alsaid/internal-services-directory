@@ -29,7 +29,9 @@ namespace MultCo_ISD_API.Swagger
             };
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
                 c.SwaggerDoc("V1", openApiInfoV1);
+                c.IgnoreObsoleteActions();
             });
             return services;
         }
