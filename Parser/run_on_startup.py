@@ -8,19 +8,23 @@ import PyPDF2
 # takes in the args from the command line
 # exits if there are greater than or less than 3 args, sys.argv[0] is always the program name
 
-pdf_links = sys.argv[1].split('|')
-output_files = sys.argv[2].split('|')
+pdf_links = []
+print('Enter pdf links below, enter q or Q to exit...')
 
-if len(sys.argv) != 3 and len(pdf_links) != len(output_files):
-    print("Usage: <" + sys.argv[0] + "> <[PDF_url_1|PDF_url_2}...]> <[output_json_filename_1|output_json_filename"
-                                     "2|...]>")
-    sys.exit(-1)
+while True:
+    buffer = input()
+    if buffer == "q" or buffer == "Q":
+        break;
+    else:
+        pdf_links.append(buffer)
 
 pdf_files = []
+output_files = []
 pdf_num = 0
 
 # downloads the pdf file at the location
 for pdf_link in pdf_links:
+    output_files.append('output' + str(pdf_num) + '.json')
     urllib.request.urlretrieve(pdf_link, "input" + str(pdf_num) + ".pdf")
     # checks for valid PDF file
     try:
@@ -36,7 +40,6 @@ for pdf_link in pdf_links:
         a.close()
         pass
     pdf_files.append("input" + str(pdf_num) + ".pdf")
-
     pdf_num += 1
 
 for pdf, json in zip(pdf_files, output_files):
