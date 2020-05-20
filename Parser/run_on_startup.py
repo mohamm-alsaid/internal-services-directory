@@ -24,17 +24,22 @@ pdf_num = 0
 
 # downloads the pdf file at the location
 for pdf_link in pdf_links:
-    output_files.append('output' + str(pdf_num) + '.json')
-    urllib.request.urlretrieve(pdf_link, "input" + str(pdf_num) + ".pdf")
-    # checks for valid PDF file
     try:
+        output_files.append('output' + str(pdf_num) + '.json')
+        urllib.request.urlretrieve(pdf_link, "input" + str(pdf_num) + ".pdf")
+        # checks for valid PDF file
         a = open("input" + str(pdf_num) + ".pdf", "rb")
         PyPDF2.PdfFileReader(a)
     except PyPDF2.utils.PdfReadError:
         # this line, os.remove(filename), might be redundant since we're just going to overwrite it anyway on next
         # program execution
         # os.remove(filename)
-        print("Invalid PDF file downloaded")
+        print("Invalid PDF file downloaded, press any key to exit follow by enter")
+        input()
+        sys.exit(-1)
+    except ValueError:
+        print("Invalid url, press any key to exit follow by enter")
+        input()
         sys.exit(-2)
     else:
         a.close()
