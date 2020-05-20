@@ -19,7 +19,8 @@ namespace MultCo_ISD_API.V1.DTO
             LanguageDTOs = new List<LanguageV1DTO>();
             LocationDTOs = new List<LocationV1DTO>();
         }
-
+        // To hide this from swagger (ignores obsolete attributes)
+        [Obsolete]
         public int ServiceId { get; set; }
         public Nullable<int> ProgramId { get; set; }
         public Nullable<int> DepartmentId { get; set; }

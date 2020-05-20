@@ -11,6 +11,7 @@ using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
 using MultCo_ISD_API.V1.ControllerContexts;
 using MultCo_ISD_API.Validation;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
@@ -35,7 +36,8 @@ namespace MultCo_ISD_API.V1.Controllers
             _context = context;
             _serviceContextManager = new ServiceContextManager(_context);
         }
-
+        // Annotations
+        [SwaggerOperation(Summary = "Get -- Paginated", Description = "Get services in a paginated fasahion", Tags = new[] { "Reader" } )]
         // GET: api/Services
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
@@ -69,6 +71,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 throw e;
             }
         }
+        [SwaggerOperation(Summary = "Get service by Id", Description = "Get a service id, get all information associated with it", Tags = new[] { "Reader" })]
 
         // GET: api/Services/5
         [HttpGet("{id}")]
@@ -265,7 +268,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
             return Ok(serviceDTOs);
         }
-
+        [SwaggerOperation(Summary = "Get a service by department id or division", Description = "Get a service by department id and/or division id", Tags = new[] { "Writer" })]
         //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
         [HttpGet]
         [Route("[action]/{depId},{divId}")]
@@ -310,7 +313,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
             return Ok(serviceDTOs);
         }
-
+        [SwaggerOperation(Summary = "Get a service by name?", Description = "searches for a service by name", Tags = new[] { "Reader" })]
         //GET: api/Services/Name
         [HttpGet]
         [Route("[action]")]
@@ -334,6 +337,7 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
 
+        [SwaggerOperation(Summary = "Add/update a service", Description = "Add a service if it doesn't already exist and update a service if it exist", Tags = new[] { "Writer" })]
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -369,6 +373,7 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        [SwaggerOperation(Summary = "Add a service", Description = "Adds a service", Tags = new[] { "Writer" })]
         // POST: api/Services
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -400,6 +405,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
         }
 
+        [SwaggerOperation(Summary = "remove a service", Description = "removes a service", Tags = new[] { "Writer" })]
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
