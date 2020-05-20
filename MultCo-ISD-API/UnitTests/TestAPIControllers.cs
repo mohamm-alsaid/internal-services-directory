@@ -263,39 +263,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestDeleteService()
-        {
-            var connection = new SqliteConnection("Datasource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                using (var context = new InternalServicesDirectoryV1Context(options))
-                {
-                    context.Database.EnsureCreated();
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.SaveChanges();
-
-                    var controller = new ServiceController(context);
-                    var actionResult = controller.DeleteService(2).Result;
-
-                    Assert.IsNotNull(actionResult);
-
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        [TestMethod]
         public void TestRelationalTables()
         {
             var connection = new SqliteConnection("Datasource=:memory:");

@@ -400,27 +400,6 @@ namespace MultCo_ISD_API.V1.Controllers
 
         }
 
-        // DELETE: api/Services/5
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-#if AUTH
-        [Authorize(Policy = "Writer")]
-#endif
-        public async Task<IActionResult> DeleteService(int id)
-        {
-            var item = await _context.Service.FirstOrDefaultAsync(s => s.ServiceId == id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            _context.Service.Remove(item);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
-        }
-
         private bool ServiceExists(int id)
         {
             return _context.Service.Any(e => e.ServiceId == id);
