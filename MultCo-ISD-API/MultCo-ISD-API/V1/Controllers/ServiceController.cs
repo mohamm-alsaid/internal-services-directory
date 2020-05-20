@@ -104,7 +104,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Language(string lang)
+        public async Task<IActionResult> Language(string lang, int pageSize = 20, int pageNum = 0)
         {
             //massage query string into a list
             var langNames = lang.Split(',');
@@ -135,7 +135,7 @@ namespace MultCo_ISD_API.V1.Controllers
                 serviceIds.Add(sla.ServiceId);
             }
 
-            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+            var services = await _serviceContextManager.GetServicesFromIdListPaginated(serviceIds, pageSize, pageNum);
             var serviceDTOs = new List<ServiceV1DTO>();
             foreach(var service in services)
             {
@@ -274,7 +274,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> DepartmentAndOrDivisionId(int? deptId = null, int? divId = null)
+        public async Task<IActionResult> DepartmentAndOrDivisionId(int? deptId = null, int? divId = null, int pageSize = 20, int pageNum = 0)
         {
             if (deptId == null && divId == null)
             {
@@ -284,17 +284,17 @@ namespace MultCo_ISD_API.V1.Controllers
 
             if (deptId == null && divId != null)
             {
-                services = await _serviceContextManager.GetServicesFromDivisionId(divId);
+                services = await _serviceContextManager.GetServicesFromDivisionId(divId, pageSize, pageNum);
             }
 
             else if (deptId != null && divId == null)
             {
-                services = await _serviceContextManager.GetServicesFromDepartmentId(deptId);
+                services = await _serviceContextManager.GetServicesFromDepartmentId(deptId, pageSize, pageNum);
             }
 
             else if (deptId != null && divId != null)
             {
-                services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId);
+                services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId, pageSize, pageNum);
             }
 
             if (services.Count() == 0)
