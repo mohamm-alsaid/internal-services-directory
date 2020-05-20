@@ -15,7 +15,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<Service> GetServiceByIdAsync(int id);
 		Task<List<Service>> GetServicesFromIdList(List<int> ids);
 		Task<List<Service>> GetServicesFromProgramId(int ids);
-		Task<List<Service>> GetServicesFromIdList(List<int?> ids);
 		Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromDepartmentId(int? id);
 		Task<List<Service>> GetServicesFromDivisionId(int? id);
