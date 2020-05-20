@@ -230,6 +230,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		{
 			return await _context.Service
 				.OrderBy(s => s.ServiceName)
+				.Where(s => (s.Active == true || s.ExpirationDate > DateTime.Now))
 				.Skip(pageSize * pageIndex)
 				.Take(pageSize)
 				.Include(s => s.Contact)
@@ -263,7 +264,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		public async Task<List<Service>> GetServicesFromIdList(List<int?> ids)
 		{
 			return await _context.Service
-					.Where(s => ids.Contains(s.ServiceId))
+					.Where(s => ids.Contains(s.ServiceId) && (s.Active == true || s.ExpirationDate > DateTime.Now))
 					.Include(s => s.Contact)
 					.Include(s => s.Department)
 					.Include(s => s.Division)

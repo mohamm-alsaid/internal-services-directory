@@ -63,7 +63,7 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     for(int i = 0; i < 100; i++)
                     {
-                        context.Service.Add(new Service());
+                        context.Service.Add(new Service { Active = true });
                     }
                     context.SaveChanges();
 
@@ -112,7 +112,7 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     for (int i = 0; i < 100; i++)
                     {
-                        context.Service.Add(new Service());
+                        context.Service.Add(new Service { Active = true });
                     }
                     context.SaveChanges();
 
@@ -170,9 +170,9 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
+                    context.Service.Add(new Service { Active = true });
+                    context.Service.Add(new Service { Active = true });
+                    context.Service.Add(new Service { Active = true });
                     context.SaveChanges();
 
                     ServiceController controller = new ServiceController(context);
@@ -308,7 +308,7 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    Service serv = new Service();
+                    Service serv = new Service { Active = true };
                     serv.ServiceName = "service number one";
                     context.Service.Add(serv);
                     context.SaveChanges();
@@ -355,11 +355,11 @@ namespace UnitTests
                     context.Database.EnsureCreated();
 
                     //create a service
-                    Service serv1 = new Service();
+                    Service serv1 = new Service { Active = true };
                     context.Service.Add(serv1);
                     context.SaveChanges();
 
-                    Service serv2 = new Service();
+                    Service serv2 = new Service { Active = true };
                     context.Service.Add(serv2);
 
                     //create some communities
@@ -423,11 +423,10 @@ namespace UnitTests
                     context.Database.EnsureCreated();
 
                     //create a service
-                    Service serv1 = new Service();
+                    Service serv1 = new Service { Active = true };
                     context.Service.Add(serv1);
                     context.SaveChanges();
-
-                    Service serv2 = new Service();
+                    Service serv2 = new Service { Active = true };
                     context.Service.Add(serv2);
 
                     //create some communities
@@ -495,10 +494,13 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     Service serv1 = new Service();
                     serv1.ServiceId = 1;
+                    serv1.Active = true;
                     Service serv2 = new Service();
                     serv2.ServiceId = 2;
+                    serv2.Active = true;
                     Service serv3 = new Service();
                     serv3.ServiceId = 3;
+                    serv3.Active = true;
                     context.Service.Add(serv1);
                     context.Service.Add(serv2);
                     context.Service.Add(serv3);
@@ -600,10 +602,13 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     Service serv1 = new Service();
                     serv1.ServiceId = 1;
+                    serv1.Active = true;
                     Service serv2 = new Service();
                     serv2.ServiceId = 2;
+                    serv2.Active = true;
                     Service serv3 = new Service();
                     serv3.ServiceId = 3;
+                    serv3.Active = true;
                     context.Service.Add(serv1);
                     context.Service.Add(serv2);
                     context.Service.Add(serv3);
@@ -718,11 +723,11 @@ namespace UnitTests
                     context.Location.Add(l3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1 };
-                    Service s2 = new Service { ServiceId = 2 };
-                    Service s3 = new Service { ServiceId = 3 };
-                    Service s4 = new Service { ServiceId = 4 };
-                    Service s5 = new Service { ServiceId = 5 };
+                    Service s1 = new Service { ServiceId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, Active = true };
+                    Service s5 = new Service { ServiceId = 5, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -810,11 +815,11 @@ namespace UnitTests
                     context.Location.Add(l3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1 };
-                    Service s2 = new Service { ServiceId = 2 };
-                    Service s3 = new Service { ServiceId = 3 };
-                    Service s4 = new Service { ServiceId = 4 };
-                    Service s5 = new Service { ServiceId = 5 };
+                    Service s1 = new Service { ServiceId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, Active = true };
+                    Service s5 = new Service { ServiceId = 5, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -888,12 +893,12 @@ namespace UnitTests
                     context.Program.Add(p3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
-                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
-                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
-                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
-                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
-                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2, Active = true };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3, Active = true };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -943,12 +948,12 @@ namespace UnitTests
                     context.Program.Add(p3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
-                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
-                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
-                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
-                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
-                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2, Active = true };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3, Active = true };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1002,11 +1007,11 @@ namespace UnitTests
                     context.Department.Add(dep2);
                     context.Department.Add(dep3);
 
-                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
-                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
-                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
-                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
-                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1081,11 +1086,11 @@ namespace UnitTests
                     context.Department.Add(dep2);
                     context.Department.Add(dep3);
 
-                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
-                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
-                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
-                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
-                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1213,9 +1218,9 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    Service s1 = new Service { ServiceName = "panda adoption service" };
-                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service" };
-                    Service s3 = new Service { ServiceName = "public health service" };
+                    Service s1 = new Service { ServiceName = "panda adoption service", Active = true };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service", Active = true };
+                    Service s3 = new Service { ServiceName = "public health service", Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
