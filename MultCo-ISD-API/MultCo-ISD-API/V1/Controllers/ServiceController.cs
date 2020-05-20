@@ -19,62 +19,62 @@ namespace MultCo_ISD_API.V1.Controllers
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
 #endif
 
-    [Validate]
-    [Route("services/api/v1/[controller]")]
-    [ApiController]
-    public class ServiceController : ControllerBase
-    {
-        private const string DefaultConnectionStringName = "DefaultConnection";
+	[Validate]
+	[Route("services/api/v1/[controller]")]
+	[ApiController]
+	public class ServiceController : ControllerBase
+	{
+		private const string DefaultConnectionStringName = "DefaultConnection";
 
-        private readonly InternalServicesDirectoryV1Context _context;
-        private readonly IServiceContextManager _serviceContextManager;
+		private readonly InternalServicesDirectoryV1Context _context;
+		private readonly IServiceContextManager _serviceContextManager;
 
-        public ServiceController(InternalServicesDirectoryV1Context context)
-        {
-            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
-            // and pass 'context' directly to the 'ServiceContext' constructor
-            _context = context;
-            _serviceContextManager = new ServiceContextManager(_context);
-        }
+		public ServiceController(InternalServicesDirectoryV1Context context)
+		{
+			// TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
+			// and pass 'context' directly to the 'ServiceContext' constructor
+			_context = context;
+			_serviceContextManager = new ServiceContextManager(_context);
+		}
 
-        // GET: api/Services
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		// GET: api/Services
+		[HttpGet]
+		[ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> GetServices(int pageSize = 20, int pageIndex = 0)
-        {
-            try
-            {
-                if(pageSize < 0 || pageIndex < 0)
-                {
-                    return NotFound("Invalid page index or page size.");
-                }
-                var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
-                if (services == null || services.Count == 0)
-                {
-                    return NotFound("No services were found with the given page information.");
-                }
+		public async Task<IActionResult> GetServices(int pageSize = 20, int pageIndex = 0)
+		{
+			try
+			{
+				if (pageSize < 0 || pageIndex < 0)
+				{
+					return NotFound("Invalid page index or page size.");
+				}
+				var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
+				if (services == null || services.Count == 0)
+				{
+					return NotFound("No services were found with the given page information.");
+				}
 
-                var serviceDTOs = new List<ServiceV1DTO>();
-                foreach (var service in services)
-                {
-                    serviceDTOs.Add(await populateService(service));
-                }
-                return Ok(serviceDTOs);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+				var serviceDTOs = new List<ServiceV1DTO>();
+				foreach (var service in services)
+				{
+					serviceDTOs.Add(await populateService(service));
+				}
+				return Ok(serviceDTOs);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
 
-        // GET: api/Services/5
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		// GET: api/Services/5
+		[HttpGet("{id}")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
@@ -345,37 +345,37 @@ namespace MultCo_ISD_API.V1.Controllers
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
-        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
-        {
-            try
-            {
-                if (id != serviceDTO.ServiceId)
-                {
-                    return BadRequest();
-                }
+		public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
+		{
+			try
+			{
+				if (id != serviceDTO.ServiceId)
+				{
+					return BadRequest();
+				}
 
-                // Check to ensure service exists before calling contextmanager method.
-                var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
-                if (service == null)
-                {
-                    return NotFound();
-                }
+				// Check to ensure service exists before calling contextmanager method.
+				var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
+				if (service == null)
+				{
+					return NotFound();
+				}
 
-                await _serviceContextManager.PutAsync(serviceDTO);
-                return NoContent();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+				await _serviceContextManager.PutAsync(serviceDTO);
+				return NoContent();
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
 
-        // POST: api/Services
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(409)]
+		// POST: api/Services
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for
+		// more details see https://aka.ms/RazorPagesCRUD.
+		[HttpPost]
+		[ProducesResponseType(204)]
+		[ProducesResponseType(409)]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif

@@ -8,7 +8,7 @@ namespace MultCo_ISD_API.V1.DTO
     public class ServiceLanguageAssociationV1DTO
     {
         public int ServiceLanguageAssociation1 { get; set; }
-        public Nullable<int> ServiceId { get; set; }
-        public Nullable<int> LanguageId { get; set; }
+        public int ServiceId { get; set; }
+        public int LanguageId { get; set; }
     }
 }

@@ -14,20 +14,19 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
 		Task<Service> GetServiceByIdAsync(int id);
 		//currently nullable because relational table ids that aren't the primary key are nullable
-
-		Task<List<Service>> GetServicesFromIdList(List<int?> ids);
+    Task<List<Service>> GetServicesFromIdList(List<int> ids);
 		Task<List<Service>> GetServicesFromIdListPaginated(List<int?> ids, int pageSize, int pageNum);
+		Task<List<Service>> GetServicesFromProgramId(int ids);
 		Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum);
-		Task<List<Service>> GetServicesFromProgramId(int? ids);
-		Task<List<Service>> GetServicesFromDepartmentId(int? id, int pageSize, int pageNum);
-		Task<List<Service>> GetServicesFromDivisionId(int? id, int pageSize, int pageNum);
-		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId, int pageSize, int pageNum);
+		Task<List<Service>> GetServicesFromDepartmentId(int? id);
+		Task<List<Service>> GetServicesFromDivisionId(int? id);
+		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId);
 		Task<Community> GetCommunityByIdAsync(int id);
 		Task<Community> GetCommunityByNameAsync(string name);
 		Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
 		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
-		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids);
-		Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids);
+		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int> ids);
+		Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int> ids);
 		Task<Language> GetLanguageByIdAsync(int id);
 		Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
 		Task<Location> GetLocationByIdAsync(int id);
@@ -263,7 +262,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 			return service;
 		}
 
-		public async Task<List<Service>> GetServicesFromIdList(List<int?> ids)
+		public async Task<List<Service>> GetServicesFromIdList(List<int> ids)
 		{
 			return await _context.Service
 					.Where(s => ids.Contains(s.ServiceId) && (s.Active == true || s.ExpirationDate > DateTime.Now))
@@ -323,7 +322,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.SingleOrDefaultAsync();
 		}
 
-		public async Task<List<Service>> GetServicesFromProgramId(int? id)
+		public async Task<List<Service>> GetServicesFromProgramId(int id)
 		{
 			return await _context.Service
 				.Where(s => s.ProgramId == id)
@@ -385,7 +384,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.ConfigureAwait(false);
 		}
 
-		public async Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int?> ids)
+		public async Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int> ids)
 		{
 			return await _context.ServiceLanguageAssociation
 				.Where(sla => ids.Contains(sla.LanguageId))
@@ -393,7 +392,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.ConfigureAwait(false);
 		}
 
-		public async Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int?> ids)
+		public async Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int> ids)
 		{
 			return await _context.ServiceLocationAssociation
 				.Where(sla => ids.Contains(sla.LocationId))
