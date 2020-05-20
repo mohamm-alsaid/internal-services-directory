@@ -52,21 +52,6 @@ namespace MultCo_ISD_API.V1.DTO
             to.Department = from.DepartmentDTO?.ToDepartment();
             to.Division = from.DivisionDTO?.ToDivision();
             to.Program = from.ProgramDTO?.ToProgram();
-
-            foreach (var scaDTO in from.ServiceCommunityAssociationDTOs)
-            {
-                to.ServiceCommunityAssociation.Add(scaDTO.toServiceCommunityAssociation());
-            }
-
-            foreach (var slaDTO in from.ServiceLanguageAssociationDTOs)
-            {
-                to.ServiceLanguageAssociation.Add(slaDTO.ToServiceLanguageAssociation());
-            }
-
-            foreach (var slaDTO in from.ServiceLocationAssociationDTOs)
-            {
-                to.ServiceLocationAssociation.Add(slaDTO.ToServiceLocationAssociation());
-            }
         }
 
         public static void CopyFromService(this ServiceV1DTO to,  Service from)
@@ -90,20 +75,6 @@ namespace MultCo_ISD_API.V1.DTO
             to.DivisionDTO = from.Division?.ToDivisionV1DTO();
             to.ProgramDTO = from.Program?.ToProgramV1DTO();
 
-            foreach (var sca in from.ServiceCommunityAssociation)
-            {
-                to.ServiceCommunityAssociationDTOs.Add(sca.ToServiceCommunityAssociationV1DTO());
-            }
-
-            foreach (var sla in from.ServiceLanguageAssociation)
-            {
-                to.ServiceLanguageAssociationDTOs.Add(sla.ToServiceLanguageAssociationV1DTO());
-            }
-
-            foreach (var sla in from.ServiceLocationAssociation)
-            {
-                to.ServiceLocationAssociationDTOs.Add(sla.ToServiceLocationAssociationV1DTO());
-            }
         }
     }
 }

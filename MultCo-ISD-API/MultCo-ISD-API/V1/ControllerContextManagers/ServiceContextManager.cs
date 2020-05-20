@@ -13,9 +13,10 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 	{
 		Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
 		Task<Service> GetServiceByIdAsync(int id);
-		//currently nullable because relational table ids that aren't the primary key are nullable
 		Task<List<Service>> GetServicesFromIdList(List<int> ids);
 		Task<List<Service>> GetServicesFromProgramId(int ids);
+		Task<List<Service>> GetServicesFromIdList(List<int?> ids);
+		Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromDepartmentId(int? id);
 		Task<List<Service>> GetServicesFromDivisionId(int? id);
 		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId);
@@ -272,6 +273,49 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 					.Include(s => s.ServiceLocationAssociation)
 					.ToListAsync()
 					.ConfigureAwait(false);
+		}
+
+		public async Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum)
+		{
+			var services =  await _context.Service
+					.Where(s => s.ServiceName.ToLower().Contains(name.ToLower()) && (s.Active == true || s.ExpirationDate > DateTime.Now))
+					.OrderBy(s => s.ServiceName)
+					.Include(s => s.Contact)
+					.Include(s => s.Department)
+					.Include(s => s.Division)
+					.Include(s => s.Program)
+					.Include(s => s.ServiceCommunityAssociation)
+					.Include(s => s.ServiceLanguageAssociation)
+					.Include(s => s.ServiceLocationAssociation)
+					.ToListAsync()
+					.ConfigureAwait(false);
+
+			//to me, it makes more sense to paginate the result of the search rather than paginating the search query itself
+			//grab list size since we're going to use it a few times
+			var size = services.Count();
+			var lastPage = Math.Floor((double)(size / pageSize)); //want this to determine the index of the last page
+
+			//if they request a page that's beyond the last page, return an empty list
+			if (pageNum > lastPage)
+			{
+				return new List<Service>();
+			}
+
+			//if the whole list is less than a page size, return everything we have
+			if (size < pageSize) 
+			{
+				return services;
+			}
+
+			//if we're looking at the last page, but the last page isn't an entire page, return however many services there are left
+			if ( (services.Count() < pageSize * (pageNum+1)) && pageNum == lastPage)
+			{
+				return services.GetRange((pageNum * pageSize), size-pageSize);
+			}
+
+			//otherwise, return the desired page
+			return services.GetRange(pageSize * pageNum, pageSize);
+
 		}
 
 		public async Task<Community> GetCommunityByIdAsync(int id)

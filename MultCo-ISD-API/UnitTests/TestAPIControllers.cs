@@ -1124,5 +1124,125 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestGetByName()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service s1 = new Service { ServiceName = "panda adoption service", Active = true };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service", Active = true };
+                    Service s3 = new Service { ServiceName = "public health service", Active = true };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    for (int i = 0; i < 27; i++)
+                    {
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i), Active = true };
+                        context.Service.Add(s);
+                    }
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Name("pan");
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(2, services.Count());
+
+                    output = controller.Name("a", 20, 1);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(10, services.Count());
+
+                    //add some services that are expired
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i + 30), Active = false, ExpirationDate = DateTime.Now + TimeSpan.FromDays(1) };
+                    }
+
+                    //verify that they DON'T show up in the search
+                    output = controller.Name("a", 20, 1);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(10, services.Count());
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByNameNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service s1 = new Service { ServiceName = "panda adoption service" };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service" };
+                    Service s3 = new Service { ServiceName = "public health service" };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Name("glsadfngksdfjngksjd");
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with search query.", result.Value);
+
+                    output = controller.Name("a", 20, 4);
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with search query.", result.Value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
