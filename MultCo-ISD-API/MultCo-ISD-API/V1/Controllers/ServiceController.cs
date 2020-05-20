@@ -11,6 +11,7 @@ using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
 using MultCo_ISD_API.V1.ControllerContexts;
 using MultCo_ISD_API.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace MultCo_ISD_API.V1.Controllers
 {
@@ -98,13 +99,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
         //GET: api/Services/lang?="language"
         [HttpGet]
-        [Route("[action]/{lang}")]
+        [Route("[action]")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Language(string lang, int pageSize = 20, int pageNum = 0)
+        public async Task<IActionResult> Language([FromQuery][Required] string lang, int pageSize = 20, int pageNum = 0)
         {
             //massage query string into a list
             var langNames = lang.Split(',');
@@ -147,13 +148,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
         //GET: api/Services/Community?="community"
         [HttpGet]
-        [Route("[action]/{comm}")]
+        [Route("[action]")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Community(string community)
+        public async Task<IActionResult> Community([FromQuery][Required] string community)
         {
             try
             {
@@ -198,13 +199,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
         // GET: api/Service/BuildingId
         [HttpGet]
-        [Route("[action]/{buildingId}")]
+        [Route("[action]")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> BuildingId(string buildingId)
+        public async Task<IActionResult> BuildingId([FromQuery][Required] string buildingId)
         {
             var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
             if (locations.Count() == 0)
@@ -242,13 +243,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
         //GET: api/Services/Program?="programId"
         [HttpGet]
-        [Route("[action]/{programId}")]
+        [Route("[action]")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Program(int programId)
+        public async Task<IActionResult> Program([FromQuery][Required] int programId)
         {
             var services = await _serviceContextManager.GetServicesFromProgramId(programId);
 
@@ -268,13 +269,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
         //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
         [HttpGet]
-        [Route("[action]/{depId},{divId}")]
+        [Route("[action]")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> DepartmentAndOrDivisionId(int? deptId = null, int? divId = null, int pageSize = 20, int pageNum = 0)
+        public async Task<IActionResult> DepartmentAndOrDivisionId([FromQuery] int? deptId = null, int? divId = null, int pageSize = 20, int pageNum = 0)
         {
             if (deptId == null && divId == null)
             {
