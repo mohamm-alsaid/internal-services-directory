@@ -40,16 +40,16 @@ if len(pdf_links) > 0:
             # program execution
             a.close()
             os.remove("input" + str(pdf_num) + ".pdf")
-            print("Invalid PDF file downloaded from, " + pdf_link + ", exiting...")
-            time.sleep(1)
+            print("Invalid PDF file downloaded from, " + pdf_link)
+            os.system('pause')
             sys.exit(-2)
         except ValueError:
-            print("Invalid url, " + pdf_link + ", exiting...")
-            time.sleep(1)
+            print("Invalid url, " + pdf_link)
+            os.system('pause')
             sys.exit(-3)
         except (HTTPError, URLError):
-            print("HTTP Error 404: Given Url, " + pdf_link + ", not found, exiting...")
-            time.sleep(1)
+            print("HTTP Error 404: Given Url, " + pdf_link + ", not found")
+            os.system('pause')
             sys.exit(-4)
         else:
             a.close()
@@ -62,6 +62,6 @@ if len(pdf_links) > 0:
 
     read_into_database.read_to_database(output_files)
 else:
-    print("No links entered, exiting...")
-    time.sleep(1)
+    print("No links entered")
+    os.system('pause')
     sys.exit(-6)
