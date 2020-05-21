@@ -227,7 +227,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestPostServiceWithExistingOneToOneEntries()
+        public void TestPostServiceOneToOneWithExistingItems()
         {
             var connection = new SqliteConnection("Datasource=:memory:");
             connection.Open();
@@ -278,6 +278,70 @@ namespace UnitTests
                     Assert.AreEqual(context.Department.ToList().Count(), 1);
                     Assert.AreEqual(context.Division.ToList().Count(), 1);
                     Assert.AreEqual(context.Contact.ToList().Count(), 1);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPostServiceManyToManyWithExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {                   
+                    context.Database.EnsureCreated();
+
+                    //Create a community and insert
+                    Community c = new Community { CommunityName = "community_indb", CommunityDescription = "a community" };
+                    context.Community.Add(c);
+                    context.SaveChanges();
+
+                    //Create a language and insert
+                    Language lang = new Language { LanguageName = "esperanto" };
+                    context.Language.Add(lang);
+                    context.SaveChanges();
+
+                    //Create a location and insert
+                    LocationType loctype = new LocationType { LocationTypeName = "location_type" };
+                    Location loc = new Location { LocationName = "location_one", LocationType = loctype};
+                    context.LocationType.Add(loctype);
+                    context.SaveChanges();
+                    loc.LocationTypeId = loctype.LocationTypeId;
+                    context.Location.Add(loc);
+                    context.SaveChanges();
+                    
+                    //Create a service and give it the many-to-many relationships
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 1);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 1);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 1);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 1);
                 }
             }
             finally
