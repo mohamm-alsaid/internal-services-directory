@@ -1,5 +1,9 @@
 # Multco API
 
+## What is it?
+
+This API allows Multnomah County access to all of their services in a easy to use SQL database, allows parsing of their service offers in PDFs, and easy querying and updating through a multitude of REST endpoints
+
 ## How to use
 
 ### Required software
