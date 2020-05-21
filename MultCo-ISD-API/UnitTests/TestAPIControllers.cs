@@ -227,6 +227,66 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TestPostServiceWithExistingOneToOneEntries()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    // Create a contact and insert into DB
+                    Contact c = new Contact { ContactName = "contact1", EmailAddress = "contact1@email.com" };
+                    context.Contact.Add(c);
+                    context.SaveChanges();
+
+                    // Create a department and insert into DB
+                    Department dep = new Department { DepartmentCode = 1117, DepartmentName = "department1" };
+                    context.Department.Add(dep);
+                    context.SaveChanges();
+
+                    // Create a division and insert into DB
+                    Division div = new Division { DivisionCode = 1117, DivisionName = "division1" };
+                    context.Division.Add(div);
+                    context.SaveChanges();
+
+                    // Create a program and insert into DB
+                    Program p = new Program { SponsorName = "sponsor1", ProgramOfferNumber = "1234" };
+                    context.Program.Add(p);
+                    context.SaveChanges();
+
+                    // Create a service and give it one-to-one relations to existing items
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.ProgramDTO = p.ToProgramV1DTO();
+                    sDTO.DepartmentDTO = dep.ToDepartmentV1DTO();
+                    sDTO.DivisionDTO = div.ToDivisionV1DTO();
+                    sDTO.ContactDTO = c.ToContactV1DTO();
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Program.ToList().Count(), 1);
+                    Assert.AreEqual(context.Department.ToList().Count(), 1);
+                    Assert.AreEqual(context.Division.ToList().Count(), 1);
+                    Assert.AreEqual(context.Contact.ToList().Count(), 1);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
         public void TestPutService()
         {
             var connection = new SqliteConnection("Datasource=:memory:");

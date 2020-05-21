@@ -14,7 +14,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
 		Task<Service> GetServiceByIdAsync(int id);
 		//currently nullable because relational table ids that aren't the primary key are nullable
-    Task<List<Service>> GetServicesFromIdList(List<int> ids);
+        Task<List<Service>> GetServicesFromIdList(List<int> ids);
 		Task<List<Service>> GetServicesFromIdListPaginated(List<int> ids, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromProgramId(int ids);
 		Task<List<Service>> GetServicesByName(string name, int pageSize, int pageNum);
