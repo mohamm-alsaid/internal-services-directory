@@ -1,6 +1,7 @@
 ﻿using MultCo_ISD_API.Models;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,8 +17,8 @@ namespace MultCo_ISD_API.V1.DTO
             LanguageDTOs = new List<LanguageV1DTO>();
             LocationDTOs = new List<LocationV1DTO>();
         }
-        // To hide this from swagger (ignores obsolete attributes)
-        [Obsolete]
+        // To hide this from swagger
+        [JsonIgnore]
         public int ServiceId { get; set; }
         public Nullable<int> ProgramId { get; set; }
         public Nullable<int> DepartmentId { get; set; }
