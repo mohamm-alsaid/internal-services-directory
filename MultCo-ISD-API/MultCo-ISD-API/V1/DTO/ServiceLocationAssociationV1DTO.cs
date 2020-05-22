@@ -8,7 +8,7 @@ namespace MultCo_ISD_API.V1.DTO
     public class ServiceLocationAssociationV1DTO
     {
         public int ServiceLocationAssociation { get; set; }
-        public Nullable<int> ServiceId { get; set; }
-        public Nullable<int> LocationId { get; set; }
+        public int ServiceId { get; set; }
+        public int LocationId { get; set; }
     }
 }

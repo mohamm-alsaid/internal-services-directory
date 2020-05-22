@@ -63,7 +63,7 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     for(int i = 0; i < 100; i++)
                     {
-                        context.Service.Add(new Service());
+                        context.Service.Add(new Service { Active = true });
                     }
                     context.SaveChanges();
 
@@ -112,7 +112,7 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     for (int i = 0; i < 100; i++)
                     {
-                        context.Service.Add(new Service());
+                        context.Service.Add(new Service { Active = true });
                     }
                     context.SaveChanges();
 
@@ -170,9 +170,9 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
+                    context.Service.Add(new Service { Active = true });
+                    context.Service.Add(new Service { Active = true });
+                    context.Service.Add(new Service { Active = true });
                     context.SaveChanges();
 
                     ServiceController controller = new ServiceController(context);
@@ -263,39 +263,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestDeleteService()
-        {
-            var connection = new SqliteConnection("Datasource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                using (var context = new InternalServicesDirectoryV1Context(options))
-                {
-                    context.Database.EnsureCreated();
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.Service.Add(new Service());
-                    context.SaveChanges();
-
-                    var controller = new ServiceController(context);
-                    var actionResult = controller.DeleteService(2).Result;
-
-                    Assert.IsNotNull(actionResult);
-
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
-        [TestMethod]
         public void TestRelationalTables()
         {
             var connection = new SqliteConnection("Datasource=:memory:");
@@ -308,7 +275,7 @@ namespace UnitTests
                 using (var context = new InternalServicesDirectoryV1Context(options))
                 {
                     context.Database.EnsureCreated();
-                    Service serv = new Service();
+                    Service serv = new Service { Active = true };
                     serv.ServiceName = "service number one";
                     context.Service.Add(serv);
                     context.SaveChanges();
@@ -355,11 +322,11 @@ namespace UnitTests
                     context.Database.EnsureCreated();
 
                     //create a service
-                    Service serv1 = new Service();
+                    Service serv1 = new Service { Active = true };
                     context.Service.Add(serv1);
                     context.SaveChanges();
 
-                    Service serv2 = new Service();
+                    Service serv2 = new Service { Active = true };
                     context.Service.Add(serv2);
 
                     //create some communities
@@ -423,11 +390,10 @@ namespace UnitTests
                     context.Database.EnsureCreated();
 
                     //create a service
-                    Service serv1 = new Service();
+                    Service serv1 = new Service { Active = true };
                     context.Service.Add(serv1);
                     context.SaveChanges();
-
-                    Service serv2 = new Service();
+                    Service serv2 = new Service { Active = true };
                     context.Service.Add(serv2);
 
                     //create some communities
@@ -495,10 +461,13 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     Service serv1 = new Service();
                     serv1.ServiceId = 1;
+                    serv1.Active = true;
                     Service serv2 = new Service();
                     serv2.ServiceId = 2;
+                    serv2.Active = true;
                     Service serv3 = new Service();
                     serv3.ServiceId = 3;
+                    serv3.Active = true;
                     context.Service.Add(serv1);
                     context.Service.Add(serv2);
                     context.Service.Add(serv3);
@@ -600,10 +569,13 @@ namespace UnitTests
                     context.Database.EnsureCreated();
                     Service serv1 = new Service();
                     serv1.ServiceId = 1;
+                    serv1.Active = true;
                     Service serv2 = new Service();
                     serv2.ServiceId = 2;
+                    serv2.Active = true;
                     Service serv3 = new Service();
                     serv3.ServiceId = 3;
+                    serv3.Active = true;
                     context.Service.Add(serv1);
                     context.Service.Add(serv2);
                     context.Service.Add(serv3);
@@ -718,11 +690,11 @@ namespace UnitTests
                     context.Location.Add(l3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1 };
-                    Service s2 = new Service { ServiceId = 2 };
-                    Service s3 = new Service { ServiceId = 3 };
-                    Service s4 = new Service { ServiceId = 4 };
-                    Service s5 = new Service { ServiceId = 5 };
+                    Service s1 = new Service { ServiceId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, Active = true };
+                    Service s5 = new Service { ServiceId = 5, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -810,11 +782,11 @@ namespace UnitTests
                     context.Location.Add(l3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1 };
-                    Service s2 = new Service { ServiceId = 2 };
-                    Service s3 = new Service { ServiceId = 3 };
-                    Service s4 = new Service { ServiceId = 4 };
-                    Service s5 = new Service { ServiceId = 5 };
+                    Service s1 = new Service { ServiceId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, Active = true };
+                    Service s5 = new Service { ServiceId = 5, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -888,12 +860,12 @@ namespace UnitTests
                     context.Program.Add(p3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
-                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
-                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
-                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
-                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
-                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2, Active = true };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3, Active = true };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -943,12 +915,12 @@ namespace UnitTests
                     context.Program.Add(p3);
                     context.SaveChanges();
 
-                    Service s1 = new Service { ServiceId = 1, ProgramId = 1 };
-                    Service s2 = new Service { ServiceId = 2, ProgramId = 2 };
-                    Service s3 = new Service { ServiceId = 3, ProgramId = 3 };
-                    Service s4 = new Service { ServiceId = 4, ProgramId = 2 };
-                    Service s5 = new Service { ServiceId = 5, ProgramId = 3 };
-                    Service s6 = new Service { ServiceId = 6, ProgramId = 3 };
+                    Service s1 = new Service { ServiceId = 1, ProgramId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, ProgramId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, ProgramId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, ProgramId = 2, Active = true };
+                    Service s5 = new Service { ServiceId = 5, ProgramId = 3, Active = true };
+                    Service s6 = new Service { ServiceId = 6, ProgramId = 3, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1002,11 +974,11 @@ namespace UnitTests
                     context.Department.Add(dep2);
                     context.Department.Add(dep3);
 
-                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
-                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
-                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
-                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
-                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1081,11 +1053,11 @@ namespace UnitTests
                     context.Department.Add(dep2);
                     context.Department.Add(dep3);
 
-                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1 };
-                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2 };
-                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3 };
-                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3 };
-                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1 };
+                    Service s1 = new Service { ServiceId = 1, DepartmentId = 1, DivisionId = 1, Active = true };
+                    Service s2 = new Service { ServiceId = 2, DepartmentId = 2, DivisionId = 2, Active = true };
+                    Service s3 = new Service { ServiceId = 3, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s4 = new Service { ServiceId = 4, DepartmentId = 3, DivisionId = 3, Active = true };
+                    Service s5 = new Service { ServiceId = 5, DepartmentId = 2, DivisionId = 1, Active = true };
                     context.Service.Add(s1);
                     context.Service.Add(s2);
                     context.Service.Add(s3);
@@ -1117,6 +1089,126 @@ namespace UnitTests
                     Assert.IsNotNull(badRequestResult);
                     Assert.AreEqual(400, badRequestResult.StatusCode);
                     Assert.AreEqual("No input given.", badRequestResult.Value);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByName()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service s1 = new Service { ServiceName = "panda adoption service", Active = true };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service", Active = true };
+                    Service s3 = new Service { ServiceName = "public health service", Active = true };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    for (int i = 0; i < 27; i++)
+                    {
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i), Active = true };
+                        context.Service.Add(s);
+                    }
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Name("pan");
+                    var actionResult = output.Result;
+                    var result = actionResult as OkObjectResult;
+                    var services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(2, services.Count());
+
+                    output = controller.Name("a", 20, 1);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(10, services.Count());
+
+                    //add some services that are expired
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Service s = new Service { ServiceName = String.Format("loop iteration {0}", i + 30), Active = false, ExpirationDate = DateTime.Now + TimeSpan.FromDays(1) };
+                    }
+
+                    //verify that they DON'T show up in the search
+                    output = controller.Name("a", 20, 1);
+                    actionResult = output.Result;
+                    result = actionResult as OkObjectResult;
+                    services = result.Value as IEnumerable<ServiceV1DTO>;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(200, result.StatusCode);
+                    Assert.IsNotNull(services);
+                    Assert.AreEqual(10, services.Count());
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestGetByNameNotFound()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    Service s1 = new Service { ServiceName = "panda adoption service", Active = true };
+                    Service s2 = new Service { ServiceName = "pangalactic gargle blaster service", Active = true };
+                    Service s3 = new Service { ServiceName = "public health service", Active = true };
+                    context.Service.Add(s1);
+                    context.Service.Add(s2);
+                    context.Service.Add(s3);
+                    context.SaveChanges();
+
+                    var controller = new ServiceController(context);
+                    var output = controller.Name("glsadfngksdfjngksjd");
+                    var actionResult = output.Result;
+                    var result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with search query.", result.Value);
+
+                    output = controller.Name("a", 20, 4);
+                    actionResult = output.Result;
+                    result = actionResult as NotFoundObjectResult;
+
+                    Assert.IsNotNull(result);
+                    Assert.AreEqual(404, result.StatusCode);
+                    Assert.AreEqual("No services found with search query.", result.Value);
                 }
             }
             finally
