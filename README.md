@@ -1,5 +1,15 @@
 # Multco API
 
+## Authorization
+
+Developers may turn authorization on/off by performing the following steps in Visual Studio:
+
+-   Go to  **project**  >  **properties**
+-   Select desired configuration (e.g. Debug/Release)
+-   In the "Conditional compilation symbols" field, define a variable  `AUTH`
+-   Make sure to save the changes
+-   Build project
+
 ## What is it?
 
 This API allows Multnomah County access to all of their services in a easy to use SQL database, allows parsing of their service offers in PDFs, and easy querying and updating through a multitude of REST endpoints
