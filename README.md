@@ -54,3 +54,8 @@ This API allows Multnomah County access to all of their services in a easy to us
 ### Viewing the database
 1. From within SQL Server Management Studio, expand InternalServicesDirectoryV1 > Tables
 2. Right click on a table and click "Select top 1000 rows" to view the data in the table
+
+### Launching Swagger to view endpoints
+1. Launch the Multco-ISD-API.sln in the Multco-ISD-API folder
+2. Click the green arrow at the top of visual studio that says ISS express
+3. Within the website your browser lauches upon hitting ISS express, you can now play around and view endpoints
