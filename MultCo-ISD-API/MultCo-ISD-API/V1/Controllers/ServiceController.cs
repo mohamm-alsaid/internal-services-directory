@@ -77,14 +77,14 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
-        //[SwaggerOperation(Summary = "Get service by Id", Description = "Get a service id, get all information associated with it", Tags = new[] { "Reader" })]
         /// <summary>
-        /// Returns a services with matching Id
+        /// Get a particular service by service ID.
         /// </summary>
         /// <remarks>
-        /// Get a service id, get all information associated with it
+        /// Returns the service with matching id, get all information associated with it
         /// </remarks>
         [HttpGet("{id}")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -109,9 +109,18 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all services by language 
+        /// </summary>
+        /// <remarks>
+        /// Returns all services with a matching language 
+        /// </remarks>
+        /// <param name="lang"></param>
+        /// <returns></returns>
         //GET: api/Services/lang?="language"
         [HttpGet]
         [Route("[action]/{lang}")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -158,9 +167,15 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
 
+        /// <summary>
+        /// Get all services with a community name
+        /// </summary>
+        /// <param name="community"></param>
+        /// <returns></returns>
         //GET: api/Services/Community?="community"
         [HttpGet]
         [Route("[action]/{comm}")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -209,9 +224,15 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all services with a building Id
+        /// </summary>
+        /// <param name="buildingId"></param>
+        /// <returns></returns>
         // GET: api/Service/BuildingId
         [HttpGet]
         [Route("[action]/{buildingId}")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -253,9 +274,15 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
 
+        /// <summary>
+        /// Get all services with a program Id
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
         //GET: api/Services/Program?="programId"
         [HttpGet]
         [Route("[action]/{programId}")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -279,15 +306,15 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
         /// <summary>
-        /// Get a service by department id or division
+        /// Get all services with a division and or department Id
         /// </summary>
         /// <remarks>
-        /// Get a service by department id and/or division id
+        /// paginated
         /// </remarks>
         //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
         [HttpGet]
         [Route("[action]/{depId},{divId}")]
-        [SwaggerOperation(Tags = new[] { "Writer" })]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -331,10 +358,10 @@ namespace MultCo_ISD_API.V1.Controllers
         }
 
         /// <summary>
-        /// Get a service by name?
+        /// Get all services with a matching name ( even if the name is a substring of another )
         /// </summary>
         /// <remarks>
-        /// searches for a service by name
+        /// matching the regex: .*a_string.* or SQL: like %a_string%
         /// </remarks>
         //GET: api/Services/Name
         [HttpGet]
@@ -361,7 +388,7 @@ namespace MultCo_ISD_API.V1.Controllers
         }
 
         /// <summary>
-        /// Add/update a service
+        /// Update a service with a certain ID
         /// </summary>
         /// <remarks>
         /// Add a service if it doesn't already exist and update a service if it exist
@@ -403,7 +430,7 @@ namespace MultCo_ISD_API.V1.Controllers
         }
 
         /// <summary>
-        /// Add a service
+        /// Post a new service
         /// </summary>
         /// <remarks>
         /// Adds a service
@@ -441,10 +468,10 @@ namespace MultCo_ISD_API.V1.Controllers
         }
 
         /// <summary>
-        /// remove a service
+        /// delete an existing service
         /// </summary>
         /// <remarks>
-        /// removes a service
+        /// removes an existing service
         /// </remarks>
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
