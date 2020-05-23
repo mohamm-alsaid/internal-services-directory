@@ -434,7 +434,7 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				return;
 			}
 			var contact = await _context.Contact
-				.Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress)
+				.Where(c => c.EmailAddress == serviceDTO.ContactDTO.EmailAddress && c.ContactName == serviceDTO.ContactDTO.ContactName && serviceDTO.ContactDTO.PhoneNumber == c.PhoneNumber)
 				.FirstOrDefaultAsync();
 			if (contact != null)
 			{
