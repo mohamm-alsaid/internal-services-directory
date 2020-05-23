@@ -287,6 +287,22 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TestPostServiceOneToOneNonExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
         public void TestPostServiceManyToManyWithExistingItems()
         {
             var connection = new SqliteConnection("Datasource=:memory:");
@@ -348,6 +364,12 @@ namespace UnitTests
             {
                 connection.Close();
             }
+        }
+
+        [TestMethod]
+        public void TesetPostServiceManyToManyNonExistingItems()
+        {
+
         }
 
         [TestMethod]
