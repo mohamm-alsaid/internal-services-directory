@@ -36,8 +36,13 @@ namespace MultCo_ISD_API.V1.Controllers
             _context = context;
             _serviceContextManager = new ServiceContextManager(_context);
         }
-        // Annotations
-        [SwaggerOperation(Summary = "Get -- Paginated", Description = "Get services in a paginated fasahion", Tags = new[] { "Reader" } )]
+
+        /// <summary>
+        /// Returns a services with matching Id
+        /// </summary>
+        /// <remarks>
+        /// Get services in a paginated fasahion
+        /// </remarks>
         // GET: api/Services
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
@@ -71,9 +76,14 @@ namespace MultCo_ISD_API.V1.Controllers
                 throw e;
             }
         }
-        [SwaggerOperation(Summary = "Get service by Id", Description = "Get a service id, get all information associated with it", Tags = new[] { "Reader" })]
 
-        // GET: api/Services/5
+        //[SwaggerOperation(Summary = "Get service by Id", Description = "Get a service id, get all information associated with it", Tags = new[] { "Reader" })]
+        /// <summary>
+        /// Returns a services with matching Id
+        /// </summary>
+        /// <remarks>
+        /// Get a service id, get all information associated with it
+        /// </remarks>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
@@ -268,10 +278,16 @@ namespace MultCo_ISD_API.V1.Controllers
 
             return Ok(serviceDTOs);
         }
-        [SwaggerOperation(Summary = "Get a service by department id or division", Description = "Get a service by department id and/or division id", Tags = new[] { "Writer" })]
+        /// <summary>
+        /// Get a service by department id or division
+        /// </summary>
+        /// <remarks>
+        /// Get a service by department id and/or division id
+        /// </remarks>
         //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
         [HttpGet]
         [Route("[action]/{depId},{divId}")]
+        [SwaggerOperation(Tags = new[] { "Writer" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
 #if AUTH
@@ -313,10 +329,17 @@ namespace MultCo_ISD_API.V1.Controllers
 
             return Ok(serviceDTOs);
         }
-        [SwaggerOperation(Summary = "Get a service by name?", Description = "searches for a service by name", Tags = new[] { "Reader" })]
+
+        /// <summary>
+        /// Get a service by name?
+        /// </summary>
+        /// <remarks>
+        /// searches for a service by name
+        /// </remarks>
         //GET: api/Services/Name
         [HttpGet]
         [Route("[action]")]
+        [SwaggerOperation(Tags = new[] { "Reader" })]
         [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Name([FromQuery] string name, int pageSize = 20, int pageNum = 0)
@@ -337,7 +360,12 @@ namespace MultCo_ISD_API.V1.Controllers
             return Ok(serviceDTOs);
         }
 
-        [SwaggerOperation(Summary = "Add/update a service", Description = "Add a service if it doesn't already exist and update a service if it exist", Tags = new[] { "Writer" })]
+        /// <summary>
+        /// Add/update a service
+        /// </summary>
+        /// <remarks>
+        /// Add a service if it doesn't already exist and update a service if it exist
+        /// </remarks>
         // PUT: api/Services/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -345,6 +373,7 @@ namespace MultCo_ISD_API.V1.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [SwaggerOperation(Tags = new[] { "Writer" })]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
@@ -373,13 +402,19 @@ namespace MultCo_ISD_API.V1.Controllers
             }
         }
 
-        [SwaggerOperation(Summary = "Add a service", Description = "Adds a service", Tags = new[] { "Writer" })]
+        /// <summary>
+        /// Add a service
+        /// </summary>
+        /// <remarks>
+        /// Adds a service
+        /// </remarks>
         // POST: api/Services
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(409)]
+        [SwaggerOperation(Tags = new[] { "Writer" })]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
@@ -405,11 +440,17 @@ namespace MultCo_ISD_API.V1.Controllers
 
         }
 
-        [SwaggerOperation(Summary = "remove a service", Description = "removes a service", Tags = new[] { "Writer" })]
+        /// <summary>
+        /// remove a service
+        /// </summary>
+        /// <remarks>
+        /// removes a service
+        /// </remarks>
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+        [SwaggerOperation(Tags = new[] { "Writer" })]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
