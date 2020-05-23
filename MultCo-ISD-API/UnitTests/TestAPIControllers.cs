@@ -369,7 +369,17 @@ namespace UnitTests
         [TestMethod]
         public void TesetPostServiceManyToManyNonExistingItems()
         {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
 
+            try
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
         [TestMethod]
