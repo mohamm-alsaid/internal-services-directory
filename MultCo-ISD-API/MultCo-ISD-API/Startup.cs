@@ -55,7 +55,8 @@ namespace MultCo_ISD_API
 			services.AddTransient<IValidator<DepartmentV1DTO>, DepartmentV1DTOValidator>(); 
 			services.AddTransient<IValidator<ServiceLocationAssociationV1DTO>, ServiceLocationAssociationV1DTOValidator>(); 
 			services.AddTransient<IValidator<ServiceV1DTO>, ServiceV1DTOValidator>(); 
-			
+
+
 			services.AddSwaggerService();
 
 #if AUTH

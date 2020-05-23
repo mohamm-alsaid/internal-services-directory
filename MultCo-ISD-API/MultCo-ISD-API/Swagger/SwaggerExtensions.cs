@@ -31,6 +31,9 @@ namespace MultCo_ISD_API.Swagger
             {
                 c.EnableAnnotations();
                 c.SwaggerDoc("V1", openApiInfoV1);
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             });
             return services;
         }
