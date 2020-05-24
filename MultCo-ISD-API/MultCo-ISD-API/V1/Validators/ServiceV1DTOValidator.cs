@@ -14,22 +14,20 @@ namespace MultCo_ISD_API.V1.Validators
 
 
             // validate:
-            RuleFor(x => x).Must(x => x.ContactId == null ^ x.ContactDTO == null)
-                .WithMessage("either ContactId or ContactDTO can be specified (not both)");
+            RuleFor(x => x).Must(x => x.ContactId == null || x.ContactDTO == null)
+                .WithMessage("either ContactId or ContactDTO must be specified (not both)");
 
-            RuleFor(x => x).Must(x => x.ProgramId == null ^ x.ProgramDTO == null)
-                .WithMessage("either ProgramId or ProgramDTO can be specified (not both)");
+            RuleFor(x => x).Must(x => x.ProgramId == null || x.ProgramDTO == null)
+                .WithMessage("either ProgramId or ProgramDTO must be specified (not both)");
 
-            RuleFor(x => x).Must(x => x.DepartmentId == null ^ x.DepartmentDTO == null)
-                .WithMessage("either DepartmentId or DepartmentDTO can be specified (not both)");
+            RuleFor(x => x).Must(x => x.DepartmentId == null || x.DepartmentDTO == null)
+                .WithMessage("either DepartmentId or DepartmentDTO must be specified (not both)");
 
-            RuleFor(x => x).Must(x => x.DivisionId == null ^ x.DivisionDTO == null)
-                .WithMessage("either DivisionId or DivisionDTO can be specified (not both)");
-
+            RuleFor(x => x).Must(x => x.DivisionId == null || x.DivisionDTO == null)
+                .WithMessage("either DivisionId or DivisionDTO must be specified (not both)");
 
             RuleFor(x => x.ProgramId)
                 .GreaterThan(0).WithMessage("program Id should start from 1");
-
 
             RuleFor(x => x.DivisionId)
                 .GreaterThan(0).WithMessage("division Id should start from 1");
