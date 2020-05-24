@@ -227,6 +227,257 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TestPostServiceOneToOneWithExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    // Create a contact and insert into DB
+                    Contact c = new Contact { ContactName = "contact1", EmailAddress = "contact1@email.com" };
+                    context.Contact.Add(c);
+                    context.SaveChanges();
+
+                    // Create a department and insert into DB
+                    Department dep = new Department { DepartmentCode = 1117, DepartmentName = "department1" };
+                    context.Department.Add(dep);
+                    context.SaveChanges();
+
+                    // Create a division and insert into DB
+                    Division div = new Division { DivisionCode = 1117, DivisionName = "division1" };
+                    context.Division.Add(div);
+                    context.SaveChanges();
+
+                    // Create a program and insert into DB
+                    Program p = new Program { SponsorName = "sponsor1", ProgramOfferNumber = "1234" };
+                    context.Program.Add(p);
+                    context.SaveChanges();
+
+                    // Create a service and give it one-to-one relations to existing items
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.ProgramDTO = p.ToProgramV1DTO();
+                    sDTO.DepartmentDTO = dep.ToDepartmentV1DTO();
+                    sDTO.DivisionDTO = div.ToDivisionV1DTO();
+                    sDTO.ContactDTO = c.ToContactV1DTO();
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Program.ToList().Count(), 1);
+                    Assert.AreEqual(context.Department.ToList().Count(), 1);
+                    Assert.AreEqual(context.Division.ToList().Count(), 1);
+                    Assert.AreEqual(context.Contact.ToList().Count(), 1);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPostServiceOneToOneNonExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    Assert.AreEqual(context.Program.ToList().Count(), 0);
+                    Assert.AreEqual(context.Department.ToList().Count(), 0);
+                    Assert.AreEqual(context.Division.ToList().Count(), 0);
+                    Assert.AreEqual(context.Contact.ToList().Count(), 0);
+
+                    Contact c = new Contact { ContactName = "contact1", EmailAddress = "contact1@email.com", PhoneNumber = "555-555-5555" };
+                    Department dep = new Department { DepartmentCode = 1117, DepartmentName = "department1" };
+                    Division div = new Division { DivisionCode = 1117, DivisionName = "division1" };
+                    Program p = new Program { SponsorName = "sponsor1", ProgramOfferNumber = "1234", OfferType = "offertype", ProgramName = "program1"};
+
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.ProgramDTO = p.ToProgramV1DTO();
+                    sDTO.DepartmentDTO = dep.ToDepartmentV1DTO();
+                    sDTO.DivisionDTO = div.ToDivisionV1DTO();
+                    sDTO.ContactDTO = c.ToContactV1DTO();
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Program.ToList().Count(), 1);
+                    Assert.AreEqual(context.Department.ToList().Count(), 1);
+                    Assert.AreEqual(context.Division.ToList().Count(), 1);
+                    Assert.AreEqual(context.Contact.ToList().Count(), 1);
+
+                    var contact = context.Contact.First();
+                    Assert.AreEqual(contact.ContactName, c.ContactName);
+                    Assert.AreEqual(contact.EmailAddress, c.EmailAddress);
+                    Assert.AreEqual(contact.PhoneNumber, c.PhoneNumber);
+
+                    var department = context.Department.First();
+                    Assert.AreEqual(department.DepartmentCode, dep.DepartmentCode);
+                    Assert.AreEqual(department.DepartmentName, dep.DepartmentName);
+
+                    var division = context.Division.First();
+                    Assert.AreEqual(division.DivisionCode, div.DivisionCode);
+                    Assert.AreEqual(division.DivisionName, div.DivisionName);
+
+                    var program = context.Program.First();
+                    Assert.AreEqual(program.SponsorName, p.SponsorName);
+                    Assert.AreEqual(program.ProgramOfferNumber, p.ProgramOfferNumber);
+                    Assert.AreEqual(program.OfferType, p.OfferType);
+                    Assert.AreEqual(program.ProgramName, p.ProgramName);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPostServiceManyToManyWithExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {                   
+                    context.Database.EnsureCreated();
+
+                    //Create a community and insert
+                    Community c = new Community { CommunityName = "community_indb", CommunityDescription = "a community" };
+                    context.Community.Add(c);
+                    context.SaveChanges();
+
+                    //Create a language and insert
+                    Language lang = new Language { LanguageName = "esperanto" };
+                    context.Language.Add(lang);
+                    context.SaveChanges();
+
+                    //Create a location and insert
+                    LocationType loctype = new LocationType { LocationTypeName = "location_type" };
+                    Location loc = new Location { LocationName = "location_one", LocationType = loctype};
+                    context.LocationType.Add(loctype);
+                    context.SaveChanges();
+                    loc.LocationTypeId = loctype.LocationTypeId;
+                    context.Location.Add(loc);
+                    context.SaveChanges();
+                    
+                    //Create a service and give it the many-to-many relationships
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 1);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 1);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 1);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 1);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 1);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TesetPostServiceManyToManyNonExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+                
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+                    
+                    Community c = new Community { CommunityName = "community_indb", CommunityDescription = "a community" };
+                    Language lang = new Language { LanguageName = "esperanto" };
+                    LocationType loctype = new LocationType { LocationTypeName = "location_type" };
+                    Location loc = new Location { LocationName = "location_one", LocationType = loctype };
+
+                    //Create a service and give it the many-to-many relationships
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+                    c = new Community { CommunityName = "community_indb_2", CommunityDescription = "another community" };
+                    lang = new Language { LanguageName = "cobol" };
+                    loctype = new LocationType { LocationTypeName = "different_location_type" };
+                    loc = new Location { LocationName = "location_two", LocationType = loctype };
+
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 2);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 2);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
         public void TestPutService()
         {
             var connection = new SqliteConnection("Datasource=:memory:");
@@ -261,6 +512,426 @@ namespace UnitTests
                 connection.Close();
             }
         }
+
+        [TestMethod]
+        public void TestPutServiceOneToOneWithExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    //BUILDING THE SERVICE
+
+                    // Create a contact and insert into DB
+                    Contact c = new Contact { ContactName = "contact1", EmailAddress = "contact1@email.com" };
+                    context.Contact.Add(c);
+                    context.SaveChanges();
+
+                    // Create a department and insert into DB
+                    Department dep = new Department { DepartmentCode = 1117, DepartmentName = "department1" };
+                    context.Department.Add(dep);
+                    context.SaveChanges();
+
+                    // Create a division and insert into DB
+                    Division div = new Division { DivisionCode = 1117, DivisionName = "division1" };
+                    context.Division.Add(div);
+                    context.SaveChanges();
+
+                    // Create a program and insert into DB
+                    Program p = new Program { SponsorName = "sponsor1", ProgramOfferNumber = "1234" };
+                    context.Program.Add(p);
+                    context.SaveChanges();
+
+                    // Create a service and give it one-to-one relations to existing items
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.ProgramDTO = p.ToProgramV1DTO();
+                    sDTO.DepartmentDTO = dep.ToDepartmentV1DTO();
+                    sDTO.DivisionDTO = div.ToDivisionV1DTO();
+                    sDTO.ContactDTO = c.ToContactV1DTO();
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    //Testing PUT
+
+                    //Test whether we can link service to existing items in DB
+                    Contact c2 = new Contact { ContactName = "contact_two", EmailAddress = "contact_two@gmail.com" };
+                    context.Contact.Add(c2);
+                    context.SaveChanges();
+
+                    // Create a department and insert into DB
+                    Department dep2 = new Department { DepartmentCode = 9999, DepartmentName = "departmenttwo" };
+                    context.Department.Add(dep2);
+                    context.SaveChanges();
+
+                    // Create a division and insert into DB
+                    Division div2 = new Division { DivisionCode = 5555, DivisionName = "divisiontwo" };
+                    context.Division.Add(div2);
+                    context.SaveChanges();
+
+                    // Create a program and insert into DB
+                    Program p2 = new Program { SponsorName = "second sponsor", ProgramOfferNumber = "8765" };
+                    context.Program.Add(p2);
+                    context.SaveChanges();
+
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    sDTO.ContactDTO = c2.ToContactV1DTO();
+                    sDTO.ContactId = null;
+                    sDTO.DepartmentDTO = dep2.ToDepartmentV1DTO();
+                    sDTO.DepartmentId = null;
+                    sDTO.DivisionDTO = div2.ToDivisionV1DTO();
+                    sDTO.DivisionId = null;
+                    sDTO.ProgramDTO = p2.ToProgramV1DTO();
+                    sDTO.ProgramId = null;
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    Assert.AreEqual(sDTO.ContactDTO.ContactId, 2);
+                    Assert.AreEqual(sDTO.DepartmentDTO.DepartmentId, 2);
+                    Assert.AreEqual(sDTO.DivisionDTO.DivisionId, 2);
+                    Assert.AreEqual(sDTO.ProgramDTO.ProgramId, 2);
+
+                    //Test whether we can create new items in DB through PUT
+
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPutServiceOneToOneNonExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    //BUILD THE SERVICE
+
+                    // Create a contact and insert into DB
+                    Contact c = new Contact { ContactName = "contact1", EmailAddress = "contact1@email.com" };
+                    context.Contact.Add(c);
+                    context.SaveChanges();
+
+                    // Create a department and insert into DB
+                    Department dep = new Department { DepartmentCode = 1117, DepartmentName = "department1" };
+                    context.Department.Add(dep);
+                    context.SaveChanges();
+
+                    // Create a division and insert into DB
+                    Division div = new Division { DivisionCode = 1117, DivisionName = "division1" };
+                    context.Division.Add(div);
+                    context.SaveChanges();
+
+                    // Create a program and insert into DB
+                    Program p = new Program { SponsorName = "sponsor1", ProgramOfferNumber = "1234" };
+                    context.Program.Add(p);
+                    context.SaveChanges();
+
+                    // Create a service and give it one-to-one relations to existing items
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.ProgramDTO = p.ToProgramV1DTO();
+                    sDTO.DepartmentDTO = dep.ToDepartmentV1DTO();
+                    sDTO.DivisionDTO = div.ToDivisionV1DTO();
+                    sDTO.ContactDTO = c.ToContactV1DTO();
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    //Testing PUT
+
+                    Contact c3 = new Contact { ContactName = "contactthree", EmailAddress = "contact_three@gmail.com" };
+                    Department dep3 = new Department { DepartmentCode = 11, DepartmentName = "d3" };
+                    Division div3 = new Division { DivisionCode = 66, DivisionName = "div3" };
+                    Program p3 = new Program { SponsorName = "third sponsor", ProgramOfferNumber = "88552" };
+
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    sDTO.ContactDTO = c3.ToContactV1DTO();
+                    sDTO.ContactId = null;
+                    sDTO.DepartmentDTO = dep3.ToDepartmentV1DTO();
+                    sDTO.DepartmentId = null;
+                    sDTO.DivisionDTO = div3.ToDivisionV1DTO();
+                    sDTO.DivisionId = null;
+                    sDTO.ProgramDTO = p3.ToProgramV1DTO();
+                    sDTO.ProgramId = null;
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    Assert.AreEqual(sDTO.ContactDTO.ContactId, 2);
+                    Assert.AreEqual(sDTO.DepartmentDTO.DepartmentId, 2);
+                    Assert.AreEqual(sDTO.DivisionDTO.DivisionId, 2);
+                    Assert.AreEqual(sDTO.ProgramDTO.ProgramId, 2);
+
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPutServiceManyToManyWithExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    //BUILDING THE SERVICE
+
+                    //Create a community and insert
+                    Community c = new Community { CommunityName = "community_indb", CommunityDescription = "a community" };
+                    context.Community.Add(c);
+                    context.SaveChanges();
+
+                    //Create a language and insert
+                    Language lang = new Language { LanguageName = "esperanto" };
+                    context.Language.Add(lang);
+                    context.SaveChanges();
+
+                    //Create a location and insert
+                    LocationType loctype = new LocationType { LocationTypeName = "location_type" };
+                    Location loc = new Location { LocationName = "location_one", LocationType = loctype };
+                    context.LocationType.Add(loctype);
+                    context.SaveChanges();
+                    loc.LocationTypeId = loctype.LocationTypeId;
+                    context.Location.Add(loc);
+                    context.SaveChanges();
+
+                    //Create a service and give it the many-to-many relationships
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    //DONE BUILDING SERVICE
+
+
+
+
+
+
+                    //Testing PUT
+
+                    //Create a community and insert
+                    Community c2 = new Community { CommunityName = "c2", CommunityDescription = "another community" };
+                    context.Community.Add(c2);
+                    context.SaveChanges();
+
+                    //Create a language and insert
+                    Language lang2 = new Language { LanguageName = "haskell" };
+                    context.Language.Add(lang2);
+                    context.SaveChanges();
+
+                    //Create a location and insert
+                    LocationType loctype2 = new LocationType { LocationTypeName = "another location type" };
+                    Location loc2 = new Location { LocationName = "LOCATION2 ", LocationType = loctype2 };
+                    context.LocationType.Add(loctype2);
+                    context.SaveChanges();
+                    loc2.LocationTypeId = loctype2.LocationTypeId;
+                    context.Location.Add(loc2);
+                    context.SaveChanges();
+
+
+                    //Adding entries to each relation
+                    actionResult = controller.GetService(1).Result;
+                    var result = actionResult as OkObjectResult;
+                    sDTO = result.Value as ServiceV1DTO;
+                    sDTO.CommunityDTOs.Add(c2.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang2.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc2.ToLocationV1DTO());
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 2);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 2);
+
+                    //Removing entries from each relation
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    sDTO.CommunityDTOs = new List<CommunityV1DTO>();
+                    sDTO.LanguageDTOs = new List<LanguageV1DTO>();
+                    sDTO.LocationDTOs = new List<LocationV1DTO>();
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 0);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 0);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 0);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 2);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestPutServiceManyToManyNonExistingItems()
+        {
+            var connection = new SqliteConnection("Datasource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                using (var context = new InternalServicesDirectoryV1Context(options))
+                {
+                    context.Database.EnsureCreated();
+
+                    //BUILDING THE SERVICE
+
+                    //Create a community and insert
+                    Community c = new Community { CommunityName = "community_indb", CommunityDescription = "a community" };
+                    context.Community.Add(c);
+                    context.SaveChanges();
+
+                    //Create a language and insert
+                    Language lang = new Language { LanguageName = "esperanto" };
+                    context.Language.Add(lang);
+                    context.SaveChanges();
+
+                    //Create a location and insert
+                    LocationType loctype = new LocationType { LocationTypeName = "location_type" };
+                    Location loc = new Location { LocationName = "location_one", LocationType = loctype };
+                    context.LocationType.Add(loctype);
+                    context.SaveChanges();
+                    loc.LocationTypeId = loctype.LocationTypeId;
+                    context.Location.Add(loc);
+                    context.SaveChanges();
+
+                    //Create a service and give it the many-to-many relationships
+                    ServiceV1DTO sDTO = new Service().ToServiceV1DTO();
+                    sDTO.Active = true;
+                    sDTO.CommunityDTOs.Add(c.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+                    ServiceController controller = new ServiceController(context);
+                    var actionResult = controller.PostService(sDTO).Result;
+                    context.SaveChanges();
+
+                    //DONE BUILDING SERVICE
+
+
+
+
+
+
+                    //Testing PUT
+
+                    Community c2 = new Community { CommunityName = "c2", CommunityDescription = "another community" };
+                    Language lang2 = new Language { LanguageName = "haskell" };
+                    LocationType loctype2 = new LocationType { LocationTypeName = "another location type" };
+                    Location loc2 = new Location { LocationName = "LOCATION2 ", LocationType = loctype2 };
+
+
+
+                    //Adding entries to each relation
+                    actionResult = controller.GetService(1).Result;
+                    var result = actionResult as OkObjectResult;
+                    sDTO = result.Value as ServiceV1DTO;
+                    sDTO.CommunityDTOs.Add(c2.ToCommunityV1DTO());
+                    sDTO.LanguageDTOs.Add(lang2.ToLanguageV1DTO());
+                    sDTO.LocationDTOs.Add(loc2.ToLocationV1DTO());
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 2);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 2);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 2);
+
+                    //Removing entries from each relation
+                    sDTO = context.Service.First().ToServiceV1DTO();
+                    sDTO.CommunityDTOs = new List<CommunityV1DTO>();
+                    sDTO.LanguageDTOs = new List<LanguageV1DTO>();
+                    sDTO.LocationDTOs = new List<LocationV1DTO>();
+
+                    actionResult = controller.PutService(sDTO.ServiceId, sDTO).Result;
+                    context.SaveChanges();
+
+                    Assert.AreEqual(context.Community.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceCommunityAssociation.ToList().Count(), 0);
+
+                    Assert.AreEqual(context.Language.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLanguageAssociation.ToList().Count(), 0);
+
+                    Assert.AreEqual(context.Location.ToList().Count(), 2);
+                    Assert.AreEqual(context.ServiceLocationAssociation.ToList().Count(), 0);
+                    Assert.AreEqual(context.LocationType.ToList().Count(), 2);
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
 
         [TestMethod]
         public void TestRelationalTables()
