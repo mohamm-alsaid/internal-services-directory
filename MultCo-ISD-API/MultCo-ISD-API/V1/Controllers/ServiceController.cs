@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,103 +12,104 @@ using MultCo_ISD_API.V1.DTO;
 using MultCo_ISD_API.V1.ControllerContexts;
 using MultCo_ISD_API.Validation;
 using Swashbuckle.AspNetCore.Annotations;
-
+using System.ComponentModel.DataAnnotations;
+﻿
 namespace MultCo_ISD_API.V1.Controllers
 {
 #if AUTH
     [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme)]
 #endif
 
-    [Validate]
-    [Route("services/api/v1/[controller]")]
-    [ApiController]
-    public class ServiceController : ControllerBase
-    {
-        private const string DefaultConnectionStringName = "DefaultConnection";
+	[Validate]
+	[Route("services/api/v1/[controller]")]
+	[ApiController]
+	public class ServiceController : ControllerBase
+	{
+		private const string DefaultConnectionStringName = "DefaultConnection";
 
-        private readonly InternalServicesDirectoryV1Context _context;
-        private readonly IServiceContextManager _serviceContextManager;
+		private readonly InternalServicesDirectoryV1Context _context;
+		private readonly IServiceContextManager _serviceContextManager;
 
-        public ServiceController(InternalServicesDirectoryV1Context context)
-        {
-            // TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
-            // and pass 'context' directly to the 'ServiceContext' constructor
-            _context = context;
-            _serviceContextManager = new ServiceContextManager(_context);
-        }
-
+		public ServiceController(InternalServicesDirectoryV1Context context)
+		{
+			// TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
+			// and pass 'context' directly to the 'ServiceContext' constructor
+			_context = context;
+			_serviceContextManager = new ServiceContextManager(_context);
+		}
         /// <summary>
         /// Returns a services with matching Id
         /// </summary>
         /// <remarks>
         /// Get services in a paginated fasahion
         /// </remarks>
-        // GET: api/Services
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		// GET: api/Services
+		[HttpGet]
+		[ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> GetServices(int pageSize = 20, int pageIndex = 0)
-        {
-            try
-            {
-                if(pageSize < 0 || pageIndex < 0)
-                {
-                    return NotFound("Invalid page index or page size.");
-                }
-                var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
-                if (services == null || services.Count == 0)
-                {
-                    return NotFound("No services were found with the given page information.");
-                }
+		public async Task<IActionResult> GetServices(int pageSize = 20, int pageIndex = 0)
+		{
+			try
+			{
+				if (pageSize < 0 || pageIndex < 0)
+				{
+					return NotFound("Invalid page index or page size.");
+				}
+				var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
+				if (services == null || services.Count == 0)
+				{
+					return NotFound("No services were found with the given page information.");
+				}
 
-                var serviceDTOs = new List<ServiceV1DTO>();
-                foreach (var service in services)
-                {
-                    serviceDTOs.Add(await populateService(service));
-                }
-                return Ok(serviceDTOs);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
+				var serviceDTOs = new List<ServiceV1DTO>();
+				foreach (var service in services)
+				{
+					serviceDTOs.Add(await populateService(service));
+				}
+				return Ok(serviceDTOs);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
         /// <summary>
         /// Get a particular service by service ID.
         /// </summary>
         /// <remarks>
         /// Returns the service with matching id, get all information associated with it
         /// </remarks>
-        [HttpGet("{id}")]
         [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+
+		// GET: api/Services/5
+		[HttpGet("{id}")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> GetService(int id)
-        {
-            try
-            {
-                var service = await _serviceContextManager.GetServiceByIdAsync(id);
+		public async Task<IActionResult> GetService(int id)
+		{
+			try
+			{
+				var service = await _serviceContextManager.GetServiceByIdAsync(id);
 
-                if (service == null)
-                {
-                    return NotFound();
-                }
+				if (service == null)
+				{
+					return NotFound();
+				}
 
-                return Ok(await populateService(service));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
+				return Ok(await populateService(service));
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+    
         /// <summary>
         /// Get all services by language 
         /// </summary>
@@ -117,442 +118,413 @@ namespace MultCo_ISD_API.V1.Controllers
         /// </remarks>
         /// <param name="lang"></param>
         /// <returns></returns>
-        //GET: api/Services/lang?="language"
-        [HttpGet]
-        [Route("[action]/{lang}")]
         [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		//GET: api/Services/lang?="language"
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Language(string lang)
-        {
-            //massage query string into a list
-            var langNames = lang.Split(',');
-            var langNamesList = new List<string>(langNames);
-            var langs = await _serviceContextManager.GetLanguagesByNameListAsync(langNamesList);
+		public async Task<IActionResult> Language([FromQuery][Required] string lang, int pageSize = 20, int pageNum = 0)
+		{
+			//massage query string into a list
+			var langNames = lang.Split(',');
+			var langNamesList = new List<string>(langNames);
+			var langs = await _serviceContextManager.GetLanguagesByNameListAsync(langNamesList);
 
-            if (langs.Count() == 0)
-            {
-                return NotFound("No languages from given names found.");
-            }
+			if (langs.Count() == 0)
+			{
+				return NotFound("No languages from given names found.");
+			}
 
-            var langIds = new List<int?>();
-            foreach (var language in langs)
-            {
-                langIds.Add(language.LanguageId);
-            }
+			var langIds = new List<int>();
+			foreach (var language in langs)
+			{
+				langIds.Add(language.LanguageId);
+			}
 
-            var slas = await _serviceContextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
+			var slas = await _serviceContextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
 
-            if (slas.Count() == 0)
-            {
-                return NotFound("No relationships found for given language(s).");
-            }
+			if (slas.Count() == 0)
+			{
+				return NotFound("No relationships found for given language(s).");
+			}
 
-            var serviceIds = new List<int?>();
-            foreach(var sla in slas)
-            {
-                serviceIds.Add(sla.ServiceId);
-            }
+			var serviceIds = new List<int>();
+			foreach (var sla in slas)
+			{
+				serviceIds.Add(sla.ServiceId);
+			}
 
-            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
-            var serviceDTOs = new List<ServiceV1DTO>();
-            foreach(var service in services)
-            {
-                serviceDTOs.Add(await populateService(service));
-            }
+			var services = await _serviceContextManager.GetServicesFromIdListPaginated(serviceIds, pageSize, pageNum);
+			var serviceDTOs = new List<ServiceV1DTO>();
+			foreach (var service in services)
+			{
+				serviceDTOs.Add(await populateService(service));
+			}
 
-            return Ok(serviceDTOs);
-        }
-
+			return Ok(serviceDTOs);
+		}
+        
         /// <summary>
         /// Get all services with a community name
         /// </summary>
         /// <param name="community"></param>
         /// <returns></returns>
-        //GET: api/Services/Community?="community"
-        [HttpGet]
-        [Route("[action]/{comm}")]
         [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		//GET: api/Services/Community?="community"
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Community(string community)
-        {
-            try
-            {
-                //this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
-                var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
+		public async Task<IActionResult> Community([FromQuery][Required] string community)
+		{
+			try
+			{
+				//this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
+				var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
 
-                if (comm == null)
-                {
-                    return NotFound("Community given does not exist.");
-                }
+				if (comm == null)
+				{
+					return NotFound("Community given does not exist.");
+				}
 
-                //fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
-                var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
+				//fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
+				var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
 
-                if (scas.Count() == 0)
-                {
-                    return NotFound("Community has no relationships.");
-                }
+				if (scas.Count() == 0)
+				{
+					return NotFound("Community has no relationships.");
+				}
 
-                var ids = new List<int?>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
-                foreach (var sca in scas)
-                {
-                    ids.Add(sca.ServiceId);
-                }
+				var ids = new List<int>(); //nullable for now, schema has these ids nullable at the moment, will probably fix this in next sprint
+				foreach (var sca in scas)
+				{
+					ids.Add(sca.ServiceId);
+				}
 
-                //fetch only the services with the service ids we just got from the SCAs, then convert to DTO
-                var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
+				//fetch only the services with the service ids we just got from the SCAs, then convert to DTO
+				var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
 
-                var serviceDTOs = new List<ServiceV1DTO>();
-                foreach (var service in services)
-                {
-                    serviceDTOs.Add(await populateService(service));
-                }
+				var serviceDTOs = new List<ServiceV1DTO>();
+				foreach (var service in services)
+				{
+					serviceDTOs.Add(await populateService(service));
+				}
 
-                return Ok(serviceDTOs);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+				return Ok(serviceDTOs);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+		/// <summary>
+		/// Get all services with a building Id
+		/// </summary>
+		/// <param name="buildingId"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 
-        /// <summary>
-        /// Get all services with a building Id
-        /// </summary>
-        /// <param name="buildingId"></param>
-        /// <returns></returns>
-        // GET: api/Service/BuildingId
-        [HttpGet]
-        [Route("[action]/{buildingId}")]
-        [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		// GET: api/Service/BuildingId
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> BuildingId(string buildingId)
-        {
-            var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
-            if (locations.Count() == 0)
-            {
-                return NotFound("No locations found from given building id.");
-            }
+		public async Task<IActionResult> BuildingId([FromQuery][Required] string buildingId)
+		{
+			var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
+			if (locations.Count() == 0)
+			{
+				return NotFound("No locations found from given building id.");
+			}
 
-            var locationIds = new List<int?>();
-            foreach (var l in locations)
-            {
-                locationIds.Add(l.LocationId);
-            }
+			var locationIds = new List<int>();
+			foreach (var l in locations)
+			{
+				locationIds.Add(l.LocationId);
+			}
 
-            var slas = await _serviceContextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
-            if (slas.Count() == 0)
-            {
-                return NotFound("Location(s) found have no relationships to any services.");
-            }
+			var slas = await _serviceContextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
+			if (slas.Count() == 0)
+			{
+				return NotFound("Location(s) found have no relationships to any services.");
+			}
 
-            var serviceIds = new List<int?>();
-            foreach (var sla in slas)
-            {
-                serviceIds.Add(sla.ServiceId);
-            }
+			var serviceIds = new List<int>();
+			foreach (var sla in slas)
+			{
+				serviceIds.Add(sla.ServiceId);
+			}
 
-            var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
-            var serviceDTOs = new List<ServiceV1DTO>();
-            foreach (var service in services)
-            {
-                serviceDTOs.Add(await populateService(service));
-            }
+			var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+			var serviceDTOs = new List<ServiceV1DTO>();
+			foreach (var service in services)
+			{
+				serviceDTOs.Add(await populateService(service));
+			}
 
-            return Ok(serviceDTOs);
-        }
+			return Ok(serviceDTOs);
+		}
 
-        /// <summary>
-        /// Get all services with a program Id
-        /// </summary>
-        /// <param name="programId"></param>
-        /// <returns></returns>
-        //GET: api/Services/Program?="programId"
-        [HttpGet]
-        [Route("[action]/{programId}")]
-        [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+		/// <summary>
+		/// Get all services with a program Id
+		/// </summary>
+		/// <param name="programId"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
+
+		//GET: api/Services/Program?="programId"
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> Program(int programId)
-        {
-            var services = await _serviceContextManager.GetServicesFromProgramId(programId);
+		public async Task<IActionResult> Program([FromQuery][Required] int programId)
+		{
+			var services = await _serviceContextManager.GetServicesFromProgramId(programId);
 
-            if (services.Count() == 0)
-            {
-                return NotFound("No services found with given program id.");
-            }
+			if (services.Count() == 0)
+			{
+				return NotFound("No services found with given program id.");
+			}
 
-            var serviceDTOs = new List<ServiceV1DTO>();
-            foreach (var service in services)
-            {
-                serviceDTOs.Add(await populateService(service));
-            }
+			var serviceDTOs = new List<ServiceV1DTO>();
+			foreach (var service in services)
+			{
+				serviceDTOs.Add(await populateService(service));
+			}
 
-            return Ok(serviceDTOs);
-        }
-        /// <summary>
-        /// Get all services with a division and or department Id
-        /// </summary>
-        /// <remarks>
-        /// paginated
-        /// </remarks>
-        //GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
-        [HttpGet]
-        [Route("[action]/{depId},{divId}")]
-        [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
+			return Ok(serviceDTOs);
+		}
+		/// <summary>
+		/// Get all services with a division and or department Id
+		/// </summary>
+		/// <remarks>
+		/// paginated
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
+
+		//GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-        public async Task<IActionResult> DepartmentAndOrDivisionId(int? deptId = null, int? divId = null)
-        {
-            if (deptId == null && divId == null)
-            {
-                return BadRequest("No input given.");
-            }
-            var services = new List<Service>();
+		public async Task<IActionResult> DepartmentAndOrDivisionId([FromQuery] int? deptId = null, int? divId = null, int pageSize = 20, int pageNum = 0)
+		{
+			if (deptId == null && divId == null)
+			{
+				return BadRequest("No input given.");
+			}
+			var services = new List<Service>();
 
-            if (deptId == null && divId != null)
-            {
-                services = await _serviceContextManager.GetServicesFromDivisionId(divId);
-            }
+			if (deptId == null && divId != null)
+			{
+				services = await _serviceContextManager.GetServicesFromDivisionId(divId, pageSize, pageNum);
+			}
 
-            else if (deptId != null && divId == null)
-            {
-                services = await _serviceContextManager.GetServicesFromDepartmentId(deptId);
-            }
+			else if (deptId != null && divId == null)
+			{
+				services = await _serviceContextManager.GetServicesFromDepartmentId(deptId, pageSize, pageNum);
+			}
 
-            else if (deptId != null && divId != null)
-            {
-                services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId);
-            }
+			else if (deptId != null && divId != null)
+			{
+				services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId, pageSize, pageNum);
+			}
 
-            if (services.Count() == 0)
-            {
-                return NotFound("No services found with valid arguments given.");
-            }
+			if (services.Count() == 0)
+			{
+				return NotFound("No services found with valid arguments given.");
+			}
 
-            var serviceDTOs = new List<ServiceV1DTO>();
-            foreach (var service in services)
-            {
-                serviceDTOs.Add(await populateService(service));
-            }
+			var serviceDTOs = new List<ServiceV1DTO>();
+			foreach (var service in services)
+			{
+				serviceDTOs.Add(await populateService(service));
+			}
 
-            return Ok(serviceDTOs);
-        }
+			return Ok(serviceDTOs);
+		}
 
-        /// <summary>
-        /// Get all services with a matching name ( even if the name is a substring of another )
-        /// </summary>
-        /// <remarks>
-        /// matching the regex: .*a_string.* or SQL: like %a_string%
-        /// </remarks>
-        //GET: api/Services/Name
-        [HttpGet]
-        [Route("[action]")]
-        [SwaggerOperation(Tags = new[] { "Reader" })]
-        [ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> Name([FromQuery] string name, int pageSize = 20, int pageNum = 0)
-        {
-            var services = await _serviceContextManager.GetServicesByName(name, pageSize, pageNum);
+		/// <summary>
+		/// Get all services with a matching name ( even if the name is a substring of another )
+		/// </summary>
+		/// <remarks>
+		/// matching the regex: .*a_string.* or SQL: like %a_string%
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 
-            if (services.Count == 0)
-            {
-                return NotFound("No services found with search query.");
-            }
+		//GET: api/Services/Name
+		[HttpGet]
+		[Route("[action]")]
+		[ProducesResponseType(typeof(ServiceV1DTO), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(404)]
+		public async Task<IActionResult> Name([FromQuery] string name, int pageSize = 20, int pageNum = 0)
+		{
+			var services = await _serviceContextManager.GetServicesByName(name, pageSize, pageNum);
 
-            var serviceDTOs = new List<ServiceV1DTO>();
-            foreach (var service in services)
-            {
-                serviceDTOs.Add(await populateService(service));
-            }
+			if (services.Count == 0)
+			{
+				return NotFound("No services found with search query.");
+			}
 
-            return Ok(serviceDTOs);
-        }
+			var serviceDTOs = new List<ServiceV1DTO>();
+			foreach (var service in services)
+			{
+				serviceDTOs.Add(await populateService(service));
+			}
 
-        /// <summary>
-        /// Update a service with a certain ID
-        /// </summary>
-        /// <remarks>
-        /// Add a service if it doesn't already exist and update a service if it exist
-        /// </remarks>
-        // PUT: api/Services/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [SwaggerOperation(Tags = new[] { "Writer" })]
+			return Ok(serviceDTOs);
+		}
+		/// <summary>
+		/// Update a service with a certain ID
+		/// </summary>
+		/// <remarks>
+		/// Add a service if it doesn't already exist and update a service if it exist
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Writer" })]
+
+		// PUT: api/Services/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for
+		// more details see https://aka.ms/RazorPagesCRUD.
+		[HttpPut("{id}")]
+		[ProducesResponseType(204)]
+		[ProducesResponseType(400)]
+		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
-        public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
-        {
-            try
-            {
-                if (id != serviceDTO.ServiceId)
-                {
-                    return BadRequest();
-                }
+		public async Task<IActionResult> PutService(int id, [FromBody] ServiceV1DTO serviceDTO)
+		{
+			try
+			{
+				if (id != serviceDTO.ServiceId)
+				{
+					return BadRequest();
+				}
 
-                // Check to ensure service exists before calling contextmanager method.
-                var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
-                if (service == null)
-                {
-                    return NotFound();
-                }
+				// Check to ensure service exists before calling contextmanager method.
+				var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
+				if (service == null)
+				{
+					return NotFound();
+				}
 
-                await _serviceContextManager.PutAsync(serviceDTO);
-                return NoContent();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+				await _serviceContextManager.PutAsync(serviceDTO);
+				return NoContent();
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+		/// <summary>
+		/// Post a new service
+		/// </summary>
+		/// <remarks>
+		/// Adds a service
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Writer" })]
 
-        /// <summary>
-        /// Post a new service
-        /// </summary>
-        /// <remarks>
-        /// Adds a service
-        /// </remarks>
-        // POST: api/Services
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(409)]
-        [SwaggerOperation(Tags = new[] { "Writer" })]
+		// POST: api/Services
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for
+		// more details see https://aka.ms/RazorPagesCRUD.
+		[HttpPost]
+		[ProducesResponseType(204)]
+		[ProducesResponseType(409)]
 #if AUTH
         [Authorize(Policy = "Writer")]
 #endif
-        public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
-        {
-            //Check to ensure service does not exist in database before calling contextmanager method.
-            try
-            {
-                var service = await _serviceContextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
-                if (service != null)
-                {
-                    return Conflict();
-                }
+		public async Task<IActionResult> PostService([FromBody] ServiceV1DTO serviceV1DTO)
+		{
+			//Check to ensure service does not exist in database before calling contextmanager method.
+			try
+			{
+				var service = await _serviceContextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
+				if (service != null)
+				{
+					return Conflict();
+				}
 
-                await _serviceContextManager.PostAsync(serviceV1DTO);
-                return NoContent();
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+				await _serviceContextManager.PostAsync(serviceV1DTO);
+				return NoContent();
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 
 
-        }
+		}
 
-        /// <summary>
-        /// delete an existing service
-        /// </summary>
-        /// <remarks>
-        /// removes an existing service
-        /// </remarks>
-        // DELETE: api/Services/5
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [SwaggerOperation(Tags = new[] { "Writer" })]
-#if AUTH
-        [Authorize(Policy = "Writer")]
-#endif
-        public async Task<IActionResult> DeleteService(int id)
-        {
-            var item = await _context.Service.FirstOrDefaultAsync(s => s.ServiceId == id);
+		private bool ServiceExists(int id)
+		{
+			return _context.Service.Any(e => e.ServiceId == id);
+		}
 
-            if (item == null)
-            {
-                return NotFound();
-            }
+		private async Task<ServiceV1DTO> populateService(Service service)
+		{
+			var serviceDTO = service.ToServiceV1DTO();
 
-            _context.Service.Remove(item);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return NoContent(); // 204
-        }
+			foreach (var sca in service.ServiceCommunityAssociation)
+			{
+				int id;
 
-        private bool ServiceExists(int id)
-        {
-            return _context.Service.Any(e => e.ServiceId == id);
-        }
 
-        private async Task<ServiceV1DTO> populateService(Service service)
-        {
-            var serviceDTO = service.ToServiceV1DTO();
+				id = (int)sca.CommunityId;
 
-            foreach (var sca in serviceDTO.ServiceCommunityAssociationDTOs)
-            {
-                int id;
+				var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
 
-                if (sca.CommunityId != null)
-                {
-                    id = (int)sca.CommunityId;
+				if (comm == null)
+				{
+					continue;
+				}
 
-                    var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
+				serviceDTO.CommunityDTOs.Add(comm.ToCommunityV1DTO());
 
-                    if (comm == null)
-                    {
-                        continue;
-                    }
+			}
 
-                    serviceDTO.CommunityDTOs.Add(comm.ToCommunityV1DTO());
-                }
-            }
+			foreach (var sla in service.ServiceLanguageAssociation)
+			{
+				int id;
 
-            foreach (var sla in serviceDTO.ServiceLanguageAssociationDTOs)
-            {
-                int id;
-                if (sla.LanguageId != null)
-                {
-                    id = (int)sla.LanguageId;
-                    var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
-                    if (lang == null)
-                    {
-                        continue;
-                    }
-                    serviceDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
-                }
-            }
+				id = (int)sla.LanguageId;
+				var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
+				if (lang == null)
+				{
+					continue;
+				}
+				serviceDTO.LanguageDTOs.Add(lang.ToLanguageV1DTO());
+			}
 
-            foreach (var sla in serviceDTO.ServiceLocationAssociationDTOs)
-            {
-                int id;
-                if (sla.LocationId != null)
-                {
-                    id = (int)sla.LocationId;
-                    var loc = await _serviceContextManager.GetLocationByIdAsync(id);
-                    if (loc == null)
-                    {
-                        continue;
-                    }
-                    serviceDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
-                }
-            }
-            return serviceDTO;
-        }
-    }
+			foreach (var sla in service.ServiceLocationAssociation)
+			{
+				int id;
+
+				id = (int)sla.LocationId;
+				var loc = await _serviceContextManager.GetLocationByIdAsync(id);
+				if (loc == null)
+				{
+					continue;
+				}
+				serviceDTO.LocationDTOs.Add(loc.ToLocationV1DTO());
+
+			}
+			return serviceDTO;
+		}
+	}
 }
