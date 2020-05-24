@@ -1,6 +1,5 @@
 import pyodbc
 import json
-import os
 
 
 def read_to_database(file_names):
