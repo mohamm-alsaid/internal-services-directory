@@ -9,15 +9,15 @@ namespace MultCo_ISD_API.V1.Validators
         public ServiceCommunityAssociationV1DTOValidator()
         {
             RuleFor(x => x.ServiceCommunityAssociationId)
-               .Empty().WithMessage("cannot specify service community association ID explicitly");
+               .Empty().WithMessage("cannot specify service CommunityAssociationId explicitly");
 
             RuleFor(x => x.CommunityId)
-                .NotNull().WithMessage("Community Id cannot be null")
-                .GreaterThan(0).WithMessage("Community Id cannot be 0");
+                .NotNull().WithMessage("CommunityId cannot be null")
+                .GreaterThan(0).WithMessage("CommunityId cannot be 0");
 
             RuleFor(x => x.ServiceId)
-                .NotNull().WithMessage("Service Id cannot be null")
-                .GreaterThan(0).WithMessage("Service Id cannot be 0");
+                .NotNull().WithMessage("ServiceId cannot be null")
+                .GreaterThan(0).WithMessage("ServiceId cannot be 0");
                 
         }
     }

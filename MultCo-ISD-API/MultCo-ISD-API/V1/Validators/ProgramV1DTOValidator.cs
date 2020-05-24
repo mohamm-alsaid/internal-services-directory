@@ -12,7 +12,7 @@ namespace MultCo_ISD_API.V1.Validators
         public ProgramV1DTOValidator()
         {
             RuleFor(x => x.ProgramId)
-                .Empty().WithMessage("cannot specify program ID explicitly");
+                .Empty().WithMessage("cannot specify programId explicitly");
 
             RuleFor(x => x.SponsorName)
                 .MaximumLength(255).WithMessage("sponsor name cannot exceed 255 chars");

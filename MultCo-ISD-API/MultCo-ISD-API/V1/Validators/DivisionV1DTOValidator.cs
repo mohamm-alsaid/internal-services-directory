@@ -9,7 +9,7 @@ namespace MultCo_ISD_API.V1.Validators
         public DivisionV1DTOValidator()
         {
             RuleFor(x => x.DivisionId)
-                .Empty().WithMessage("cannot specify division ID explicitly");
+                .Empty().WithMessage("cannot specify DivisionId explicitly");
 
             RuleFor(x => x.DivisionCode)
                 .NotNull().WithMessage("Division code cannot be null");

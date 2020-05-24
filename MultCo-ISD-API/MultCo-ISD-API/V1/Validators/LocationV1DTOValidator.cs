@@ -11,7 +11,7 @@ namespace MultCo_ISD_API.V1.Validators
         public LocationV1DTOValidator()
         {
             RuleFor(x => x.LocationId)
-                .Empty().WithMessage("cannot specify location ID explicitly");
+                .Empty().WithMessage("cannot specify locationId explicitly");
 
             RuleFor(x => x.LocationTypeId)
                 .NotNull().WithMessage("Location Type ID cannot be null");

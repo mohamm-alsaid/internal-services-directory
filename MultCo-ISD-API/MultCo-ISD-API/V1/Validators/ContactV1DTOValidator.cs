@@ -8,7 +8,7 @@ namespace MultCo_ISD_API.V1.Validators
         public ContactV1DTOValidator()
         {
             RuleFor(x => x.ContactId)
-               .Empty().WithMessage("cannot specify contact ID explicitly");
+               .Empty().WithMessage("cannot specify ContactId explicitly");
 
             RuleFor(x => x.ContactName)
                 .MaximumLength(255).WithMessage("Contact name cannot be longer than 255");

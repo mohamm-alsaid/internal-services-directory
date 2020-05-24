@@ -9,7 +9,7 @@ namespace MultCo_ISD_API.V1.Validators
         {
 
             RuleFor(x => x.CommunityId)
-               .Empty().WithMessage("cannot specify community ID explicitly");
+               .Empty().WithMessage("cannot specify CommunityId explicitly");
 
             RuleFor(x => x.CommunityName)
                 .MaximumLength(255).WithMessage("Community name cannot exceed 255 chars");

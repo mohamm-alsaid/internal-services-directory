@@ -12,15 +12,15 @@ namespace MultCo_ISD_API.V1.Validators
         public ServiceLocationAssociationV1DTOValidator()
         {
             RuleFor(x => x.ServiceLocationAssociation)
-               .Empty().WithMessage("cannot specify service location ID explicitly");
+               .Empty().WithMessage("cannot specify service LocationId explicitly");
 
             RuleFor(x => x.ServiceId)
-                .NotNull().WithMessage("Service id cannot be null")
-                .GreaterThan(0).WithMessage("Service id cannot be 0");
+                .NotNull().WithMessage("ServiceId cannot be null")
+                .GreaterThan(0).WithMessage("ServiceId cannot be 0");
             
             RuleFor(x => x.LocationId)
-                .NotNull().WithMessage("Location id cannot be null")
-                .GreaterThan(0).WithMessage("Location id cannot be 0");
+                .NotNull().WithMessage("LocationId cannot be null")
+                .GreaterThan(0).WithMessage("LocationId cannot be 0");
                 
         }
     }
