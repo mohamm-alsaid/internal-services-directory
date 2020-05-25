@@ -12,22 +12,19 @@ namespace MultCo_ISD_API.V1.Validators
         public ProgramV1DTOValidator()
         {
             RuleFor(x => x.ProgramId)
-                .Empty().WithMessage("cannot specify program ID explicitly");
+                .Empty().WithMessage("cannot specify programId explicitly");
 
             RuleFor(x => x.SponsorName)
-                .NotNull().WithMessage("sponsor name cannot be null")
-                .MaximumLength(20).WithMessage("sponsor name cannot exceed 20 characters");
+                .MaximumLength(255).WithMessage("sponsor name cannot exceed 255 chars");
 
             RuleFor(x => x.ProgramName)
-                .NotNull().WithMessage("program name cannot be null")
-                .MaximumLength(30).WithMessage("program name exceed 30");
+                .MaximumLength(255).WithMessage("program name exceed 255 chars");
 
             RuleFor(x => x.OfferType)
-                .NotNull().WithMessage("program offer type cannot be null")
-                .MaximumLength(20).WithMessage("program offer type cannot exceed 20");
+                .MaximumLength(255).WithMessage("program offer type cannot exceed 255 chars");
 
-            RuleFor(x => x.ProgramOfferNumber).NotNull().WithMessage("program offer number cannot be null")
-                .MaximumLength(10).WithMessage("program offer number cannot exceed 10");
+            RuleFor(x => x.ProgramOfferNumber)
+                .MaximumLength(255).WithMessage("program offer number cannot exceed 255 chars");
         }
     }
 }

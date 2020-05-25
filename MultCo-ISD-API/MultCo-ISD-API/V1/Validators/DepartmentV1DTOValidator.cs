@@ -9,14 +9,14 @@ namespace MultCo_ISD_API.V1.Validators
         public DepartmentV1DTOValidator()
         {
             RuleFor(x => x.DepartmentId)
-               .Empty().WithMessage("cannot specify department ID explicitly");
+               .Empty().WithMessage("cannot specify DepartmentId explicitly");
 
             RuleFor(x => x.DepartmentCode)
                 .NotNull().WithMessage("Department code cannot be null");
 
             RuleFor(x => x.DepartmentName)
-                .NotNull().WithMessage("Department name cannot be null")
-                .MaximumLength(30).WithMessage("Department name cannot exceed 30 characters"); ;
+                .MaximumLength(255).WithMessage("Department name cannot exceed 255 characters");
+
         }
     }
 }
