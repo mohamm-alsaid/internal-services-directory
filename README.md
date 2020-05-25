@@ -1,15 +1,5 @@
 # Multco API
 
-## Authorization
-
-Developers may turn authorization on/off by performing the following steps in Visual Studio:
-
--   Go to  **project**  >  **properties**
--   Select desired configuration (e.g. Debug/Release)
--   In the "Conditional compilation symbols" field, define a variable  `AUTH`
--   Make sure to save the changes
--   Build project
-
 ## What is it?
 
 This API allows Multnomah County access to all of their services in a easy to use SQL database, allows parsing of their service offers in PDFs, and easy querying and updating through a multitude of REST endpoints
@@ -59,3 +49,14 @@ This API allows Multnomah County access to all of their services in a easy to us
 1. Launch the Multco-ISD-API.sln in the Multco-ISD-API folder
 2. Click the green arrow at the top of visual studio that says ISS express
 3. Within the website your browser lauches upon hitting ISS express, you can now play around and view endpoints
+
+
+### Authorization
+
+Developers may turn authorization on/off by performing the following steps in Visual Studio:
+
+-   Go to  **project**  >  **properties**
+-   Select desired configuration (e.g. Debug/Release)
+-   In the "Conditional compilation symbols" field, define a variable  `AUTH`
+-   Make sure to save the changes
+-   Build project
