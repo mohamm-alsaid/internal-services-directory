@@ -412,17 +412,13 @@ namespace MultCo_ISD_API.V1.Controllers
 		{
 			try
 			{
-				if (id != serviceDTO.ServiceId)
-				{
-					return BadRequest();
-				}
-
 				// Check to ensure service exists before calling contextmanager method.
-				var service = await _serviceContextManager.GetServiceByIdAsync(serviceDTO.ServiceId);
+				var service = await _serviceContextManager.GetServiceByIdAsync(id);
 				if (service == null)
 				{
 					return NotFound();
 				}
+				serviceDTO.ServiceId = id;
 
 				await _serviceContextManager.PutAsync(serviceDTO);
 				return NoContent();
