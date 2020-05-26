@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +11,9 @@ using MultCo_ISD_API.Models;
 using MultCo_ISD_API.V1.DTO;
 using MultCo_ISD_API.V1.ControllerContexts;
 using MultCo_ISD_API.Validation;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace MultCo_ISD_API.V1.Controllers
 {
 #if AUTH
@@ -36,7 +37,12 @@ namespace MultCo_ISD_API.V1.Controllers
 			_context = context;
 			_serviceContextManager = new ServiceContextManager(_context);
 		}
-
+        /// <summary>
+        /// Returns a services with matching Id
+        /// </summary>
+        /// <remarks>
+        /// Get services in a paginated fasahion
+        /// </remarks>
 		// GET: api/Services
 		[HttpGet]
 		[ProducesResponseType(typeof(IEnumerable<ServiceV1DTO>), (int)HttpStatusCode.OK)]
@@ -70,6 +76,13 @@ namespace MultCo_ISD_API.V1.Controllers
 				throw e;
 			}
 		}
+        /// <summary>
+        /// Get a particular service by service ID.
+        /// </summary>
+        /// <remarks>
+        /// Returns the service with matching id, get all information associated with it
+        /// </remarks>
+        [SwaggerOperation(Tags = new[] { "Reader" })]
 
 		// GET: api/Services/5
 		[HttpGet("{id}")]
@@ -96,7 +109,16 @@ namespace MultCo_ISD_API.V1.Controllers
 				throw e;
 			}
 		}
-
+    
+        /// <summary>
+        /// Get all services by language 
+        /// </summary>
+        /// <remarks>
+        /// Returns all services with a matching language 
+        /// </remarks>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        [SwaggerOperation(Tags = new[] { "Reader" })]
 		//GET: api/Services/lang?="language"
 		[HttpGet]
 		[Route("[action]")]
@@ -145,7 +167,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			return Ok(serviceDTOs);
 		}
-
+        
+        /// <summary>
+        /// Get all services with a community name
+        /// </summary>
+        /// <param name="community"></param>
+        /// <returns></returns>
+        [SwaggerOperation(Tags = new[] { "Reader" })]
 		//GET: api/Services/Community?="community"
 		[HttpGet]
 		[Route("[action]")]
@@ -196,6 +224,12 @@ namespace MultCo_ISD_API.V1.Controllers
 				throw e;
 			}
 		}
+		/// <summary>
+		/// Get all services with a building Id
+		/// </summary>
+		/// <param name="buildingId"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 
 		// GET: api/Service/BuildingId
 		[HttpGet]
@@ -241,6 +275,13 @@ namespace MultCo_ISD_API.V1.Controllers
 			return Ok(serviceDTOs);
 		}
 
+		/// <summary>
+		/// Get all services with a program Id
+		/// </summary>
+		/// <param name="programId"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
+
 		//GET: api/Services/Program?="programId"
 		[HttpGet]
 		[Route("[action]")]
@@ -266,6 +307,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			return Ok(serviceDTOs);
 		}
+		/// <summary>
+		/// Get all services with a division and or department Id
+		/// </summary>
+		/// <remarks>
+		/// paginated
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 
 		//GET: api/Services/DepartmentAndOrDivisionId?="deptId"?="divId"
 		[HttpGet]
@@ -312,6 +360,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			return Ok(serviceDTOs);
 		}
 
+		/// <summary>
+		/// Get all services with a matching name ( even if the name is a substring of another )
+		/// </summary>
+		/// <remarks>
+		/// matching the regex: .*a_string.* or SQL: like %a_string%
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
+
 		//GET: api/Services/Name
 		[HttpGet]
 		[Route("[action]")]
@@ -334,6 +390,13 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			return Ok(serviceDTOs);
 		}
+		/// <summary>
+		/// Update a service with a certain ID
+		/// </summary>
+		/// <remarks>
+		/// Add a service if it doesn't already exist and update a service if it exist
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Writer" })]
 
 		// PUT: api/Services/5
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -365,6 +428,13 @@ namespace MultCo_ISD_API.V1.Controllers
 				throw e;
 			}
 		}
+		/// <summary>
+		/// Post a new service
+		/// </summary>
+		/// <remarks>
+		/// Adds a service
+		/// </remarks>
+		[SwaggerOperation(Tags = new[] { "Writer" })]
 
 		// POST: api/Services
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for
