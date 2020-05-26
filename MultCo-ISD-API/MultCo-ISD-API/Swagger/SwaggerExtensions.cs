@@ -39,7 +39,8 @@ namespace MultCo_ISD_API.Swagger
                 {
                     Type = SecuritySchemeType.OAuth2,
                     Scheme = "bearer",
-                    Flows = new OpenApiOAuthFlows { 
+                    Flows = new OpenApiOAuthFlows
+                    {
                         Implicit = new OpenApiOAuthFlow
                         {
                             AuthorizationUrl = new Uri("/connect/authorize", UriKind.Relative),
@@ -51,9 +52,9 @@ namespace MultCo_ISD_API.Swagger
                             }
                         }
                     }
-                });;
+                }); ;
                 // add security requirement
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() 
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {
                         new OpenApiSecurityScheme{
