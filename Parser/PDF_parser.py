@@ -116,7 +116,8 @@ def read_page(page):
         if x != '':
             temp2.append(x)
     data["Program Number"] = temp2[1]
-    data["Program Name"] = ' '.join(temp2[2:])
+    data["Program Name"] = (' '.join(temp2[2:])).rstrip()
+    print(data["Program Name"])
     data["Executive Summary"] = ""
     data["Program Summary"] = ""
     data["Related Programs"] = ""

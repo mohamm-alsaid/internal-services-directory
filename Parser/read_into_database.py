@@ -64,6 +64,7 @@ def read_to_database(file_names):
                 offer_type = item['Program Offer Type']
                 if offer_type == "":
                     offer_type = None
+                print(item["Program Name"])
                 cursor.execute("""INSERT INTO Program (offerType, programName, programOfferNumber) VALUES (?, ?, ?)""",
                                offer_type, item['Program Name'], item['Program Number'])
                 program_inc += 1
