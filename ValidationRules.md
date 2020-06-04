@@ -1,5 +1,5 @@
-# General rules for a valid request body:
-There are a few rules that must be followed to ensure the request body is accepted as valid when using POST and PUT methods. The following list summarizes the general rules for a valid request body:
+# General rules for a valid request body
+There are a few rules that must be followed to ensure the request body is accepted as valid when using `POST` and `PUT` methods. The following list summarizes the general rules for a valid request body:
 
 * serviceId within ServiceDTO should not be specified even though it is included within the request body example.
 
@@ -12,13 +12,12 @@ There are a few rules that must be followed to ensure the request body is accept
 * If you wish to add a new record in another table to reference it, ensure the table’s corresponding Id field is null in ServiceDTO. Not passing the field altogether should be fine as it will assign null to the field implicitly. For example, when adding a new service with a new program, add the relevant information about the new program as such:
   ```javascript
   {
-    "serviceName":"new service",
-    // more service information
+    // ...
     "programId": null,
-    // more service information
     "programDTO": {
-      // information about new program
+      // information about new program ...
     }
+    // ...
   }
   ```
   * This includes all the existing DTOs present within the example request body.
@@ -27,11 +26,10 @@ There are a few rules that must be followed to ensure the request body is accept
  
   ```javascript
   {
-    "serviceName":"new service",
-    // more service information
+    // ...
     "programId": 1,
-    // more service information
-    "programDTO": null 
+    "programDTO": null,
+    // ...
   }
   ```
   * This includes all the existing DTOs present within the example request body. 
