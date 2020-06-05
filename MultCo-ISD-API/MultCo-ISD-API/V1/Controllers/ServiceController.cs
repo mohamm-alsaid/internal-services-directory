@@ -38,10 +38,10 @@ namespace MultCo_ISD_API.V1.Controllers
 			_serviceContextManager = new ServiceContextManager(_context);
 		}
         /// <summary>
-        /// Returns a services with matching Id
+        /// Get all active services
         /// </summary>
         /// <remarks>
-        /// Get services in a paginated fasahion
+        /// Get services with pagination
         /// </remarks>
 		// GET: api/Services
 		[HttpGet]
@@ -111,7 +111,7 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
     
         /// <summary>
-        /// Get all services by language 
+        /// Get service by language 
         /// </summary>
         /// <remarks>
         /// Returns all services with a matching language 
@@ -167,13 +167,16 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			return Ok(serviceDTOs);
 		}
-        
-        /// <summary>
-        /// Get all services with a community name
-        /// </summary>
-        /// <param name="community"></param>
-        /// <returns></returns>
-        [SwaggerOperation(Tags = new[] { "Reader" })]
+
+		/// <summary>
+		/// Get service by community name
+		/// </summary>
+		/// <remarks>
+		/// get service with a matching community name
+		/// </remarks>
+		/// <param name="community"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 		//GET: api/Services/Community?="community"
 		[HttpGet]
 		[Route("[action]")]
@@ -225,8 +228,11 @@ namespace MultCo_ISD_API.V1.Controllers
 			}
 		}
 		/// <summary>
-		/// Get all services with a building Id
+		/// Get service by building Id
 		/// </summary>
+		/// <remarks>
+		/// get service with a matching build Id
+		/// </remarks>
 		/// <param name="buildingId"></param>
 		/// <returns></returns>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
@@ -276,8 +282,11 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
 
 		/// <summary>
-		/// Get all services with a program Id
+		/// Get service by program Id
 		/// </summary>
+		/// <remarks>
+		/// get service with a matching program Id
+		/// </remarks>
 		/// <param name="programId"></param>
 		/// <returns></returns>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
@@ -308,7 +317,7 @@ namespace MultCo_ISD_API.V1.Controllers
 			return Ok(serviceDTOs);
 		}
 		/// <summary>
-		/// Get all services with a division and or department Id
+		/// Get service by a division and or department Id
 		/// </summary>
 		/// <remarks>
 		/// paginated
@@ -361,9 +370,10 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
 
 		/// <summary>
-		/// Get all services with a matching name ( even if the name is a substring of another )
+		/// Get service by name 
 		/// </summary>
 		/// <remarks>
+		/// get service with a matching name ( even if the name is a substring of another ) <br/>
 		/// matching the regex: .*a_string.* or SQL: like %a_string%
 		/// </remarks>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
