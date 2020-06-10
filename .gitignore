@@ -353,6 +353,6 @@ MigrationBackup/
 .ionide/
 
 #ignore pdf, json, and .idea files
-Parser/dist/run_on_startup/*.pdf
-Parser/dist/run_on_startup/*.json
+Parser/*.pdf
+Parser/*.json
 Parser/.idea
