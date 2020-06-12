@@ -28,14 +28,14 @@ namespace MultCo_ISD_API.V1.Controllers
 		private const string DefaultConnectionStringName = "DefaultConnection";
 
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 		public ServiceController(InternalServicesDirectoryV1Context context)
 		{
 			// TODO: Once all CRUD methods use '_serviceContext', remove '_context' as a data member
 			// and pass 'context' directly to the 'ServiceContext' constructor
 			_context = context;
-			_serviceContextManager = new ServiceContextManager(_context);
+			_contextManager = new ContextManager(_context);
 		}
         /// <summary>
         /// Get all active services
@@ -58,7 +58,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				{
 					return NotFound("Invalid page index or page size.");
 				}
-				var services = await _serviceContextManager.GetAllServices(pageSize, pageIndex);
+				var services = await _contextManager.GetAllServices(pageSize, pageIndex);
 				if (services == null || services.Count == 0)
 				{
 					return NotFound("No services were found with the given page information.");
@@ -93,7 +93,7 @@ namespace MultCo_ISD_API.V1.Controllers
 		{
 			try
 			{
-				var service = await _serviceContextManager.GetServiceByIdAsync(id);
+				var service = await _contextManager.GetServiceByIdAsync(id);
 
 				if (service == null)
 				{
@@ -130,7 +130,7 @@ namespace MultCo_ISD_API.V1.Controllers
 			//massage query string into a list
 			var langNames = lang.Split(',');
 			var langNamesList = new List<string>(langNames);
-			var langs = await _serviceContextManager.GetLanguagesByNameListAsync(langNamesList);
+			var langs = await _contextManager.GetLanguagesByNameListAsync(langNamesList);
 
 			if (langs.Count() == 0)
 			{
@@ -143,7 +143,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				langIds.Add(language.LanguageId);
 			}
 
-			var slas = await _serviceContextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
+			var slas = await _contextManager.GetServiceLanguageAssociationsByLanguageIdListAsync(langIds);
 
 			if (slas.Count() == 0)
 			{
@@ -156,7 +156,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				serviceIds.Add(sla.ServiceId);
 			}
 
-			var services = await _serviceContextManager.GetServicesFromIdListPaginated(serviceIds, pageSize, pageNum);
+			var services = await _contextManager.GetServicesFromIdListPaginated(serviceIds, pageSize, pageNum);
 			var serviceDTOs = new List<ServiceV1DTO>();
 			foreach (var service in services)
 			{
@@ -188,7 +188,7 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				//this can be changed to check if the community name contains the input, for now im going for an explicit match of them lowercased
-				var comm = await _serviceContextManager.GetCommunityByNameAsync(community);
+				var comm = await _contextManager.GetCommunityByNameAsync(community);
 
 				if (comm == null)
 				{
@@ -196,7 +196,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				}
 
 				//fetch any ServiceCommunityAssociations that have our community's id, then grab the service ids to prep the next DB call to get only the services we want
-				var scas = await _serviceContextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
+				var scas = await _contextManager.GetServiceCommunityAssociationsByCommunityIdAsync(comm.CommunityId);
 
 				if (scas.Count() == 0)
 				{
@@ -210,7 +210,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				}
 
 				//fetch only the services with the service ids we just got from the SCAs, then convert to DTO
-				var services = _serviceContextManager.GetServicesFromIdList(ids).Result;
+				var services = _contextManager.GetServicesFromIdList(ids).Result;
 
 				var serviceDTOs = new List<ServiceV1DTO>();
 				foreach (var service in services)
@@ -245,7 +245,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
 		public async Task<IActionResult> BuildingId([FromQuery][Required] string buildingId)
 		{
-			var locations = await _serviceContextManager.GetLocationsByBuildingId(buildingId);
+			var locations = await _contextManager.GetLocationsByBuildingId(buildingId);
 			if (locations.Count() == 0)
 			{
 				return NotFound("No locations found from given building id.");
@@ -257,7 +257,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				locationIds.Add(l.LocationId);
 			}
 
-			var slas = await _serviceContextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
+			var slas = await _contextManager.GetServiceLocationAssociationsByLocationIdListAsync(locationIds);
 			if (slas.Count() == 0)
 			{
 				return NotFound("Location(s) found have no relationships to any services.");
@@ -269,7 +269,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				serviceIds.Add(sla.ServiceId);
 			}
 
-			var services = await _serviceContextManager.GetServicesFromIdList(serviceIds);
+			var services = await _contextManager.GetServicesFromIdList(serviceIds);
 			var serviceDTOs = new List<ServiceV1DTO>();
 			foreach (var service in services)
 			{
@@ -299,7 +299,7 @@ namespace MultCo_ISD_API.V1.Controllers
 #endif
 		public async Task<IActionResult> Program([FromQuery][Required] int programId)
 		{
-			var services = await _serviceContextManager.GetServicesFromProgramId(programId);
+			var services = await _contextManager.GetServicesFromProgramId(programId);
 
 			if (services.Count() == 0)
 			{
@@ -340,17 +340,17 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			if (deptId == null && divId != null)
 			{
-				services = await _serviceContextManager.GetServicesFromDivisionId(divId, pageSize, pageNum);
+				services = await _contextManager.GetServicesFromDivisionId(divId, pageSize, pageNum);
 			}
 
 			else if (deptId != null && divId == null)
 			{
-				services = await _serviceContextManager.GetServicesFromDepartmentId(deptId, pageSize, pageNum);
+				services = await _contextManager.GetServicesFromDepartmentId(deptId, pageSize, pageNum);
 			}
 
 			else if (deptId != null && divId != null)
 			{
-				services = await _serviceContextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId, pageSize, pageNum);
+				services = await _contextManager.GetServicesFromDivisionAndDepartmentId(divId, deptId, pageSize, pageNum);
 			}
 
 			if (services.Count() == 0)
@@ -379,7 +379,7 @@ namespace MultCo_ISD_API.V1.Controllers
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> Name([FromQuery] string name, int pageSize = 20, int pageNum = 0)
 		{
-			var services = await _serviceContextManager.GetServicesByName(name, pageSize, pageNum);
+			var services = await _contextManager.GetServicesByName(name, pageSize, pageNum);
 
 			if (services.Count == 0)
 			{
@@ -417,14 +417,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var service = await _serviceContextManager.GetServiceByIdAsync(id);
+				var service = await _contextManager.GetServiceByIdAsync(id);
 				if (service == null)
 				{
 					return NotFound();
 				}
 				serviceDTO.ServiceId = id;
 
-				await _serviceContextManager.PutAsync(serviceDTO);
+				await _contextManager.PutAsync(serviceDTO);
 				return NoContent();
 			}
 			catch (Exception e)
@@ -451,13 +451,13 @@ namespace MultCo_ISD_API.V1.Controllers
 			//Check to ensure service does not exist in database before calling contextmanager method.
 			try
 			{
-				var service = await _serviceContextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
+				var service = await _contextManager.GetServiceByIdAsync(serviceV1DTO.ServiceId);
 				if (service != null)
 				{
 					return Conflict();
 				}
 
-				await _serviceContextManager.PostAsync(serviceV1DTO);
+				await _contextManager.PostAsync(serviceV1DTO);
 				return NoContent();
 			}
 			catch (Exception e)
@@ -467,7 +467,6 @@ namespace MultCo_ISD_API.V1.Controllers
 
 
 		}
-
 		private bool ServiceExists(int id)
 		{
 			return _context.Service.Any(e => e.ServiceId == id);
@@ -484,7 +483,7 @@ namespace MultCo_ISD_API.V1.Controllers
 
 				id = (int)sca.CommunityId;
 
-				var comm = await _serviceContextManager.GetCommunityByIdAsync(id);
+				var comm = await _contextManager.GetCommunityByIdAsync(id);
 
 				if (comm == null)
 				{
@@ -500,7 +499,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				int id;
 
 				id = (int)sla.LanguageId;
-				var lang = await _serviceContextManager.GetLanguageByIdAsync(id);
+				var lang = await _contextManager.GetLanguageByIdAsync(id);
 				if (lang == null)
 				{
 					continue;
@@ -513,7 +512,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				int id;
 
 				id = (int)sla.LocationId;
-				var loc = await _serviceContextManager.GetLocationByIdAsync(id);
+				var loc = await _contextManager.GetLocationByIdAsync(id);
 				if (loc == null)
 				{
 					continue;

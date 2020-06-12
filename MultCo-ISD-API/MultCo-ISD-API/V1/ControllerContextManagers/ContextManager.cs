@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using MultCo_ISD_API.V1.DTO;
 using Microsoft.CodeAnalysis.Operations;
 
+
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
-	public interface IServiceContextManager
+	public interface IContextManager
 	{
 		Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
 		Task<Service> GetServiceByIdAsync(int id);
@@ -22,24 +23,38 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<List<Service>> GetServicesFromDivisionId(int? id, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId, int pageSize, int pageNum);
 		Task<Community> GetCommunityByIdAsync(int id);
+		Task<Division> GetDivisionByIdAsync(int id);
 		Task<Community> GetCommunityByNameAsync(string name);
+		Task<Language> GetLanguageByIdAsync(int id);
+		Task<Department> GetDepartmentByIdAsync(int id);
+		Task<Program> GetProgramByIdAsync(int id);
+		Task<Location> GetLocationByIdAsync(int id);
+		Task<LocationType> GetLocationTypeByIdAsync(int id);
+		Task<Contact> GetContactByIdAsync(int id);
 		Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
 		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
 		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int> ids);
 		Task<List<ServiceLocationAssociation>> GetServiceLocationAssociationsByLocationIdListAsync(List<int> ids);
-		Task<Language> GetLanguageByIdAsync(int id);
 		Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs);
-		Task<Location> GetLocationByIdAsync(int id);
+		
 		Task PostAsync(ServiceV1DTO serviceDTO);
 		Task PutAsync(ServiceV1DTO serviceDTO);
 		Task<List<Location>> GetLocationsByBuildingId(string buildingid);
+		Task PutLanguageAsync(LanguageV1DTO languageDTO);
+		Task PutCommunityAsync(CommunityV1DTO communityDTO);
+		Task PutDivisionAsync(DivisionV1DTO divisionDTO);
+		Task PutDepartmentAsync(DepartmentV1DTO departmentDTO);
+		Task PutProgramAsync(ProgramV1DTO programDTO);
+		Task PutLocationAsync(LocationV1DTO locationDTO);
+		Task PutLocationTypeAsync(LocationTypeV1DTO locationTypeDTO);
+		Task PutContactAsync(ContactV1DTO contactDTO);
 	}
 
-	public class ServiceContextManager : IServiceContextManager
+	public class ContextManager : IContextManager
 	{
 		private readonly InternalServicesDirectoryV1Context _context;
 
-		public ServiceContextManager(InternalServicesDirectoryV1Context context)
+		public ContextManager(InternalServicesDirectoryV1Context context)
 		{
 			_context = context;
 		}
@@ -244,7 +259,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.ToListAsync()
 				.ConfigureAwait(false);
 		}
-
 		public async Task<Service> GetServiceByIdAsync(int id)
 		{
 			var service = await _context.Service
@@ -400,14 +414,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.ConfigureAwait(false);
 		}
 
-		public async Task<Language> GetLanguageByIdAsync(int id)
-		{
-			return await _context.Language
-				.Where(l => l.LanguageId == id)
-				.AsNoTracking()
-				.SingleOrDefaultAsync();
-		}
-
 		public async Task<List<Language>> GetLanguagesByNameListAsync(List<string> langs)
 		{
 			langs.ForEach(l => l.ToLower());
@@ -418,14 +424,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 				.ConfigureAwait(false);
 		}
 
-		public async Task<Location> GetLocationByIdAsync(int id)
-		{
-
-			return await _context.Location
-				.Where(l => l.LocationId == id)
-				.AsNoTracking()
-				.SingleOrDefaultAsync();
-		}
 		#region Helpers
 		private async Task EnsureNoContactDuplicate(ServiceV1DTO serviceDTO)
 		{
@@ -646,6 +644,139 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
 			//otherwise, return the desired page
 			return services.GetRange(pageSize * pageNum, pageSize);
+		}
+		public async Task PutLanguageAsync(LanguageV1DTO languageDTO)
+		{
+			var language = await _context.Language
+				.Where(l => l.LanguageId == languageDTO.LanguageId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(language).CurrentValues.SetValues(languageDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutCommunityAsync(CommunityV1DTO communityDTO)
+		{
+			var community = await _context.Community
+				.Where(c => c.CommunityId == communityDTO.CommunityId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(community).CurrentValues.SetValues(communityDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutDivisionAsync(DivisionV1DTO divisionDTO)
+		{
+			var division = await _context.Division
+				.Where(d => d.DivisionId == divisionDTO.DivisionId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(division).CurrentValues.SetValues(divisionDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutDepartmentAsync(DepartmentV1DTO departmentDTO)
+		{
+			var department = await _context.Department
+				.Where(d => d.DepartmentId == departmentDTO.DepartmentId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(department).CurrentValues.SetValues(departmentDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutProgramAsync(ProgramV1DTO programDTO)
+		{
+			var program = await _context.Program
+				.Where(p => p.ProgramId == programDTO.ProgramId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(program).CurrentValues.SetValues(programDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutLocationAsync(LocationV1DTO locationDTO)
+		{
+			var location = await _context.Location
+				.Where(l => l.LocationId == locationDTO.LocationId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(location).CurrentValues.SetValues(locationDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutLocationTypeAsync(LocationTypeV1DTO locationTypeDTO)
+		{
+			var locationType = await _context.LocationType
+				.Where(l => l.LocationTypeId == locationTypeDTO.LocationTypeId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(locationType).CurrentValues.SetValues(locationTypeDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task PutContactAsync(ContactV1DTO contactDTO)
+		{
+			var contact = await _context.Contact
+				.Where(c => c.ContactId == contactDTO.ContactId)
+				.SingleOrDefaultAsync();
+
+			_context.Entry(contact).CurrentValues.SetValues(contactDTO);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task<Language> GetLanguageByIdAsync(int id)
+		{
+			return await _context.Language
+				.Where(l => l.LanguageId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+
+		public async Task<Division> GetDivisionByIdAsync(int id)
+		{
+			return await _context.Division
+				.Where(d => d.DivisionId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+		public async Task<Department> GetDepartmentByIdAsync(int id)
+		{
+			return await _context.Department
+				.Where(d => d.DepartmentId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+		public async Task<Program> GetProgramByIdAsync(int id)
+		{
+			return await _context.Program
+				.Where(p => p.ProgramId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+		public async Task<Location> GetLocationByIdAsync(int id)
+		{
+
+			return await _context.Location
+				.Where(l => l.LocationId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+		public async Task<LocationType> GetLocationTypeByIdAsync(int id)
+		{
+
+			return await _context.LocationType
+				.Where(l => l.LocationTypeId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
+		}
+		public async Task<Contact> GetContactByIdAsync(int id)
+		{
+
+			return await _context.Contact
+				.Where(c => c.ContactId == id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync();
 		}
 	}
 }

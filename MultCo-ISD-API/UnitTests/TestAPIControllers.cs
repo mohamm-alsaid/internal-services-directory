@@ -42,7 +42,6 @@ namespace UnitTests
                 connection.Close();
             }
         }
-
         /* 
          * Test Methods for Services Controller
          */
@@ -191,7 +190,7 @@ namespace UnitTests
                 connection.Close();
             }
         }
-
+        
         [TestMethod]
         public void TestPostService()
         {
