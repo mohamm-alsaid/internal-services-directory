@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 using MultCo_ISD_API.V1.DTO;
 using Microsoft.CodeAnalysis.Operations;
 
-// TODO: create context managers for different controllers 
-// TODO: create unit tests 
-//	-- fails correctly
-//  -- updates correclty
-
 
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
@@ -27,7 +22,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<List<Service>> GetServicesFromDepartmentId(int? id, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromDivisionId(int? id, int pageSize, int pageNum);
 		Task<List<Service>> GetServicesFromDivisionAndDepartmentId(int? divId, int? deptId, int pageSize, int pageNum);
-		// ---------------------- gets -------------------
 		Task<Community> GetCommunityByIdAsync(int id);
 		Task<Division> GetDivisionByIdAsync(int id);
 		Task<Community> GetCommunityByNameAsync(string name);
@@ -37,7 +31,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task<Location> GetLocationByIdAsync(int id);
 		Task<LocationType> GetLocationTypeByIdAsync(int id);
 		Task<Contact> GetContactByIdAsync(int id);
-		// --------------------- end ----------------------
 		Task<List<ServiceCommunityAssociation>> GetServiceCommunityAssociationsByCommunityIdAsync(int id);
 		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdAsync(int id);
 		Task<List<ServiceLanguageAssociation>> GetServiceLanguageAssociationsByLanguageIdListAsync(List<int> ids);
@@ -47,7 +40,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task PostAsync(ServiceV1DTO serviceDTO);
 		Task PutAsync(ServiceV1DTO serviceDTO);
 		Task<List<Location>> GetLocationsByBuildingId(string buildingid);
-		// ----------------- puts -------------------------
 		Task PutLanguageAsync(LanguageV1DTO languageDTO);
 		Task PutCommunityAsync(CommunityV1DTO communityDTO);
 		Task PutDivisionAsync(DivisionV1DTO divisionDTO);
@@ -653,7 +645,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 			//otherwise, return the desired page
 			return services.GetRange(pageSize * pageNum, pageSize);
 		}
-		// -------------------------- put methods start -------------------------------
 		public async Task PutLanguageAsync(LanguageV1DTO languageDTO)
 		{
 			var language = await _context.Language
@@ -734,8 +725,6 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 
 			await _context.SaveChangesAsync();
 		}
-		// -------------------------- put methods end -----------------------------
-
 		public async Task<Language> GetLanguageByIdAsync(int id)
 		{
 			return await _context.Language

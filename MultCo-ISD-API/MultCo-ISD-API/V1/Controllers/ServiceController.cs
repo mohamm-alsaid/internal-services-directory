@@ -522,9 +522,5 @@ namespace MultCo_ISD_API.V1.Controllers
 			}
 			return serviceDTO;
 		}
-		// ----------------- PUT lang ------------
-		// ----------------- end put -------------------
-		// ----------------- start get -----------------
-		// ----------------- end get -------------------
 	}
 }
