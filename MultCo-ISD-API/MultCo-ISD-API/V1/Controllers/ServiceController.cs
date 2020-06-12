@@ -79,9 +79,7 @@ namespace MultCo_ISD_API.V1.Controllers
         /// <summary>
         /// Get a particular service by service ID.
         /// </summary>
-        /// <remarks>
-        /// Returns the service with matching id, get all information associated with it
-        /// </remarks>
+
         [SwaggerOperation(Tags = new[] { "Reader" })]
 
 		// GET: api/Services/5
@@ -111,10 +109,10 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
     
         /// <summary>
-        /// Get service by language 
+        /// Get services by language(s)
         /// </summary>
         /// <remarks>
-        /// Returns all services with a matching language 
+        /// Multiple languages can be specified. Example: 'german,spanish' returns all services associated with either language
         /// </remarks>
         /// <param name="lang"></param>
         /// <returns></returns>
@@ -228,7 +226,7 @@ namespace MultCo_ISD_API.V1.Controllers
 			}
 		}
 		/// <summary>
-		/// Get service by building Id
+		/// Get services by building Id
 		/// </summary>
 		/// <remarks>
 		/// get service with a matching build Id
@@ -317,10 +315,10 @@ namespace MultCo_ISD_API.V1.Controllers
 			return Ok(serviceDTOs);
 		}
 		/// <summary>
-		/// Get service by a division and or department Id
+		/// Get services by division and or department Id
 		/// </summary>
 		/// <remarks>
-		/// paginated
+		/// Results are paginated
 		/// </remarks>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
 
@@ -370,12 +368,8 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
 
 		/// <summary>
-		/// Get service by name 
+		/// Get services by a partial or fully matching service name
 		/// </summary>
-		/// <remarks>
-		/// get service with a matching name ( even if the name is a substring of another ) <br/>
-		/// matching the regex: .*a_string.* or SQL: like %a_string%
-		/// </remarks>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
 
 		//GET: api/Services/Name
@@ -404,7 +398,7 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// Update a service with a certain ID
 		/// </summary>
 		/// <remarks>
-		/// Add a service if it doesn't already exist and update a service if it exist
+		/// Add a service if it doesn't already exist and update a service if it already exists
 		/// </remarks>
 		[SwaggerOperation(Tags = new[] { "Writer" })]
 
@@ -439,11 +433,8 @@ namespace MultCo_ISD_API.V1.Controllers
 			}
 		}
 		/// <summary>
-		/// Post a new service
+		/// Create a new service
 		/// </summary>
-		/// <remarks>
-		/// Adds a service
-		/// </remarks>
 		[SwaggerOperation(Tags = new[] { "Writer" })]
 
 		// POST: api/Services
