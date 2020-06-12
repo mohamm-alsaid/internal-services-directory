@@ -13,11 +13,11 @@ namespace MultCo_ISD_API.V1.Controllers
 	public class ContactController : Controller
 	{
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 		public ContactController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 
@@ -30,22 +30,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// </remarks>
 		/// <returns></returns>
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(ContactV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> Contact([FromQuery][Required] int contactId)
+		public async Task<IActionResult> Get( int id)
 		{
-			var contactDTO = await _serviceContextManager.GetContactByIdAsync(contactId);
+			var contactDTO = await _contextManager.GetContactByIdAsync(id);
 
 			if (contactDTO == null)
 			{
-				return NotFound("No locationType from given id found.");
+				return NotFound("No contact from given id found.");
 			}
 
-			return Ok(contactDTO);
+			return Ok(contactDTO.ToContactV1DTO());
 		}
 
 		[HttpPut("{contactId}")]
@@ -60,14 +59,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var contact = await _serviceContextManager.GetContactByIdAsync(contactId);
+				var contact = await _contextManager.GetContactByIdAsync(contactId);
 				if (contact == null)
 				{
 					return NotFound();
 				}
 				contactDTO.ContactId = contactId;
 
-				await _serviceContextManager.PutContactAsync(contactDTO);
+				await _contextManager.PutContactAsync(contactDTO);
 				return NoContent();
 			}
 			catch (Exception e)

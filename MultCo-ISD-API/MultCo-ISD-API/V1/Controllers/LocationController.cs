@@ -13,11 +13,11 @@ namespace MultCo_ISD_API.V1.Controllers
 	public class LocationController : Controller
     {
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 		public LocationController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 
@@ -30,22 +30,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// <returns></returns>
 		//[SwaggerOperation(Tags = new[] { "Reader" })]
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(LocationV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> Location([FromQuery][Required] int locationtId)
+		public async Task<IActionResult> Get(int locationtId)
 		{
-			var locationDTO = await _serviceContextManager.GetLocationByIdAsync(locationtId);
+			var locationDTO = await _contextManager.GetLocationByIdAsync(locationtId);
 
 			if (locationDTO == null)
 			{
 				return NotFound("No location from given id found.");
 			}
 
-			return Ok(locationDTO);
+			return Ok(locationDTO.ToLocationV1DTO());
 		}
 
 		[HttpPut("Location/{locationId}")]
@@ -60,14 +59,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var location = await _serviceContextManager.GetLocationByIdAsync(locationId);
+				var location = await _contextManager.GetLocationByIdAsync(locationId);
 				if (location == null)
 				{
 					return NotFound();
 				}
 				locationDTO.LocationId = locationId;
 
-				await _serviceContextManager.PutLocationAsync(locationDTO);
+				await _contextManager.PutLocationAsync(locationDTO);
 				return NoContent();
 			}
 			catch (Exception e)

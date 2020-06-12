@@ -14,11 +14,11 @@ namespace MultCo_ISD_API.V1.Controllers
     {
 
         private readonly InternalServicesDirectoryV1Context _context;
-        private readonly IServiceContextManager _serviceContextManager;
+        private readonly IContextManager _contextManager;
 
 		public ProgramController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 
@@ -32,22 +32,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// <returns></returns>
 		//[SwaggerOperation(Tags = new[] { "Reader" })]
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(ProgramV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> GetProgram([FromQuery][Required] int programtId)
+		public async Task<IActionResult> Get(int id)
 		{
-			var programDTO = await _serviceContextManager.GetProgramByIdAsync(programtId);
+			var programDTO = await _contextManager.GetProgramByIdAsync(id);
 
 			if (programDTO == null)
 			{
 				return NotFound("No program from given id found.");
 			}
 
-			return Ok(programDTO);
+			return Ok(programDTO.ToProgramV1DTO());
 		}
 
 
@@ -63,14 +62,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var program = await _serviceContextManager.GetProgramByIdAsync(programId);
+				var program = await _contextManager.GetProgramByIdAsync(programId);
 				if (program == null)
 				{
 					return NotFound();
 				}
 				programDTO.ProgramId = programId;
 
-				await _serviceContextManager.PutProgramAsync(programDTO);
+				await _contextManager.PutProgramAsync(programDTO);
 				return NoContent();
 			}
 			catch (Exception e)

@@ -14,11 +14,11 @@ namespace MultCo_ISD_API.V1.Controllers
 	{
 
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 		public DepartmentController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 
@@ -30,22 +30,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// </remarks>
 		/// <returns></returns>
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(DepartmentV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> GetDepartment([FromQuery][Required] int departmentId)
+		public async Task<IActionResult> Get(int id)
 		{
-			var departmentDTO = await _serviceContextManager.GetDepartmentByIdAsync(departmentId);
+			var departmentDTO = await _contextManager.GetDepartmentByIdAsync(id);
 
 			if (departmentDTO == null)
 			{
 				return NotFound("No department from given id found.");
 			}
 
-			return Ok(departmentDTO);
+			return Ok(departmentDTO.ToDepartmentV1DTO());
 		}
 
 
@@ -62,14 +61,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var department = await _serviceContextManager.GetDepartmentByIdAsync(departmentId);
+				var department = await _contextManager.GetDepartmentByIdAsync(departmentId);
 				if (department == null)
 				{
 					return NotFound();
 				}
 				departmentDTO.DepartmentId = departmentId;
 
-				await _serviceContextManager.PutDepartmentAsync(departmentDTO);
+				await _contextManager.PutDepartmentAsync(departmentDTO);
 				return NoContent();
 			}
 			catch (Exception e)

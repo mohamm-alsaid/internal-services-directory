@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 using MultCo_ISD_API.V1.DTO;
 using Microsoft.CodeAnalysis.Operations;
 
+// TODO: create context managers for different controllers 
+// TODO: create unit tests 
+//	-- fails correctly
+//  -- updates correclty
+
+
 namespace MultCo_ISD_API.V1.ControllerContexts
 {
-	public interface IServiceContextManager
+	public interface IContextManager
 	{
 		Task<List<Service>> GetAllServices(int pageSize, int pageIndex);
 		Task<Service> GetServiceByIdAsync(int id);
@@ -52,11 +58,11 @@ namespace MultCo_ISD_API.V1.ControllerContexts
 		Task PutContactAsync(ContactV1DTO contactDTO);
 	}
 
-	public class ServiceContextManager : IServiceContextManager
+	public class ContextManager : IContextManager
 	{
 		private readonly InternalServicesDirectoryV1Context _context;
 
-		public ServiceContextManager(InternalServicesDirectoryV1Context context)
+		public ContextManager(InternalServicesDirectoryV1Context context)
 		{
 			_context = context;
 		}

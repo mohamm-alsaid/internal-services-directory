@@ -14,11 +14,11 @@ namespace MultCo_ISD_API.V1.Controllers
 	{
 
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 		public CommunityController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 
@@ -30,22 +30,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// </remarks>
 		/// <returns></returns>
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(CommunityV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> GetCommunity([FromQuery][Required] int communityId)
+		public async Task<IActionResult> Get(int id)
 		{
-			var communityDTO = await _serviceContextManager.GetCommunityByIdAsync(communityId);
+			var communityDTO = await _contextManager.GetCommunityByIdAsync(id);
 
 			if (communityDTO == null)
 			{
 				return NotFound("No community from given id found.");
 			}
 
-			return Ok(communityDTO);
+			return Ok(communityDTO.ToCommunityV1DTO());
 		}
 
 
@@ -61,14 +60,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var community = await _serviceContextManager.GetCommunityByIdAsync(communityId);
+				var community = await _contextManager.GetCommunityByIdAsync(communityId);
 				if (community == null)
 				{
 					return NotFound();
 				}
 				communityDTO.CommunityId = communityId;
 
-				await _serviceContextManager.PutCommunityAsync(communityDTO);
+				await _contextManager.PutCommunityAsync(communityDTO);
 				return NoContent();
 			}
 			catch (Exception e)

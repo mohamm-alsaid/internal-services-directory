@@ -14,12 +14,12 @@ namespace MultCo_ISD_API.V1.Controllers
     {
 
 		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		private readonly IContextManager _contextManager;
 
 
 		public DivisionController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_contextManager = new ContextManager(context);
 		}
 
 		/// <summary>
@@ -31,22 +31,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// <returns></returns>
 		//[SwaggerOperation(Tags = new[] { "Reader" })]
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(DivisionV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> Division([FromQuery][Required] int divisiontId)
+		public async Task<IActionResult> Get(int id)
 		{
-			var divisiontDTO = await _serviceContextManager.GetDivisionByIdAsync(divisiontId);
+			var divisiontDTO = await _contextManager.GetDivisionByIdAsync(id);
 
 			if (divisiontDTO == null)
 			{
 				return NotFound("No division from given id found.");
 			}
 
-			return Ok(divisiontDTO);
+			return Ok(divisiontDTO.ToDivisionV1DTO());
 		}
 		[HttpPut("Division/{divisionId}")]
 		[ProducesResponseType(204)]
@@ -60,14 +59,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var division = await _serviceContextManager.GetDivisionByIdAsync(divisionId);
+				var division = await _contextManager.GetDivisionByIdAsync(divisionId);
 				if (division == null)
 				{
 					return NotFound();
 				}
 				divisionDTO.DivisionId = divisionId;
 
-				await _serviceContextManager.PutDivisionAsync(divisionDTO);
+				await _contextManager.PutDivisionAsync(divisionDTO);
 				return NoContent();
 			}
 			catch (Exception e)

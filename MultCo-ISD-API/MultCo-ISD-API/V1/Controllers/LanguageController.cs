@@ -21,13 +21,13 @@ namespace MultCo_ISD_API.V1.Controllers
     {
 
 
-		private readonly InternalServicesDirectoryV1Context _context;
-		private readonly IServiceContextManager _serviceContextManager;
+		//private readonly InternalServicesDirectoryV1Context _context;
+		private readonly IContextManager _languageContextManager;
 
 
 		public LanguageController(InternalServicesDirectoryV1Context context)
 		{
-			_serviceContextManager = new ServiceContextManager(context);
+			_languageContextManager = new ContextManager(context);
 		}
 
 		/// <summary>
@@ -40,22 +40,21 @@ namespace MultCo_ISD_API.V1.Controllers
 		//[SwaggerOperation(Tags = new[] { "Reader" ,"Language"})]
 		//GET: api/Services/lang?=languageId
 		[HttpGet]
-		[Route("[action]")]
 		[ProducesResponseType(typeof(LanguageV1DTO), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(404)]
 #if AUTH
         [Authorize(Policy = "Reader")]
 #endif
-		public async Task<IActionResult> Language([FromQuery][Required] int languageId)
+		public async Task<IActionResult> Get(int id)
 		{
-			var languageDTO = await _serviceContextManager.GetLanguageByIdAsync(languageId);
+			var languageDTO = await _languageContextManager.GetLanguageByIdAsync(id);
 
 			if (languageDTO == null)
 			{
 				return NotFound("No languages from given id found.");
 			}
 
-			return Ok(languageDTO);
+			return Ok(languageDTO.ToLanguageV1DTO());
 		}
 
 		[HttpPut("{languageId}")]
@@ -70,14 +69,14 @@ namespace MultCo_ISD_API.V1.Controllers
 			try
 			{
 				// Check to ensure service exists before calling contextmanager method.
-				var language = await _serviceContextManager.GetLanguageByIdAsync(languageId);
+				var language = await _languageContextManager.GetLanguageByIdAsync(languageId);
 				if (language == null)
 				{
 					return NotFound();
 				}
 				languageDTO.LanguageId = languageId;
 
-				await _serviceContextManager.PutLanguageAsync(languageDTO);
+				await _languageContextManager.PutLanguageAsync(languageDTO);
 				return NoContent();
 			}
 			catch (Exception e)
