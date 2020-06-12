@@ -63,7 +63,7 @@ namespace MultCo_ISD_API.V1.Controllers
 				var community = await _contextManager.GetCommunityByIdAsync(communityId);
 				if (community == null)
 				{
-					return NotFound("Tried to modify a record that does not exist.");
+					return NotFound();
 				}
 				communityDTO.CommunityId = communityId;
 
@@ -72,7 +72,7 @@ namespace MultCo_ISD_API.V1.Controllers
 			}
 			catch (Exception e)
 			{
-				return BadRequest("Request tried to modify a unique field to the value of another unique field. Example: Two communities cannot have the same name.");
+				throw e;
 			}
 		}
 

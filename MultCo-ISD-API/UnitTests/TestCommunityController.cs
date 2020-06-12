@@ -161,43 +161,5 @@ namespace UnitTests
             }
         }
 
-        [TestMethod]
-        public void TestUniqueConstraints()
-        {
-            var connection = new SqliteConnection("Datasource=:memory:");
-            connection.Open();
-
-            try
-            {
-                var options = new DbContextOptionsBuilder<InternalServicesDirectoryV1Context>()
-                    .UseSqlite(connection)
-                    .Options;
-
-                // test a successful case
-                using (var context = new InternalServicesDirectoryV1Context(options))
-                {
-                    context.Database.EnsureCreated();
-                    Community comm = new Community { CommunityName = "comm1" };
-                    context.Community.Add(comm);
-                    context.Community.Add(new Community { CommunityName = "comm2" });
-                    context.Community.Add(new Community { CommunityName = "comm3" });
-                    context.SaveChanges();
-
-                    CommunityController controller = new CommunityController(context);
-                    comm.CommunityId = 1;
-                    comm.CommunityName = "comm2";
-                    var actionResult = controller.PutCommunity(comm.CommunityId, comm.ToCommunityV1DTO()).Result;
-                    var result = actionResult as BadRequestObjectResult;
-
-                    Assert.IsNotNull(result);
-                    Assert.AreEqual(400, result.StatusCode);
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
     }
 }
