@@ -186,10 +186,19 @@ namespace MultCo_ISD_API.Models
                 entity.Property(e => e.ProgramOfferNumber)
                     .HasColumnName("programOfferNumber")
                     .HasMaxLength(255);
+
+                entity.HasIndex(e => e.ProgramOfferNumber)
+                    .HasName("Unique_ProgramOfferNumber")
+                    .IsUnique();
             });
 
             modelBuilder.Entity<ServiceCommunityAssociation>(entity =>
             {
+
+                entity.HasIndex(e => new { e.ServiceId, e.CommunityId })
+                    .HasName("uk_ServiceCommunityAssociation")
+                    .IsUnique();
+
                 entity.Property(e => e.ServiceCommunityAssociationId).HasColumnName("serviceCommunityAssociationID");
 
                 entity.Property(e => e.CommunityId).HasColumnName("communityID");
@@ -274,6 +283,10 @@ namespace MultCo_ISD_API.Models
 
             modelBuilder.Entity<ServiceLanguageAssociation>(entity =>
             {
+                entity.HasIndex(e => new { e.ServiceId, e.LanguageId })
+                    .HasName("uk_ServiceLanguageAssociation")
+                    .IsUnique();
+
                 entity.HasKey(e => e.ServiceLanguageAssociation1)
                     .HasName("PK__ServiceL__01B8A41162110311");
 
@@ -296,6 +309,10 @@ namespace MultCo_ISD_API.Models
 
             modelBuilder.Entity<ServiceLocationAssociation>(entity =>
             {
+                entity.HasIndex(e => new { e.ServiceId, e.LocationId })
+                    .HasName("uk_ServiceLocationAssociation")
+                    .IsUnique();
+
                 entity.HasKey(e => e.ServiceLocationAssociation1)
                     .HasName("PK__ServiceL__9D5CE7263ED14FFB");
 

@@ -38,10 +38,10 @@ namespace MultCo_ISD_API.V1.Controllers
 			_serviceContextManager = new ServiceContextManager(_context);
 		}
         /// <summary>
-        /// Returns a services with matching Id
+        /// Get all active services
         /// </summary>
         /// <remarks>
-        /// Get services in a paginated fasahion
+        /// Get services with pagination
         /// </remarks>
 		// GET: api/Services
 		[HttpGet]
@@ -165,13 +165,16 @@ namespace MultCo_ISD_API.V1.Controllers
 
 			return Ok(serviceDTOs);
 		}
-        
-        /// <summary>
-        /// Get all services with a community name
-        /// </summary>
-        /// <param name="community"></param>
-        /// <returns></returns>
-        [SwaggerOperation(Tags = new[] { "Reader" })]
+
+		/// <summary>
+		/// Get service by community name
+		/// </summary>
+		/// <remarks>
+		/// get service with a matching community name
+		/// </remarks>
+		/// <param name="community"></param>
+		/// <returns></returns>
+		[SwaggerOperation(Tags = new[] { "Reader" })]
 		//GET: api/Services/Community?="community"
 		[HttpGet]
 		[Route("[action]")]
@@ -225,6 +228,9 @@ namespace MultCo_ISD_API.V1.Controllers
 		/// <summary>
 		/// Get services by building Id
 		/// </summary>
+		/// <remarks>
+		/// get service with a matching build Id
+		/// </remarks>
 		/// <param name="buildingId"></param>
 		/// <returns></returns>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
@@ -274,8 +280,11 @@ namespace MultCo_ISD_API.V1.Controllers
 		}
 
 		/// <summary>
-		/// Get services by program Id
+		/// Get service by program Id
 		/// </summary>
+		/// <remarks>
+		/// get service with a matching program Id
+		/// </remarks>
 		/// <param name="programId"></param>
 		/// <returns></returns>
 		[SwaggerOperation(Tags = new[] { "Reader" })]
